@@ -2,11 +2,12 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable, Injector} from '@angular/core';
 import {NativeStorage} from "@ionic-native/native-storage";
 import {AlertController, NavController, Platform} from "ionic-angular";
+import {Godfather} from "../../models/godfather";
 
 @Injectable()
 export class Singleton {
 
-  guestHeaders: object
+  guestHeaders: object;
   authHeaders: object;
   API: string;
 

@@ -5,6 +5,10 @@ import {Thread} from "../../../../../models/thread";
 import {Message} from "../../../../../models/message";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {Observer, Subscription} from "rxjs";
+import {Godfather} from "../../../../../models/godfather";
+import {HttpHeaders} from "@angular/common/http";
+import {NativeStorage} from "@ionic-native/native-storage";
+import {Loader} from "../../../../../traits/Loader";
 
 @IonicPage()
 @Component({
@@ -16,10 +20,13 @@ export class GodfatherTopicDetailPage {
   thread: Thread;
   bodyMessage: string;
 
+  sessionUser: Godfather;
+
   messagesSubscription: Subscription;
   messagesObserver: Observer<Message[]>;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private threadProvider: ThreadProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private threadProvider: ThreadProvider,
+              private nativeStorage: NativeStorage, private loader: Loader) {
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
   }
@@ -60,12 +67,33 @@ export class GodfatherTopicDetailPage {
   }
 
   sendMessage() {
-    this.threadProvider.storeThreadMessage(
-      this.thread.user_id_issuing, this.thread.id, {'body': this.bodyMessage}
-    ).subscribe((response) => {
-      console.log(response);
-    });
-    this.bodyMessage = ""
+
+    this.loader.present();
+    if(this.sessionUser === undefined){
+
+      this.nativeStorage.getItem("session").then(res => {
+       this.sessionUser = res.user;
+       this.loader.dismiss();
+       this.sendMessage();
+      }).catch(e => console.log(e));
+
+    }
+    else {
+
+      this.loader.present();
+      this.threadProvider.storeThreadMessage(
+        this.sessionUser.id, this.thread.id, {'body': this.bodyMessage}
+      ).subscribe((response) => {
+        console.log(response);
+      }, () => {
+
+      }, () => {
+        this.loader.dismiss();
+      });
+      this.bodyMessage = ""
+
+    }
+
   }
 
 }

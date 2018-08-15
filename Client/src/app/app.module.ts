@@ -35,6 +35,7 @@ import { LastPipe } from "../pipes/last/last";
 import { ThreadProvider } from '../providers/thread/thread';
 import {GodfatherTabsPage} from "../pages/home-godfather/tabs/godfather-tabs";
 import {NewsPage} from "../pages/news/news";
+import {Loader} from "../traits/Loader";
 
 @NgModule({
   declarations: [
@@ -99,7 +100,8 @@ import {NewsPage} from "../pages/news/news";
     GodsonProvider,
     GodfatherProvider,
     Singleton,
-    ThreadProvider
+    ThreadProvider,
+    Loader
   ]
 })
 export class AppModule {}

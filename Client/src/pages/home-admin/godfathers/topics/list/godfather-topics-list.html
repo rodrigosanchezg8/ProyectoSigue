@@ -24,8 +24,8 @@
         <p *ngFor="let message of thread.messages | last">{{ message.body | truncate: 30 : "..." }}</p>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="primary">
-          <ion-icon name="trash"></ion-icon>Eliminar
+        <button ion-button color="danger" (click)="deleteThread(thread.id)">
+          <ion-icon name="trash"></ion-icon>Borrar
         </button>
       </ion-item-options>
 

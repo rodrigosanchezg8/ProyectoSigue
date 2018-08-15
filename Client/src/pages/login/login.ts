@@ -22,7 +22,7 @@ export class LoginPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
-    this.adminDebugSignIn();
+    //this.adminDebugSignIn();
   }
 
   signIn() {
@@ -52,7 +52,7 @@ export class LoginPage {
         if(res.user.role_description === 'Administrador')
           self.navCtrl.setRoot(AdminTabsPage, res);
         else
-          self.navCtrl.setRoot(GodfatherTabsPage, res);
+          self.navCtrl.setRoot(GodfatherTabsPage, res.user);
       }
     });
   }
