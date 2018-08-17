@@ -6,3 +6,16 @@ textarea {
   resize: none;
 }
 
+.message {
+  border-radius: 5px;
+
+  &.sent {
+    background-color: #77adff;
+  }
+
+  &.received {
+    background-color: #FFF;
+  }
+
+}
+

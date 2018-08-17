@@ -33,11 +33,22 @@ export class GodfatherTopicDetailPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GodfatherTopicDetailPage');
+
+    if(this.sessionUser === undefined){
+      this.nativeStorage.getItem("session").then(res => {
+        this.sessionUser = res.user;
+        console.log(res);
+      }).catch(e => console.log(e));
+
+    }
+
     this.messagesObserver = {
       next: (response: Message[]) => {
         for (let message of response) {
-          if (this.lastMessageId() < message.id)
-            this.thread.messages.push(new Message().deserialize(message));
+          if (this.lastMessageId() < message.id) {
+            let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
+            this.thread.messages.push(newMessage);
+          }
         }
       },
       error: (err: any) => { console.log(err) },
@@ -66,33 +77,21 @@ export class GodfatherTopicDetailPage {
     return (this.thread.messages === undefined || this.thread.messages.length === 0) ? 0 : this.thread.messages[this.thread.messages.length - 1].id;
   }
 
+
+
   sendMessage() {
-
-    this.loader.present();
-    if(this.sessionUser === undefined){
-
-      this.nativeStorage.getItem("session").then(res => {
-       this.sessionUser = res.user;
-       this.loader.dismiss();
-       this.sendMessage();
-      }).catch(e => console.log(e));
-
-    }
-    else {
 
       this.loader.present();
       this.threadProvider.storeThreadMessage(
         this.sessionUser.id, this.thread.id, {'body': this.bodyMessage}
       ).subscribe((response) => {
         console.log(response);
+        this.loader.dismiss();
       }, () => {
 
       }, () => {
-        this.loader.dismiss();
       });
       this.bodyMessage = ""
-
-    }
 
   }
 
