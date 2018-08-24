@@ -96,7 +96,6 @@ export class RegisterPage {
     });
   }
 
-
   presentResponse(response) {
     let self = this;
     let messages = "";

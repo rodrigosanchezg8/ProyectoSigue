@@ -7,6 +7,9 @@ export class Thread {
   user_id_issuing: number;
   user_id_receiver: number;
   status: boolean;
+  created_at: Date;
+  updated_at: Date;
+  last_message: Message;
 
   messages: Message[] = [];
 

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import {AlertController, App, Events, IonicPage, NavController, NavParams, ViewController} from 'ionic-angular';
-import {ThreadProvider} from "../../../../../../providers/thread/thread";
 
 @IonicPage()
 @Component({
@@ -17,7 +16,7 @@ export class GodfatherTopicsListPopoverPage {
   godfather: any;
 
   constructor(public viewCtrl: ViewController, public navCtrl: NavController, public appCtrl: App,
-              public navParams: NavParams, private threadProvider: ThreadProvider, public events: Events,
+              public navParams: NavParams, public events: Events,
               public alertCtrl: AlertController) {
     this.godfather = this.navParams.data;
   }

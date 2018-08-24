@@ -36,6 +36,8 @@ import { ThreadProvider } from '../providers/thread/thread';
 import {GodfatherTabsPage} from "../pages/home-godfather/tabs/godfather-tabs";
 import {NewsPage} from "../pages/news/news";
 import {Loader} from "../traits/Loader";
+import {FileTransfer} from "@ionic-native/file-transfer";
+import {FileChooser} from "@ionic-native/file-chooser";
 
 @NgModule({
   declarations: [
@@ -101,7 +103,9 @@ import {Loader} from "../traits/Loader";
     GodfatherProvider,
     Singleton,
     ThreadProvider,
-    Loader
+    Loader,
+    FileTransfer,
+    FileChooser
   ]
 })
 export class AppModule {}

@@ -6,9 +6,13 @@ import {Message} from "../../../../../models/message";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 import {Observer, Subscription} from "rxjs";
 import {Godfather} from "../../../../../models/godfather";
-import {HttpHeaders} from "@angular/common/http";
 import {NativeStorage} from "@ionic-native/native-storage";
 import {Loader} from "../../../../../traits/Loader";
+import {Camera, CameraOptions} from "@ionic-native/camera";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
+import {File} from '@ionic-native/file';
+import {FileChooser} from "@ionic-native/file-chooser";
 
 @IonicPage()
 @Component({
@@ -25,10 +29,15 @@ export class GodfatherTopicDetailPage {
   messagesSubscription: Subscription;
   messagesObserver: Observer<Message[]>;
 
+  fileTransfer: FileTransferObject;
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private threadProvider: ThreadProvider,
-              private nativeStorage: NativeStorage, private loader: Loader) {
+              private nativeStorage: NativeStorage, private loader: Loader, private camera: Camera,
+              private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
+              private fileChooser: FileChooser) {
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
+    this.fileTransfer = this.transfer.create();
   }
 
   ionViewDidLoad() {
@@ -54,11 +63,12 @@ export class GodfatherTopicDetailPage {
       error: (err: any) => { console.log(err) },
       complete: () => {}
     };
+
   }
 
   ionViewDidEnter(){
     console.log('ionViewDidEnter GodfatherTopicDetailPage');
-    if(this.messagesObserver !== undefined && this.messagesSubscription === undefined)
+    if(this.messagesObserver !== undefined)
       this.subscribeMessageListening();
   }
 
@@ -68,7 +78,7 @@ export class GodfatherTopicDetailPage {
   }
 
   subscribeMessageListening() {
-    this.messagesSubscription = TimerObservable.create(0, 5000).subscribe(() => {
+    this.messagesSubscription = TimerObservable.create(0, 2500).subscribe(() => {
       this.threadProvider.getThreadMessages(this.thread.id, this.lastMessageId()).subscribe(this.messagesObserver);
     });
   }
@@ -76,8 +86,6 @@ export class GodfatherTopicDetailPage {
   lastMessageId(): Number {
     return (this.thread.messages === undefined || this.thread.messages.length === 0) ? 0 : this.thread.messages[this.thread.messages.length - 1].id;
   }
-
-
 
   sendMessage() {
 
@@ -93,6 +101,12 @@ export class GodfatherTopicDetailPage {
       });
       this.bodyMessage = ""
 
+  }
+
+  attachFile(){
+    this.fileChooser.open()
+      .then(uri => console.log(uri))
+      .catch(e => console.log(e))
   }
 
 }

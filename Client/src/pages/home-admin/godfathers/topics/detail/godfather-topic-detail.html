@@ -35,8 +35,11 @@
 
 <ion-footer>
   <ion-grid>
-    <ion-row>
-      <ion-col col-11>
+    <ion-row justify-content-center align-items-center>
+      <ion-col col-auto>
+          <ion-icon name="attach" class="large-icon" (click)="attachFile()"></ion-icon>
+      </ion-col>
+      <ion-col col-10>
         <ion-item>
           <ion-textarea maxlength="200" [(ngModel)]="bodyMessage" [ngModelOptions]="{standalone: true}"
                         placeholder="Escribe un mensaje"></ion-textarea>

@@ -12,6 +12,8 @@ import {ThreadProvider} from "../../../../../providers/thread/thread";
 import {GodfatherTopicDetailPage} from "../detail/godfather-topic-detail";
 import {Thread} from "../../../../../models/thread";
 import {Loader} from "../../../../../traits/Loader";
+import {Observer, Subscription} from "rxjs";
+import {TimerObservable} from "rxjs/observable/TimerObservable";
 
 @IonicPage()
 @Component({
@@ -22,6 +24,9 @@ export class GodfatherTopicsListPage {
 
   godfather: any;
   threads: Thread[];
+
+  threadsSubscription: Subscription;
+  threadsObserver: Observer<Thread[]>;
 
   godfatherTopicDetailPage: any;
 
@@ -36,24 +41,22 @@ export class GodfatherTopicsListPage {
   ionViewDidLoad() {
     this.subscribeCreateEvent();
     this.subscribeDeleteAllEvent();
-    this.fillAllUserThreads();
+    this.constructThreadsObserver();
   }
 
-  presentPopover(event) {
-    let popover = this.popoverCtrl.create(GodfatherTopicsListPopoverPage, this.godfather);
-    popover.present({
-      ev: event
-    });
+  ionViewDidEnter(){
+    console.log('ionViewDidEnter GodfatherTopicsList');
+    if(this.threadsObserver !== undefined){
+      this.subscribeThreadsObserver();
+      console.log('subscribed');
+    }
   }
 
-  fillAllUserThreads() {
-    this.loaderCtrl.present();
-    this.threadProvider.getAllUserThreads(this.godfather.id).subscribe((data: Thread[]) => {
-      for (let thread of data) {
-        this.threads.push(new Thread().deserialize(thread));
-      }});
-    this.loaderCtrl.dismiss();
-    console.log(this.threads);
+  ionViewDidLeave(){
+    console.log('ionViewDidLeave GodfatherTopicDetailPage');
+    this.threadsSubscription.unsubscribe();
+    this.events.unsubscribe('threads:delete-all');
+    this.events.unsubscribe('threads:create');
   }
 
   subscribeCreateEvent() {
@@ -82,6 +85,74 @@ export class GodfatherTopicsListPage {
         this.threads = [];
         this.loaderCtrl.dismiss();
       });
+    });
+  }
+
+  constructThreadsObserver(){
+    this.threadsObserver = {
+      next: (response: Thread[]) => {
+
+        for (let thread of response) {
+
+          let pushed, updated;
+
+          if(!this.threadInList(thread.id)) {
+            this.threads.push(new Thread().deserialize(thread));
+            pushed = true;
+          }
+
+          updated = this.updateThreads(thread);
+
+          if(pushed || updated)
+            this.sortThreads();
+        }
+
+      },
+      error: (data) => { console.log(data); },
+      complete: () => {}
+    }
+  }
+
+  subscribeThreadsObserver(){
+    this.threadsSubscription = TimerObservable.create(0, 10000).subscribe(() => {
+      this.threadProvider.getAllUserThreads(this.godfather.id).subscribe(this.threadsObserver);
+    });
+  }
+
+  threadInList(id: number) : boolean {
+    return (this.threads === undefined || this.threads.length === 0) ? false : this.threads.find((thread) => {
+      return thread.id === id
+    }) !== undefined;
+  }
+
+  updateThreads(thread: Thread) : boolean {
+    let existingThread = this.threads.find((mThread) => { return mThread.id === thread.id });
+    if(existingThread !== undefined){
+
+      if(existingThread.updated_at !== thread.updated_at)
+        existingThread.updated_at = thread.updated_at;
+      if(existingThread.last_message !== thread.last_message)
+        existingThread.last_message = thread.last_message;
+
+      return true;
+    }
+    return false;
+  }
+
+  sortThreads() {
+    this.threads.sort((aThread, bThread) =>{
+      if(aThread.updated_at > bThread.updated_at)
+        return -1;
+      if(aThread.updated_at < bThread.updated_at)
+        return 1;
+      return 0;
+    });
+  }
+
+  presentPopover(event) {
+    let popover = this.popoverCtrl.create(GodfatherTopicsListPopoverPage, this.godfather);
+    popover.present({
+      ev: event
     });
   }
 

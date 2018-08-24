@@ -1,21 +1,26 @@
 page-godfather-topic-detail {
 
-}
-
-textarea {
-  resize: none;
-}
-
-.message {
-  border-radius: 5px;
-
-  &.sent {
-    background-color: #77adff;
+  textarea {
+    resize: none;
   }
 
-  &.received {
-    background-color: #FFF;
+  .message {
+    border-radius: 5px;
+
+    &.sent {
+      background-color: #77adff;
+    }
+
+    &.received {
+      background-color: #FFF;
+    }
+
   }
+
+  .large-icon {
+    font-size: 25px;
+  }
+
 
 }
 
