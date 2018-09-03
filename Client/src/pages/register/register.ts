@@ -8,7 +8,6 @@ import {
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {UserProvider} from "../../providers/user/user";
-import {Singleton} from "../../providers/singleton/singleton";
 import {GodfatherProvider} from "../../providers/godfather/godfather";
 
 @IonicPage()
@@ -27,10 +26,11 @@ export class RegisterPage {
   imageURI: any;
   imageData: any;
   form: FormGroup;
+  assets: string[] = [];
 
   @ViewChild('fileInput') fileInput: ElementRef;
 
-  constructor(public navParams: NavParams, private singletonService: Singleton, private camera: Camera,
+  constructor(public navParams: NavParams, private camera: Camera,
               public toastCtrl: ToastController, private godfatherProvider: GodfatherProvider,
               private formBuilderCtrl: FormBuilder, private userProvider: UserProvider, public alertCtrl: AlertController,
               public navCtrl:NavController) {
@@ -39,6 +39,7 @@ export class RegisterPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RegisterPage');
+    this.assets['children'] = this.userProvider.singletonService.API + "storage/assets/children.png";
   }
 
   createForm() {

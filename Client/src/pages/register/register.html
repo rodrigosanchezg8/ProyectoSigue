@@ -14,12 +14,10 @@
 
 
 <ion-content padding>
+
+  <ion-img src="{{ assets?.children }}" width="300" height="300" text-center class="center transparent"></ion-img>
+
   <ion-list>
-
-    <ion-item>
-      <img src="../../assets/imgs/logoproyecto.png">
-    </ion-item>
-
     <ion-item>
       <ion-label floating>Nombre/s</ion-label>
       <ion-input type="text" name="first_name" [(ngModel)]="first_name"></ion-input>

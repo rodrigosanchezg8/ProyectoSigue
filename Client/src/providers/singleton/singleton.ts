@@ -11,10 +11,11 @@ export class Singleton {
   authHeaders: object;
   API: string;
 
-  constructor(public http: HttpClient, private nativeStorage: NativeStorage, private platform: Platform,
-              public alertCtrl: AlertController, protected injector: Injector) {
+  constructor(public http?: HttpClient, private nativeStorage?: NativeStorage, private platform?: Platform,
+              protected injector?: Injector) {
     console.log('Hello SingletonProvider Provider');
-    this.API = "http://localhost:8010/";
+    this.API = "http://localhost:8010/"; // Usar esta URL para testing en plataforma BROWSER
+    // this.API = "http://10.0.2.2:8010/"; // Usar esta IP para testing en plataforma EMULADOR
     this.setGuestHeaders();
     this.setAuthHeaders();
   }
@@ -29,17 +30,17 @@ export class Singleton {
   }
 
   setAuthHeaders() {
-    this.platform.ready().then(() => {
-      this.nativeStorage.getItem("session").then(res => {
-        this.authHeaders = {
-          headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + res.token
-          })
-        };
-      }).catch(e => console.log(e));
-    });
+      this.platform.ready().then(() => {
+        this.nativeStorage.getItem("session").then(res => {
+          this.authHeaders = {
+            headers: new HttpHeaders({
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer ' + res.token
+            })
+          };
+        }).catch(e => console.log(e));
+      });
   }
 
   post(url, data, auth = true) {

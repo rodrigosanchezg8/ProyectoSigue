@@ -105,7 +105,7 @@ import {FileChooser} from "@ionic-native/file-chooser";
     ThreadProvider,
     Loader,
     FileTransfer,
-    FileChooser
+    FileChooser,
   ]
 })
 export class AppModule {}

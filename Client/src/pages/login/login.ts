@@ -13,6 +13,7 @@ import {GodfatherTabsPage} from "../home-godfather/tabs/godfather-tabs";
 })
 export class LoginPage {
 
+  assets: string[] = [];
   password: string = "";
   email: string = "";
 
@@ -23,6 +24,7 @@ export class LoginPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
     //this.adminDebugSignIn();
+    this.assets['logo'] = this.userProvider.singletonService.API + "storage/assets/logo.png";
   }
 
   signIn() {
@@ -38,6 +40,8 @@ export class LoginPage {
         else
           self.navCtrl.setRoot(GodfatherTabsPage, res.user);
       }
+    }, (error) => {
+      console.log(error);
     });
   }
 
@@ -54,6 +58,8 @@ export class LoginPage {
         else
           self.navCtrl.setRoot(GodfatherTabsPage, res.user);
       }
+    }, (error) => {
+      console.log(error);
     });
   }
 

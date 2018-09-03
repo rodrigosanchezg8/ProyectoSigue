@@ -24,8 +24,8 @@ export class GodfathersPage {
     this.godfatherTopicsListPage = GodfatherTopicsListPage;
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad GodfathersPage');
+  ionViewDidEnter(){
+    console.log('ionViewDidEnter GodfathersPage');
     this.fillGodfathers();
   }
 

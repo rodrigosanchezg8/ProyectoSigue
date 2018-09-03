@@ -17,7 +17,7 @@
   <ion-list>
 
     <ion-item>
-      <img src="../../assets/imgs/logoproyecto.png">
+      <img src="{{ assets?.logo }}">
     </ion-item>
 
     <ion-item>
@@ -32,7 +32,7 @@
 
   </ion-list>
 
-  <div padding>
+  <div padding text-center>
     <button ion-button (click)="signIn()">Entrar</button>
     <button ion-button (click)="adminDebugSignIn()">Entrar como admin</button>
     <button ion-button (click)="pushSignUp()">Registrarme</button>
