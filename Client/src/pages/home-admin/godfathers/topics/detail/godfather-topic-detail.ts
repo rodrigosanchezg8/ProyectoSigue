@@ -13,6 +13,9 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
 import {File} from '@ionic-native/file';
 import {FileChooser} from "@ionic-native/file-chooser";
+import {FilePath} from "@ionic-native/file-path";
+import {Base64} from "@ionic-native/base64";
+import {FileProvider} from "../../../../../providers/file/file";
 
 @IonicPage()
 @Component({
@@ -34,7 +37,8 @@ export class GodfatherTopicDetailPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, private threadProvider: ThreadProvider,
               private nativeStorage: NativeStorage, private loader: Loader, private camera: Camera,
               private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
-              private fileChooser: FileChooser) {
+              private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
+              private fileProvider: FileProvider) {
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
@@ -105,8 +109,32 @@ export class GodfatherTopicDetailPage {
 
   attachFile(){
     this.fileChooser.open()
-      .then(uri => console.log(uri))
-      .catch(e => console.log(e))
+      .then(uri => {
+
+        this.loader.present();
+        this.filePath.resolveNativePath(uri)
+          .then(file => {
+
+            let filePath: string = file;
+            if (filePath) {
+              this.base64.encodeFile(filePath).then((base64File: string) => {
+
+                  this.fileProvider.uploadFile('threads',this.thread.id, { file: base64File })
+                    .subscribe(response => {
+                      this.loader.dismiss();
+                  }, error => {
+                      this.loader.dismiss();
+                  }, () => {
+                      this.loader.dismiss();
+                    });
+
+                }, (err) => {
+                  alert('err'+JSON.stringify(err));
+                });
+            }
+          })
+          .catch(err => console.log(err));
+      });
   }
 
 }

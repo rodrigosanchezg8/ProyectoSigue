@@ -38,6 +38,9 @@ import {NewsPage} from "../pages/news/news";
 import {Loader} from "../traits/Loader";
 import {FileTransfer} from "@ionic-native/file-transfer";
 import {FileChooser} from "@ionic-native/file-chooser";
+import {FilePath} from "@ionic-native/file-path";
+import {Base64} from "@ionic-native/base64";
+import { FileProvider } from '../providers/file/file';
 
 @NgModule({
   declarations: [
@@ -106,6 +109,9 @@ import {FileChooser} from "@ionic-native/file-chooser";
     Loader,
     FileTransfer,
     FileChooser,
+    FilePath,
+    Base64,
+    FileProvider
   ]
 })
 export class AppModule {}
