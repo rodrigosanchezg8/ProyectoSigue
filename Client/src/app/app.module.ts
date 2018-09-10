@@ -41,6 +41,7 @@ import {FileChooser} from "@ionic-native/file-chooser";
 import {FilePath} from "@ionic-native/file-path";
 import {Base64} from "@ionic-native/base64";
 import { FileProvider } from '../providers/file/file';
+import {TopicsDetailPopoverPage} from "../pages/home-admin/godfathers/topics/detail/popover/topics-detail-popover";
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { FileProvider } from '../providers/file/file';
     GodfatherTabsPage,
     NewsPage,
     LastPipe,
+    TopicsDetailPopoverPage
   ],
   imports: [
     BrowserModule,
@@ -93,6 +95,7 @@ import { FileProvider } from '../providers/file/file';
     GodsonsDetailPage,
     GodfatherTabsPage,
     NewsPage,
+    TopicsDetailPopoverPage
   ],
   providers: [
     StatusBar,

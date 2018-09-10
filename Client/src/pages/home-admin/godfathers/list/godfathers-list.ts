@@ -30,8 +30,10 @@ export class GodfathersPage {
   }
 
   fillGodfathers(){
-    this.godfatherProvider.getGodfathers().subscribe((data: Godfather[]) => {
-      this.godfathers = data;
+    this.godfatherProvider.getGodfathers().then((observable: any) => {
+      observable.subscribe((data: Godfather[]) => {
+        this.godfathers = data;
+      });
     });
   }
 

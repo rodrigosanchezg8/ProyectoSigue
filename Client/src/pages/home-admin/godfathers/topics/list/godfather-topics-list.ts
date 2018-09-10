@@ -31,7 +31,7 @@ export class GodfatherTopicsListPage {
   godfatherTopicDetailPage: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
-              private threadProvider: ThreadProvider, public events: Events, public alertCtrl:  AlertController,
+              private threadProvider: ThreadProvider, public events: Events, public alertCtrl: AlertController,
               private loaderCtrl: Loader) {
     this.threads = [];
     this.godfather = this.navParams.data;
@@ -39,20 +39,20 @@ export class GodfatherTopicsListPage {
   }
 
   ionViewDidLoad() {
-    this.subscribeCreateEvent();
-    this.subscribeDeleteAllEvent();
     this.constructThreadsObserver();
   }
 
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     console.log('ionViewDidEnter GodfatherTopicsList');
-    if(this.threadsObserver !== undefined){
+    this.subscribeCreateEvent();
+    this.subscribeDeleteAllEvent();
+    if (this.threadsObserver !== undefined) {
       this.subscribeThreadsObserver();
       console.log('subscribed');
     }
   }
 
-  ionViewDidLeave(){
+  ionViewDidLeave() {
     console.log('ionViewDidLeave GodfatherTopicDetailPage');
     this.threadsSubscription.unsubscribe();
     this.events.unsubscribe('threads:delete-all');
@@ -65,15 +65,17 @@ export class GodfatherTopicsListPage {
       let requestParams = {'subject': subject};
 
       this.loaderCtrl.present();
-      this.threadProvider.storeUserThead(godfather.id, requestParams).subscribe((data: any) => {
+      this.threadProvider.storeUserThead(godfather.id, requestParams).then((observable: any) => {
+        observable.subscribe((data: any) => {
 
-        this.threads.splice(0, 0, new Thread().deserialize(data.thread));
+          this.threads.splice(0, 0, new Thread().deserialize(data.thread));
 
-        let pushParams = {thread: data.thread, subject: subject, godfather: godfather};
-        this.navCtrl.push(GodfatherTopicDetailPage, pushParams);
+          let pushParams = {thread: data.thread, subject: subject, godfather: godfather};
+          this.navCtrl.push(GodfatherTopicDetailPage, pushParams);
 
-        this.loaderCtrl.dismiss();
+          this.loaderCtrl.dismiss();
 
+        });
       });
     });
   }
@@ -81,14 +83,16 @@ export class GodfatherTopicsListPage {
   subscribeDeleteAllEvent() {
     this.events.subscribe('threads:delete-all', (godfather) => {
       this.loaderCtrl.present();
-      this.threadProvider.deleteAllUserThreads(godfather.id).subscribe((data: any) => {
-        this.threads = [];
-        this.loaderCtrl.dismiss();
-      });
+      this.threadProvider.deleteAllUserThreads(godfather.id).then((observable: any) => {
+        observable.subscribe((data: any) => {
+          this.threads = [];
+          this.loaderCtrl.dismiss();
+        });
+      })
     });
   }
 
-  constructThreadsObserver(){
+  constructThreadsObserver() {
     this.threadsObserver = {
       next: (response: Thread[]) => {
 
@@ -96,42 +100,49 @@ export class GodfatherTopicsListPage {
 
           let pushed, updated;
 
-          if(!this.threadInList(thread.id)) {
+          if (!this.threadInList(thread.id)) {
             this.threads.push(new Thread().deserialize(thread));
             pushed = true;
           }
 
           updated = this.updateThreads(thread);
 
-          if(pushed || updated)
+          if (pushed || updated)
             this.sortThreads();
         }
 
       },
-      error: (data) => { console.log(data); },
-      complete: () => {}
+      error: (data) => {
+        console.log(data);
+      },
+      complete: () => {
+      }
     }
   }
 
-  subscribeThreadsObserver(){
+  subscribeThreadsObserver() {
     this.threadsSubscription = TimerObservable.create(0, 10000).subscribe(() => {
-      this.threadProvider.getAllUserThreads(this.godfather.id).subscribe(this.threadsObserver);
+      this.threadProvider.getAllUserThreads(this.godfather.id).then((observable: any) => {
+        observable.subscribe(this.threadsObserver);
+      });
     });
   }
 
-  threadInList(id: number) : boolean {
+  threadInList(id: number): boolean {
     return (this.threads === undefined || this.threads.length === 0) ? false : this.threads.find((thread) => {
       return thread.id === id
     }) !== undefined;
   }
 
-  updateThreads(thread: Thread) : boolean {
-    let existingThread = this.threads.find((mThread) => { return mThread.id === thread.id });
-    if(existingThread !== undefined){
+  updateThreads(thread: Thread): boolean {
+    let existingThread = this.threads.find((mThread) => {
+      return mThread.id === thread.id
+    });
+    if (existingThread !== undefined) {
 
-      if(existingThread.updated_at !== thread.updated_at)
+      if (existingThread.updated_at !== thread.updated_at)
         existingThread.updated_at = thread.updated_at;
-      if(existingThread.last_message !== thread.last_message)
+      if (existingThread.last_message !== thread.last_message)
         existingThread.last_message = thread.last_message;
 
       return true;
@@ -140,10 +151,10 @@ export class GodfatherTopicsListPage {
   }
 
   sortThreads() {
-    this.threads.sort((aThread, bThread) =>{
-      if(aThread.updated_at > bThread.updated_at)
+    this.threads.sort((aThread, bThread) => {
+      if (aThread.updated_at > bThread.updated_at)
         return -1;
-      if(aThread.updated_at < bThread.updated_at)
+      if (aThread.updated_at < bThread.updated_at)
         return 1;
       return 0;
     });
@@ -156,7 +167,7 @@ export class GodfatherTopicsListPage {
     });
   }
 
-  deleteThread(id:number){
+  deleteThread(id: number) {
     this.alertCtrl.create({
       title: '¡Atención!',
       subTitle: "¿Está seguro de eliminar el tema?",
@@ -165,12 +176,14 @@ export class GodfatherTopicsListPage {
           text: 'Sí',
           handler: () => {
             this.loaderCtrl.present();
-            this.threadProvider.deleteThread(id).subscribe(() => {
-              let removeIndex = this.threads.findIndex((thread) => thread.id == id);
-              if(removeIndex !== undefined)
-                this.threads.splice(removeIndex, 1);
-              this.loaderCtrl.dismiss();
-            })
+            this.threadProvider.deleteThread(id).then((observable: any) => {
+              observable.subscribe(() => {
+                let removeIndex = this.threads.findIndex((thread) => thread.id == id);
+                if (removeIndex !== undefined)
+                  this.threads.splice(removeIndex, 1);
+                this.loaderCtrl.dismiss();
+              })
+            });
           }
         },
         {

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {Events, IonicPage, MenuController, NavController, NavParams, PopoverController} from 'ionic-angular';
 import {ThreadProvider} from "../../../../../providers/thread/thread";
 import {Thread} from "../../../../../models/thread";
 import {Message} from "../../../../../models/message";
@@ -16,6 +16,7 @@ import {FileChooser} from "@ionic-native/file-chooser";
 import {FilePath} from "@ionic-native/file-path";
 import {Base64} from "@ionic-native/base64";
 import {FileProvider} from "../../../../../providers/file/file";
+import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 
 @IonicPage()
 @Component({
@@ -38,7 +39,8 @@ export class GodfatherTopicDetailPage {
               private nativeStorage: NativeStorage, private loader: Loader, private camera: Camera,
               private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
               private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
-              private fileProvider: FileProvider) {
+              private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
+              private menuCtrl: MenuController) {
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
@@ -47,12 +49,11 @@ export class GodfatherTopicDetailPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad GodfatherTopicDetailPage');
 
-    if(this.sessionUser === undefined){
+    if (this.sessionUser === undefined) {
       this.nativeStorage.getItem("session").then(res => {
         this.sessionUser = res.user;
         console.log(res);
       }).catch(e => console.log(e));
-
     }
 
     this.messagesObserver = {
@@ -64,26 +65,41 @@ export class GodfatherTopicDetailPage {
           }
         }
       },
-      error: (err: any) => { console.log(err) },
-      complete: () => {}
+      error: (err: any) => {
+        console.log(err)
+      },
+      complete: () => {
+      }
     };
 
   }
 
-  ionViewDidEnter(){
+  ionViewDidEnter() {
     console.log('ionViewDidEnter GodfatherTopicDetailPage');
-    if(this.messagesObserver !== undefined)
+    this.subscribePopoverEvents();
+    if (this.messagesObserver !== undefined)
       this.subscribeMessageListening();
   }
 
-  ionViewDidLeave(){
+  ionViewDidLeave() {
     console.log('ionViewDidLeave GodfatherTopicDetailPage');
     this.messagesSubscription.unsubscribe();
+    this.events.unsubscribe('thread-files:list');
+  }
+
+  subscribePopoverEvents(){
+    this.events.subscribe('thread-files:list', () => {
+      console.log('hola we');
+      this.openMenu();
+      this.toggleMenu();
+    })
   }
 
   subscribeMessageListening() {
     this.messagesSubscription = TimerObservable.create(0, 2500).subscribe(() => {
-      this.threadProvider.getThreadMessages(this.thread.id, this.lastMessageId()).subscribe(this.messagesObserver);
+      this.threadProvider.getThreadMessages(this.thread.id, this.lastMessageId()).then((observable: any) => {
+        observable.subscribe(this.messagesObserver);
+      });
     });
   }
 
@@ -92,49 +108,61 @@ export class GodfatherTopicDetailPage {
   }
 
   sendMessage() {
-
-      this.loader.present();
-      this.threadProvider.storeThreadMessage(
-        this.sessionUser.id, this.thread.id, {'body': this.bodyMessage}
-      ).subscribe((response) => {
+    this.loader.present();
+    this.threadProvider.storeThreadMessage(
+      this.sessionUser.id, this.thread.id, {'body': this.bodyMessage}
+    ).then((observable: any) => {
+      observable.subscribe((response) => {
         console.log(response);
         this.loader.dismiss();
-      }, () => {
-
-      }, () => {
       });
-      this.bodyMessage = ""
-
+    });
+    this.bodyMessage = ""
   }
 
-  attachFile(){
-    this.fileChooser.open()
-      .then(uri => {
+  attachFile() {
+    this.fileChooser.open().then(uri => {
+      this.loader.present();
+      this.filePath.resolveNativePath(uri)
+        .then(file => {
 
-        this.loader.present();
-        this.filePath.resolveNativePath(uri)
-          .then(file => {
+          let filePath: string = file;
+          if (filePath) {
+            this.base64.encodeFile(filePath).then((base64File: string) => {
 
-            let filePath: string = file;
-            if (filePath) {
-              this.base64.encodeFile(filePath).then((base64File: string) => {
-
-                  this.fileProvider.uploadFile('threads',this.thread.id, { file: base64File })
-                    .subscribe(response => {
-                      this.loader.dismiss();
-                  }, error => {
-                      this.loader.dismiss();
-                  }, () => {
-                      this.loader.dismiss();
-                    });
-
-                }, (err) => {
-                  alert('err'+JSON.stringify(err));
+              this.fileProvider.uploadFile('threads', this.thread.id, {file: base64File}).then((observable: any) => {
+                observable.subscribe(response => {
+                  this.loader.dismiss();
+                }, error => {
+                  this.loader.dismiss();
                 });
-            }
-          })
-          .catch(err => console.log(err));
-      });
+              })
+            }, (err) => {
+              alert('err' + JSON.stringify(err));
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    });
+  }
+
+  presentPopover(event) {
+    let popover = this.popoverCtrl.create(TopicsDetailPopoverPage);
+    popover.present({
+      ev: event
+    });
+  }
+
+  openMenu() {
+    this.menuCtrl.open('right');
+  }
+
+  toggleMenu() {
+    this.menuCtrl.toggle('right');
+  }
+
+  closeMenu() {
+    this.menuCtrl.close();
   }
 
 }

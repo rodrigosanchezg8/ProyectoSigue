@@ -12,7 +12,6 @@
 </ion-header>
 
 <ion-content padding>
-
   <ion-list>
     <ion-grid>
       <ion-row *ngFor="let message of thread.messages">
@@ -32,6 +31,15 @@
   </ion-list>
 
 </ion-content>
+
+<ion-menu side="right" [content]="mycontent">
+  <ion-content>
+    <ion-list>
+      <ion-item menuClose detail-none>Close Menu</ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+<ion-nav #mycontent [root]="rootPage"></ion-nav>
 
 <ion-footer>
   <ion-grid>
