@@ -42,6 +42,9 @@ import {FilePath} from "@ionic-native/file-path";
 import {Base64} from "@ionic-native/base64";
 import { FileProvider } from '../providers/file/file';
 import {TopicsDetailPopoverPage} from "../pages/home-admin/godfathers/topics/detail/popover/topics-detail-popover";
+import {SocketIoConfig, SocketIoModule } from "ng-socket-io";
+
+const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
 @NgModule({
   declarations: [
@@ -70,6 +73,7 @@ import {TopicsDetailPopoverPage} from "../pages/home-admin/godfathers/topics/det
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    SocketIoModule.forRoot(config),
     HttpClientModule,
     FormsModule,
     TruncateModule,

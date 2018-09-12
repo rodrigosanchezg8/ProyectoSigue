@@ -6,7 +6,7 @@ import {UserProvider} from "../../providers/user/user";
 import {NativeStorage} from '@ionic-native/native-storage';
 import {GodfatherTabsPage} from "../home-godfather/tabs/godfather-tabs";
 import {Loader} from "../../traits/Loader";
-import {Observable} from "rxjs";
+import {Socket} from "ng-socket-io";
 
 @IonicPage()
 @Component({
@@ -20,7 +20,8 @@ export class LoginPage {
   email: string = "";
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController,
-              private userProvider: UserProvider, private nativeStorage: NativeStorage, private loader: Loader) {
+              private userProvider: UserProvider, private nativeStorage: NativeStorage, private loader: Loader,
+              private socket: Socket) {
   }
 
   ionViewDidLoad() {
@@ -32,20 +33,21 @@ export class LoginPage {
   signIn() {
     let self = this;
     this.loader.present();
-    this.userProvider.validateUser(this.email, this.password).then((res: any) => {
-      console.log(res);
-      if (res["status"] == "Error") {
-        this.loader.dismiss();
-        self.presentResponse(res);
-      }
-      else {
-        this.loader.dismiss();
-        self.nativeStorage.setItem("session", res);
-        if(res.user.role_description === 'Administrador')
-          self.navCtrl.setRoot(AdminTabsPage, res);
-        else
-          self.navCtrl.setRoot(GodfatherTabsPage, res.user);
-      }
+    this.userProvider.validateUser(this.email, this.password).then((observable: any) => {
+      observable.subscribe((res) => {
+        if (res["status"] == "Error") {
+          this.loader.dismiss();
+          self.presentResponse(res);
+        }
+        else {
+          this.loader.dismiss();
+          self.nativeStorage.setItem("session", res);
+          if (res.user.role_description === 'Administrador')
+            self.navCtrl.setRoot(AdminTabsPage, res);
+          else
+            self.navCtrl.setRoot(GodfatherTabsPage, res.user);
+        }
+      });
     }, (error) => {
       this.loader.dismiss();
       console.log(error);
@@ -69,7 +71,7 @@ export class LoginPage {
         else
           self.navCtrl.setRoot(GodfatherTabsPage, res.user);
       }
-      })
+      });
     }, (error) => {
       this.loader.dismiss();
       console.log(error);

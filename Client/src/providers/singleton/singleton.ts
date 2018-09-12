@@ -50,16 +50,16 @@ export class Singleton {
       this.platform.ready().then(() => {
         this.nativeStorage.getItem("session").then(res => {
           (auth) ? resolve(this.setAuthHeaders(res.token)) : resolve(this.setGuestHeaders());
-        }).catch(e => reject());
+        }).catch(e => reject(e));
       });
-    });
+    })
   }
 
   post(url, data, auth = true) {
     return new Promise((resolve, reject) => {
       this.getAuthHeaders(auth).then(headers => {
         resolve(this.http.post(this.API + url, data, headers));
-      }).then(e => reject());
+      }).catch(e => reject(e));
     });
   }
 
@@ -67,7 +67,7 @@ export class Singleton {
     return new Promise((resolve, reject) => {
       this.getAuthHeaders(auth).then(headers => {
         resolve(this.http.get(this.API + url, headers));
-      }).then(e => reject());
+      }).catch(e => reject(e));
     });
   }
 
@@ -75,7 +75,7 @@ export class Singleton {
     return new Promise((resolve, reject) => {
       this.getAuthHeaders(auth).then(headers => {
         resolve(this.http.put(this.API + url, data, headers));
-      }).then(e => reject());
+      }).catch(e => reject(e));
     });
   }
 
@@ -83,7 +83,7 @@ export class Singleton {
     return new Promise((resolve, reject) => {
       this.getAuthHeaders(auth).then(headers => {
         resolve(this.http.delete(this.API + url, headers));
-      }).then(e => reject());
+      }).catch(e => reject(e));
     });
   }
 

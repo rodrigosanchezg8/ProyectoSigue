@@ -4,7 +4,7 @@ import {ThreadProvider} from "../../../../../providers/thread/thread";
 import {Thread} from "../../../../../models/thread";
 import {Message} from "../../../../../models/message";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
-import {Observer, Subscription} from "rxjs";
+import {Observable, Observer, Subscription} from "rxjs";
 import {Godfather} from "../../../../../models/godfather";
 import {NativeStorage} from "@ionic-native/native-storage";
 import {Loader} from "../../../../../traits/Loader";
@@ -17,6 +17,7 @@ import {FilePath} from "@ionic-native/file-path";
 import {Base64} from "@ionic-native/base64";
 import {FileProvider} from "../../../../../providers/file/file";
 import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
+import {Socket} from "ng-socket-io";
 
 @IonicPage()
 @Component({
@@ -31,7 +32,6 @@ export class GodfatherTopicDetailPage {
   sessionUser: Godfather;
 
   messagesSubscription: Subscription;
-  messagesObserver: Observer<Message[]>;
 
   fileTransfer: FileTransferObject;
 
@@ -40,7 +40,7 @@ export class GodfatherTopicDetailPage {
               private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
               private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
               private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
-              private menuCtrl: MenuController) {
+              private menuCtrl: MenuController, private socket: Socket) {
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
@@ -48,37 +48,20 @@ export class GodfatherTopicDetailPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GodfatherTopicDetailPage');
-
     if (this.sessionUser === undefined) {
       this.nativeStorage.getItem("session").then(res => {
         this.sessionUser = res.user;
-        console.log(res);
       }).catch(e => console.log(e));
     }
-
-    this.messagesObserver = {
-      next: (response: Message[]) => {
-        for (let message of response) {
-          if (this.lastMessageId() < message.id) {
-            let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
-            this.thread.messages.push(newMessage);
-          }
-        }
-      },
-      error: (err: any) => {
-        console.log(err)
-      },
-      complete: () => {
-      }
-    };
-
   }
 
   ionViewDidEnter() {
     console.log('ionViewDidEnter GodfatherTopicDetailPage');
+
+    this.socket.emit('')
+
     this.subscribePopoverEvents();
-    if (this.messagesObserver !== undefined)
-      this.subscribeMessageListening();
+    this.subscribeMessages();
   }
 
   ionViewDidLeave() {
@@ -87,36 +70,38 @@ export class GodfatherTopicDetailPage {
     this.events.unsubscribe('thread-files:list');
   }
 
-  subscribePopoverEvents(){
+  subscribePopoverEvents() {
     this.events.subscribe('thread-files:list', () => {
-      console.log('hola we');
       this.openMenu();
       this.toggleMenu();
     })
   }
 
-  subscribeMessageListening() {
-    this.messagesSubscription = TimerObservable.create(0, 2500).subscribe(() => {
-      this.threadProvider.getThreadMessages(this.thread.id, this.lastMessageId()).then((observable: any) => {
-        observable.subscribe(this.messagesObserver);
+  getMessages() {
+    return new Observable(observer => {
+      this.socket.on('private-thread:' + this.thread.id, (data) => {
+        observer.next(data);
       });
     });
   }
 
-  lastMessageId(): Number {
-    return (this.thread.messages === undefined || this.thread.messages.length === 0) ? 0 : this.thread.messages[this.thread.messages.length - 1].id;
+  subscribeMessages() {
+    this.messagesSubscription = this.getMessages().subscribe((message: Message) => {
+      console.log(message);
+      let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
+      this.thread.messages.push(newMessage);
+    });
   }
 
   sendMessage() {
     this.loader.present();
-    this.threadProvider.storeThreadMessage(
-      this.sessionUser.id, this.thread.id, {'body': this.bodyMessage}
-    ).then((observable: any) => {
-      observable.subscribe((response) => {
-        console.log(response);
-        this.loader.dismiss();
+    this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, {'body': this.bodyMessage})
+      .then((observable: any) => {
+        observable.subscribe((response) => {
+          console.log(response);
+          this.loader.dismiss();
+        });
       });
-    });
     this.bodyMessage = ""
   }
 
