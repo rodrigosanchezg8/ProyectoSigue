@@ -10,6 +10,7 @@ export class ThreadProvider {
   private GET_THREAD_MESSAGES : string;
   private DELETE_ALL_USER_THREADS: string;
   private DELETE_THREAD: string;
+  private GET_THREAD_FILES: string;
 
   constructor(public http: HttpClient, private singletonService: Singleton) {
     console.log('Hello GodfatherProvider Provider');
@@ -43,6 +44,11 @@ export class ThreadProvider {
   getThreadMessages(threadId: Number, startMessageId: Number) {
     this.GET_THREAD_MESSAGES = "threads/" + threadId + "/messages/" + startMessageId;
     return this.singletonService.get(this.GET_THREAD_MESSAGES);
+  }
+
+  getThreadFiles(threadId: Number){
+    this.GET_THREAD_FILES = "threads/" + threadId + "/files";
+    return this.singletonService.get(this.GET_THREAD_FILES);
   }
 
 }

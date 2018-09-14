@@ -27,7 +27,8 @@ import {Socket} from "ng-socket-io";
 export class GodfatherTopicDetailPage {
 
   thread: Thread;
-  bodyMessage: string;
+  message: Message;
+  files: [] = [];
 
   sessionUser: Godfather;
 
@@ -41,6 +42,7 @@ export class GodfatherTopicDetailPage {
               private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
               private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
               private menuCtrl: MenuController, private socket: Socket) {
+    this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
@@ -62,7 +64,6 @@ export class GodfatherTopicDetailPage {
 
     this.requestHistoryEvent();
     this.subscribeSocketMessages();
-
   }
 
   ionViewDidLeave() {
@@ -116,37 +117,37 @@ export class GodfatherTopicDetailPage {
 
   sendMessage() {
     this.loader.present();
-    this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, {'body': this.bodyMessage})
+    this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
         observable.subscribe((response) => {
           console.log(response);
           this.loader.dismiss();
         });
       });
-    this.bodyMessage = ""
+    this.message = new Message();
   }
 
-  attachFile() {
+  attachMessageFile() {
     this.fileChooser.open().then(uri => {
+
       this.loader.present();
-      this.filePath.resolveNativePath(uri)
-        .then(file => {
+      this.filePath.resolveNativePath(uri).then(file => {
 
           let filePath: string = file;
           if (filePath) {
+
+            this.message.file_extension = filePath.substr(filePath.lastIndexOf('/') + 1);
+            this.message.file_name = this.message.file_extension.substr(this.message.file_extension.lastIndexOf('.') + 1);
+
             this.base64.encodeFile(filePath).then((base64File: string) => {
 
-              this.fileProvider.uploadFile('threads', this.thread.id, {file: base64File}).then((observable: any) => {
-                observable.subscribe(response => {
-                  this.loader.dismiss();
-                }, error => {
-                  this.loader.dismiss();
-                });
-              })
+              this.message.base64_file = base64File;
+
             }, (err) => {
               alert('err' + JSON.stringify(err));
             });
           }
+
         })
         .catch(err => console.log(err));
     });
@@ -160,7 +161,13 @@ export class GodfatherTopicDetailPage {
   }
 
   openMenu() {
-    this.menuCtrl.open('right');
+    this.menuCtrl.open('right').then((opened) => {
+      this.threadProvider.getThreadFiles(this.thread.id).then((observable: any) => {
+        observable.subscribe((data: any) => {
+          this.files = data;
+        });
+      })
+    });
   }
 
   toggleMenu() {

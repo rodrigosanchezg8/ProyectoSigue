@@ -35,7 +35,8 @@
 <ion-menu side="right" [content]="mycontent">
   <ion-content>
     <ion-list>
-      <ion-item menuClose detail-none>Close Menu</ion-item>
+      <ion-item menuClose detail-none>Cerrar</ion-item>
+      <ion-item *ngFor="let file of files">{{ file.name }}</ion-item>
     </ion-list>
   </ion-content>
 </ion-menu>
@@ -45,11 +46,13 @@
   <ion-grid>
     <ion-row justify-content-center align-items-center>
       <ion-col col-auto>
-          <ion-icon name="attach" class="large-icon" (click)="attachFile()"></ion-icon>
+          <ion-label *ngIf="message.file_extension">{{ message.file_extension }}</ion-label>
+          <ion-label *ngIf="message.file_name">{{ message.file_name }}</ion-label>
+          <ion-icon name="attach" class="large-icon" (click)="attachMessageFile()"></ion-icon>
       </ion-col>
       <ion-col col-10>
         <ion-item>
-          <ion-textarea maxlength="200" [(ngModel)]="bodyMessage" [ngModelOptions]="{standalone: true}"
+          <ion-textarea maxlength="200" [(ngModel)]="message.body" [ngModelOptions]="{standalone: true}"
                         placeholder="Escribe un mensaje"></ion-textarea>
         </ion-item>
       </ion-col>
