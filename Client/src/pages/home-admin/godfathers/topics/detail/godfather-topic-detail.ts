@@ -58,10 +58,11 @@ export class GodfatherTopicDetailPage {
   ionViewDidEnter() {
     console.log('ionViewDidEnter GodfatherTopicDetailPage');
 
-    this.socket.emit('')
-
     this.subscribePopoverEvents();
-    this.subscribeMessages();
+
+    this.requestHistoryEvent();
+    this.subscribeSocketMessages();
+
   }
 
   ionViewDidLeave() {
@@ -85,11 +86,31 @@ export class GodfatherTopicDetailPage {
     });
   }
 
-  subscribeMessages() {
-    this.messagesSubscription = this.getMessages().subscribe((message: Message) => {
-      console.log(message);
-      let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
-      this.thread.messages.push(newMessage);
+  requestHistoryEvent(){
+    this.loader.present();
+    this.threadProvider.getThreadMessages(this.thread.id, 0).then((observable: any) => {
+      observable.subscribe((response) => {
+        console.log(response);
+      }, (error) => {
+        console.log(error);
+      });
+    });
+  }
+
+  subscribeSocketMessages() {
+    this.messagesSubscription = this.getMessages().subscribe((socketMessagesData: any) => {
+      switch (socketMessagesData.event) {
+        case 'App\\Events\\ThreadHistoryRequested':
+          for (let message of socketMessagesData.data.thread.messages) {
+            let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
+            this.thread.messages.push(newMessage);
+          }
+          this.loader.dismiss();
+          break;
+        case 'App\\Events\\NewThreadMessage':
+          let newMessage = new Message().deserialize(socketMessagesData.data.message).setClass(this.sessionUser.id);
+          this.thread.messages.push(newMessage);
+      }
     });
   }
 

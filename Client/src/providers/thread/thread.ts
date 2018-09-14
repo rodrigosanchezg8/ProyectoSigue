@@ -40,8 +40,8 @@ export class ThreadProvider {
     return this.singletonService.post(this.STORE_THREAD_MESSAGE, data);
   }
 
-  getThreadMessages(threadId: Number, lastMessageId?: Number) {
-    this.GET_THREAD_MESSAGES = lastMessageId ? ("threads/" + threadId + "/messages/" + lastMessageId) : ("threads/" + threadId + "/messages");
+  getThreadMessages(threadId: Number, startMessageId: Number) {
+    this.GET_THREAD_MESSAGES = "threads/" + threadId + "/messages/" + startMessageId;
     return this.singletonService.get(this.GET_THREAD_MESSAGES);
   }
 
