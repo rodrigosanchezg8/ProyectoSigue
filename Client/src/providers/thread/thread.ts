@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import {Singleton} from "../singleton/singleton";
 
 @Injectable()
-export class ThreadProvider {
+export class ThreadProvider implements Singleton {
   private GET_ALL_USER_THREADS: string;
   private STORE_USER_THREAD: string;
   private STORE_THREAD_MESSAGE : string;

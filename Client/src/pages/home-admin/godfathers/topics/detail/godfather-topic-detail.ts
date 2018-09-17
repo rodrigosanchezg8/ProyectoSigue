@@ -28,7 +28,7 @@ export class GodfatherTopicDetailPage {
 
   thread: Thread;
   message: Message;
-  files: [] = [];
+  files: any = [];
 
   sessionUser: Godfather;
 
@@ -168,6 +168,14 @@ export class GodfatherTopicDetailPage {
         });
       })
     });
+  }
+
+  downloadFile(file){
+    let encodedURI = encodeURI(this.threadProvider.API + file.path + file.name);
+    console.log(encodedURI);
+    this.fileTransfer.download(encodedURI, this.file.externalRootDirectory + file.name).then((response) => {
+        console.log(response.toURL());
+    }, (e) => { console.log(e); });
   }
 
   toggleMenu() {
