@@ -3,13 +3,12 @@ import {Events, IonicPage, MenuController, NavController, NavParams, PopoverCont
 import {ThreadProvider} from "../../../../../providers/thread/thread";
 import {Thread} from "../../../../../models/thread";
 import {Message} from "../../../../../models/message";
-import {TimerObservable} from "rxjs/observable/TimerObservable";
-import {Observable, Observer, Subscription} from "rxjs";
+import {Observable, Subscription} from "rxjs";
 import {Godfather} from "../../../../../models/godfather";
 import {NativeStorage} from "@ionic-native/native-storage";
 import {Loader} from "../../../../../traits/Loader";
-import {Camera, CameraOptions} from "@ionic-native/camera";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {Camera } from "@ionic-native/camera";
+import {FormBuilder } from "@angular/forms";
 import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
 import {File} from '@ionic-native/file';
 import {FileChooser} from "@ionic-native/file-chooser";

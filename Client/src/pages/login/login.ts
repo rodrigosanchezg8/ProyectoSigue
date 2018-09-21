@@ -35,6 +35,7 @@ export class LoginPage {
     this.loader.present();
     this.userProvider.validateUser(this.email, this.password).then((observable: any) => {
       observable.subscribe((res) => {
+        console.log(res);
         if (res["status"] == "Error") {
           this.loader.dismiss();
           self.presentResponse(res);
@@ -49,6 +50,7 @@ export class LoginPage {
         }
       });
     }, (error) => {
+      alert(error.toString());
       this.loader.dismiss();
       console.log(error);
     });
@@ -74,7 +76,6 @@ export class LoginPage {
       });
     }, (error) => {
       this.loader.dismiss();
-      console.log(error);
     });
   }
 

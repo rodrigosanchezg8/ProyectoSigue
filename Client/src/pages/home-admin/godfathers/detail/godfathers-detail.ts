@@ -1,6 +1,18 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, ActionSheetController, PopoverController} from 'ionic-angular';
+import {
+  IonicPage,
+  NavController,
+  NavParams,
+  ActionSheetController,
+  PopoverController,
+  Events,
+  AlertController
+} from 'ionic-angular';
 import {GodfathersDetailPopoverPage} from "./popover/godfathers-detail-popover";
+import {GodfatherProvider} from "../../../../providers/godfather/godfather";
+import {Godfather} from "../../../../models/godfather";
+import {GodfatherTopicDetailPage} from "../topics/detail/godfather-topic-detail";
+import {Loader} from "../../../../traits/Loader";
 
 @IonicPage()
 @Component({
@@ -9,10 +21,11 @@ import {GodfathersDetailPopoverPage} from "./popover/godfathers-detail-popover";
 })
 export class GodfathersDetailPage {
 
-  godfather: object;
+  godfather: Godfather;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController,
-              public popoverCtrl: PopoverController) {
+              public popoverCtrl: PopoverController, private events: Events, private godfatherProvider: GodfatherProvider,
+              private alertCtrl: AlertController, private loaderCtrl: Loader) {
     this.godfather = this.navParams.data;
   }
 
@@ -20,46 +33,53 @@ export class GodfathersDetailPage {
     console.log('ionViewDidLoad GodfathersDetailPage');
   }
 
-  presentActionSheet(){
-    const actionSheet = this.actionSheetCtrl.create({
-      title: 'Acción',
-      buttons: [
-        {
-          text: 'Apadrinar ahijado',
-          handler: () => {
-            console.log('Apadrinar');
-          }
-        },
-        {
-          text: 'Editar',
-          handler: () => {
-            console.log('Editar');
-          }
-        },
-        {
-          text: 'Eliminar',
-          role: 'destructive',
-          handler: () => {
-            console.log('Eliminar');
-          }
-        },
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    actionSheet.present();
+  ionViewDidEnter(){
+    this.subscribeDeleteGodfather();
+  }
+
+  ionViewDidLeave(){
+    this.events.unsubscribe('godfather:delete');
   }
 
   presentPopover(event) {
-    let popover = this.popoverCtrl.create(GodfathersDetailPopoverPage);
+    let popover = this.popoverCtrl.create(GodfathersDetailPopoverPage, {  godfather: this.godfather });
     popover.present({
-      ev: event
+      ev: event,
     });
+  }
+
+  subscribeDeleteGodfather(){
+    this.events.subscribe('godfather:delete', () => {
+      this.deleteGodfather();
+    })
+  }
+
+  deleteGodfather(){
+    this.alertCtrl.create({
+      title: '¡Atención!',
+      subTitle: "¿Está seguro de eliminar el padrino?",
+      buttons: [
+        {
+          text: 'Sí',
+          handler: () => {
+            this.loaderCtrl.present();
+            this.godfatherProvider.deleteGodfather(this.godfather.id).then((observable:any) => {
+              observable.subscribe(response => {
+                console.log(response);
+                this.loaderCtrl.dismiss();
+                this.navCtrl.pop();
+              }, error => {
+                this.loaderCtrl.dismiss();
+                console.log(error);
+              })
+            })
+          }
+        },
+        {
+          text: 'No',
+        }
+      ]
+    }).present();
   }
 
 }

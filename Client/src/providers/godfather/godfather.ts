@@ -9,6 +9,7 @@ export class GodfatherProvider {
 
   GET_GODFATHERS: string;
   UPLOAD_PROFILE_IMAGE: string;
+  DELETE_GODFATHER: string;
 
   constructor(public http: HttpClient, private nativeStorage: NativeStorage, private singletonService: Singleton) {
     console.log('Hello GodfatherProvider Provider');
@@ -22,6 +23,11 @@ export class GodfatherProvider {
   uploadProfileImage(formModel, userId){
     this.UPLOAD_PROFILE_IMAGE = "/godfathers/" + userId + "/upload-profile-image";
     return this.singletonService.post(this.UPLOAD_PROFILE_IMAGE, formModel);
+  }
+
+  deleteGodfather(userId){
+    this.DELETE_GODFATHER = "godfathers/" + userId;
+    return this.singletonService.delete(this.DELETE_GODFATHER);
   }
 
 }
