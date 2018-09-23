@@ -16,8 +16,8 @@ export class GodfathersPopoverPage {
   constructor(public viewCtrl: ViewController, public navCtrl: NavController, public appCtrl: App) {}
 
   pushSignUp() {
-    this.viewCtrl.dismiss().then(() => {
-      this.appCtrl.getActiveNav().push(RegisterPage);
+      this.viewCtrl.dismiss().then(() => {
+      this.appCtrl.getRootNav().push(RegisterPage);
     });
   }
 
