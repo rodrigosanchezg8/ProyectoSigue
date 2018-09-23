@@ -34,7 +34,6 @@ import { TruncateModule } from "ng2-truncate";
 import { LastPipe } from "../pipes/last/last";
 import { ThreadProvider } from '../providers/thread/thread';
 import {GodfatherTabsPage} from "../pages/home-godfather/tabs/godfather-tabs";
-import {NewsPage} from "../pages/news/register/news";
 import {Loader} from "../traits/Loader";
 import {FileTransfer} from "@ionic-native/file-transfer";
 import {FileChooser} from "@ionic-native/file-chooser";
@@ -67,7 +66,6 @@ const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
     GodsonsPopoverPage,
     GodsonsDetailPage,
     GodfatherTabsPage,
-    NewsPage,
     LastPipe,
     TopicsDetailPopoverPage,
     NewsListPage,
@@ -100,7 +98,6 @@ const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
     GodsonsPopoverPage,
     GodsonsDetailPage,
     GodfatherTabsPage,
-    NewsPage,
     TopicsDetailPopoverPage,
     NewsListPage,
     NewsListPopoverPage
