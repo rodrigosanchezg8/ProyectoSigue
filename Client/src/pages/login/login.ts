@@ -57,6 +57,14 @@ export class LoginPage {
   }
 
   adminDebugSignIn(){
+    // this.userProvider.login(this.email, this.password).subscribe(
+    //   (success) => {
+    //     console.log(success);
+    //   },
+    //   (error) => {
+    //     console.log(error); 
+    //   }
+    // );
     let self = this;
     this.loader.present();
     this.userProvider.validateUser("coordinacion@proyectosigue.com.mx", "123456").then((observable: any) => {
@@ -66,8 +74,14 @@ export class LoginPage {
         self.presentResponse(res);
       }
       else {
+        console.log('success request')
         this.loader.dismiss();
-        self.nativeStorage.setItem("session", res);
+        console.log(this.nativeStorage);
+        this.nativeStorage.setItem("session", res)
+        .then(
+          () => console.log('Stored item!'),
+          error => console.error('Error storing item', error)
+        );
         if(res.user.role_description === 'Administrador')
           self.navCtrl.setRoot(AdminTabsPage, res);
         else
@@ -75,7 +89,12 @@ export class LoginPage {
       }
       });
     }, (error) => {
+      console.log('directly to error');
+      console.log(error);
       this.loader.dismiss();
+    })
+    .catch((err) => {
+      console.log(err);
     });
   }
 

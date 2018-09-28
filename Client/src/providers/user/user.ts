@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Singleton} from "../singleton/singleton";
 
@@ -17,6 +17,14 @@ export class UserProvider {
 
   signUp(userData) {
     return this.singletonService.post(this.SIGN_UP, userData, false);
+  }
+
+  login(email, password) {
+    let userData = { "email": email, "password": password };
+    return this.http.post('http://localhost:8081/login', userData, {headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    })});
   }
 
 }
