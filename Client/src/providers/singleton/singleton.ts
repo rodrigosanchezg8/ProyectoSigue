@@ -1,8 +1,7 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable, Injector} from '@angular/core';
 import {NativeStorage} from "@ionic-native/native-storage";
-import {AlertController, NavController, Platform} from "ionic-angular";
-import {Godfather} from "../../models/godfather";
+import {NavController, Platform} from "ionic-angular";
 
 @Injectable()
 export class Singleton {
@@ -17,7 +16,7 @@ export class Singleton {
     this.API = "http://localhost:8000/"; // Usar esta URL para testing en plataforma BROWSER
   //  this.API = "http://10.0.2.2:8010/"; // Usar esta IP (es por default de Android) para testing en plataforma EMULADOR
    // this.API = "10.196.109.201:8010"; // Usando un host con php artisan serve --host 0.0.0.0:8010 para acceder
-    // desde el movil con I.P.V.4:8010 dentro de la misma red WIFI
+  // desde el movil con I.P.V.4:8010 dentro de la misma red WIFI
   }
 
   setGuestHeaders() {

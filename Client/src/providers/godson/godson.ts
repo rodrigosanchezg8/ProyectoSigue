@@ -1,6 +1,7 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {NativeStorage} from "@ionic-native/native-storage";
+import { Singleton } from '../singleton/singleton';
 
 /*
   Generated class for the GodsonProvider provider.
@@ -11,27 +12,31 @@ import {NativeStorage} from "@ionic-native/native-storage";
 @Injectable()
 export class GodsonProvider {
 
-  apiURL: string;
-  getGodsonsURL: string;
+  BASE_URL = 'godsons';
 
-  constructor(public http: HttpClient, private nativeStorage: NativeStorage) {
-    this.apiURL = "http://localhost:8010";
-    this.getGodsonsURL = "/godsons";
+  constructor(
+    public http: HttpClient, 
+    private singletonService: Singleton
+  ) {
+
   }
 
   getGodsons(){
-    return new Promise((resolve) => {
-      this.nativeStorage.getItem("session").then(res => {
+    return this.singletonService.get(this.BASE_URL, true);
+  }
 
-        let headers = new HttpHeaders();
-        headers = headers.append('Content-Type','application/json');
-        headers = headers.append('Accept','application/json');
-        headers = headers.append('Authorization', 'Bearer ' + res.token);
-        let _options = { headers: headers };
+  postGodson(godson) {
+    return this.singletonService.post(this.BASE_URL, godson, true);
+  }
 
-        resolve(this.http.get(this.apiURL + this.getGodsonsURL, _options));
-      });
-    });
+  putGodson(godson) {
+    return this.singletonService.put(this.BASE_URL, godson, true);
+  }
+
+  // TODO: Fix delete method on singleton service, it needs to catch
+  // which item is deleting
+  deleteGodson() {
+    return this.singletonService.delete(this.BASE_URL, true);
   }
 
 }
