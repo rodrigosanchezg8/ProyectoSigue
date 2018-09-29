@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavParams, NavController, ViewController, App } from 'ionic-angular';
 import { NewGodsonPage } from '../../new/new-godson';
+import { Godson } from '../../../../../models/godson';
 
 @IonicPage()
 @Component({

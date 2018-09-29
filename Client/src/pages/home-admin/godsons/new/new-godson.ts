@@ -1,12 +1,13 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import {
     AlertController,
-    IonicPage, NavController,
-    NavParams,
-    ToastController
+    IonicPage, 
+    NavController,
+    NavParams
 } from 'ionic-angular';
 import { GodsonProvider } from '../../../../providers/godson/godson';
 import { Godson } from '../../../../models/godson';
+import { resolveDefinition } from '@angular/core/src/view/util';
 
 @IonicPage()
 @Component({
@@ -15,42 +16,69 @@ import { Godson } from '../../../../models/godson';
 })
 export class NewGodsonPage {
 
-    godson: Godson = new Godson();
+    godson: Godson;
+    isEditMode: boolean;
 
     constructor(
         public navParams: NavParams,
         private godsonProvider: GodsonProvider,
-        public alertCtrl: AlertController,
-        public navCtrl: NavController
-    ) { this.createForm(); }
+        public alertCtrl: AlertController
+    ) {
+        this.godson = navParams.get('godson');
 
-    ionViewDidLoad() {
-        console.log('ionViewDidLoad RegisterPage');
+        if (this.godson) {
+            this.isEditMode = true;
+        } else {
+            this.godson = new Godson();
+            this.isEditMode = false;
+        }
     }
 
-    createForm() { }
+    ionViewDidLoad() {}
+
+    sendRequest() {
+        if (this.isEditMode) {
+            this.editGodson()
+            .then((res: any) => this.responseHandler(res))
+            .catch((error) => console.log(error));
+        } else {
+            this.addNewGodson()
+            .then((res: any) => this.responseHandler(res))
+            .catch((error) => console.log(error));
+        }
+    }
 
     addNewGodson() {
-        this.godsonProvider.postGodson({
+        return this.godsonProvider.postGodson({
             first_name: this.godson.firstName,
             last_name: this.godson.lastName,
             age: this.godson.age,
             orphan_house_id: 0,
             profile_image: '',
             status: 1
-        })
-        .then((response: any) => {
-            response.subscribe(
-                (response) => {
-                    console.log(response);
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
-        })
-        .catch((error) => {
-            console.log(error);
         });
+    }
+
+    editGodson(){
+        return this.godsonProvider.putGodson({
+            id: this.godson.id,
+            first_name: this.godson.firstName,
+            last_name: this.godson.lastName,
+            age: this.godson.age,
+            orphan_house_id: 0,
+            profile_image: '',
+            status: 1
+        });
+    }
+
+    responseHandler(response: any) {
+        response.subscribe(
+            (success) => {
+                console.log(success);
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
     }
 }

@@ -20,7 +20,7 @@
     <ion-list>
       <ion-item>
         <ion-label floating>Nombre/s</ion-label>
-        <ion-input type="text" name="first_name" [(ngModel)]="godson.firtsName"></ion-input>
+        <ion-input type="text" name="first_name" [(ngModel)]="godson.firstName"></ion-input>
       </ion-item>
   
       <ion-item>
@@ -35,13 +35,13 @@
   
       <ion-item>
         <ion-label floating>Padrino</ion-label>
-        <ion-input type="text" name="interests" [(ngModel)]="godson.godFather"></ion-input>
+        <ion-input type="text" name="interests" [(ngModel)]="godson.godFatherId"></ion-input>
       </ion-item>
   
     </ion-list>
   
     <div padding text-center="true">
-      <button ion-button (click)="addNewGodson()">Registrar</button>
+      <button ion-button (click)="sendRequest()">Registrar</button>
     </div>
   
   </ion-content>

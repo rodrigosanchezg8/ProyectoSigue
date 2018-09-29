@@ -1,4 +1,5 @@
 export class Godson {
+
     id: number;
     firstName: string;
     lastName: string;
@@ -6,4 +7,5 @@ export class Godson {
     orphanHouseId: number;
     profileImage: string;
     status: number;
+    godFatherId: number;
 }
