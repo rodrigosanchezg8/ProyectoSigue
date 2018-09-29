@@ -28,19 +28,26 @@ export class GodfatherTopicDetailPage {
   thread: Thread;
   message: Message;
   files: any = [];
-
   sessionUser: Godfather;
-
   messagesSubscription: Subscription;
-
   fileTransfer: FileTransferObject;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private threadProvider: ThreadProvider,
-              private nativeStorage: NativeStorage, private loader: Loader, private camera: Camera,
-              private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
-              private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
-              private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
-              private menuCtrl: MenuController, private socket: Socket) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    private threadProvider: ThreadProvider,
+    private nativeStorage: NativeStorage, 
+    private loader: Loader, 
+    private transfer: FileTransfer, 
+    private file: File,
+    private fileChooser: FileChooser, 
+    private filePath: FilePath, 
+    private base64: Base64,
+    public popoverCtrl: PopoverController, 
+    public events: Events,
+    private menuCtrl: MenuController, 
+    private socket: Socket
+  ) {
     this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];

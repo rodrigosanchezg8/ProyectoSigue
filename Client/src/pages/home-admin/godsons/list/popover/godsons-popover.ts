@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavParams, NavController, ViewController, App } from 'ionic-angular';
+import { NewGodsonPage } from '../../new/new-godson';
 
 @IonicPage()
 @Component({
@@ -12,15 +13,22 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class GodsonsPopoverPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public viewCtrl: ViewController,
+    public appCtrl: App
+  ) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GodsonsPopoverPage');
   }
 
-  pushCreateGodson(){
-    console.log('pushCreateGodson');
+  pushCreateGodson() {
+    this.viewCtrl.dismiss().then(() => {
+      this.appCtrl.getRootNav().push(NewGodsonPage);
+    });
   }
 
 }

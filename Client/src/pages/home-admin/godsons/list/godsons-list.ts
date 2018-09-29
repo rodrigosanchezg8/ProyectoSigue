@@ -23,7 +23,11 @@ export class GodsonsPage {
   godsons: any;
   godsonsDetailPage: any;
 
-  constructor(public http: HttpClient, private godsonProvider: GodsonProvider, public popoverCtrl: PopoverController) {
+  constructor(
+    public http: HttpClient, 
+    private godsonProvider: GodsonProvider, 
+    public popoverCtrl: PopoverController
+  ) {
     this.godsonsDetailPage = GodsonsDetailPage;
     this.loadGodsons();
   }
