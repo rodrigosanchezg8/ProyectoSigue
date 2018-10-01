@@ -1,14 +1,14 @@
-import {Component} from '@angular/core';
 import {AlertController, IonicPage, NavController, NavParams, PopoverController, ToastController} from 'ionic-angular';
-import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
-import { New } from "../../../models/new";
-import { GodfatherProvider } from "../../../providers/godfather/godfather";
-import {NewProvider} from "../../../providers/new/new";
-import {Godfather} from "../../../models/godfather";
-import {NativeStorage} from "@ionic-native/native-storage";
 import {Camera, CameraOptions} from "@ionic-native/camera";
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
+import {Godfather} from "../../../models/godfather";
+import { GodfatherProvider } from "../../../providers/godfather/godfather";
 import {Loader} from "../../../traits/Loader";
+import {NativeStorage} from "@ionic-native/native-storage";
+import { New } from "../../../models/new";
+import {NewProvider} from "../../../providers/new/new";
+import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
 
 @IonicPage()
 @Component({
@@ -29,9 +29,9 @@ export class NewsListPage {
   sessionUser: Godfather;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
-              private newsProvider: NewProvider, private nativeStorage: NativeStorage, private newProvider: NewProvider,
-              private toastCtrl: ToastController, private formBuilderCtrl: FormBuilder, private camera: Camera,
-              public alertCtrl: AlertController, private loader: Loader) {
+              private newsProvider: NewProvider, private nativeStorage: NativeStorage, private toastCtrl: ToastController,
+              private formBuilderCtrl: FormBuilder, private camera: Camera, public alertCtrl: AlertController,
+              private loader: Loader, private loaderCtrl: Loader) {
     this.createForm();
   }
 
@@ -51,9 +51,10 @@ export class NewsListPage {
   fillNews(){
     this.newsProvider.getNews().then((observable: any) => {
       observable.subscribe((data: New[]) => {
+        console.log(data);
         this.news = data;
       });
-    });
+    }).catch(e => console.log(e));
   }
 
   createForm() {
@@ -71,10 +72,12 @@ export class NewsListPage {
       "image": (this.imageURI !== "") ? self.form.value : null,
     };
     this.loader.present();
-    this.newProvider.registerNew(newData).then((observable: any) => {
+    this.newsProvider.registerNew(newData).then((observable: any) => {
       observable.subscribe((newResp: any) => {
         this.presentResponse(newResp);
         this.loader.dismiss();
+        self.fillNews();
+        self.clearRegisterNewForm();
       });
     });
   }
@@ -139,6 +142,39 @@ export class NewsListPage {
     popover.present({
       ev: event
     });
+  }
+
+  deleteNew(id: number) {
+    let self = this;
+    this.alertCtrl.create({
+      title: '¡Atención!',
+      subTitle: "¿Está seguro de eliminar la noticia?",
+      buttons: [
+        {
+          text: 'Sí',
+          handler: () => {
+            this.loaderCtrl.present();
+            this.newsProvider.deleteNew(id).then((observable: any) => {
+              observable.subscribe(() => {
+                this.loaderCtrl.dismiss();
+                self.fillNews();
+              })
+            });
+          }
+        },
+        {
+          text: 'No',
+        }
+      ]
+    }).present();
+  }
+
+  clearRegisterNewForm() {
+    this.title = "";
+    this.description =  "";
+    this.new_image = "";
+    this.imageURI = "";
+    this.imageData = "";
   }
 
 }

@@ -26,7 +26,6 @@ export class LoginPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
-    //this.adminDebugSignIn();
     this.assets['logo'] = this.userProvider.singletonService.API + "storage/assets/logo.png";
   }
 
