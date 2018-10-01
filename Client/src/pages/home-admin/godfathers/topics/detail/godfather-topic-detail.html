@@ -36,7 +36,7 @@
   <ion-content>
     <ion-list>
       <ion-item menuClose detail-none>Cerrar</ion-item>
-      <ion-item *ngFor="let file of files">{{ file.name }}</ion-item>
+      <ion-item *ngFor="let file of files" (click)="downloadFile(file)">{{ file.name }}</ion-item>
     </ion-list>
   </ion-content>
 </ion-menu>

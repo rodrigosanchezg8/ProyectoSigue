@@ -7,8 +7,8 @@ import {Observable, Subscription} from "rxjs";
 import {Godfather} from "../../../../../models/godfather";
 import {NativeStorage} from "@ionic-native/native-storage";
 import {Loader} from "../../../../../traits/Loader";
-import {Camera } from "@ionic-native/camera";
-import {FormBuilder } from "@angular/forms";
+import {Camera} from "@ionic-native/camera";
+import {FormBuilder} from "@angular/forms";
 import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
 import {File} from '@ionic-native/file';
 import {FileChooser} from "@ionic-native/file-chooser";
@@ -17,6 +17,10 @@ import {Base64} from "@ionic-native/base64";
 import {FileProvider} from "../../../../../providers/file/file";
 import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 import {Socket} from "ng-socket-io";
+import {HttpClient} from "@angular/common/http";
+
+declare var window : any;
+declare var cordova: any;
 
 @IonicPage()
 @Component({
@@ -29,6 +33,8 @@ export class GodfatherTopicDetailPage {
   message: Message;
   files: any = [];
 
+  logOb: any;
+
   sessionUser: Godfather;
 
   messagesSubscription: Subscription;
@@ -40,7 +46,7 @@ export class GodfatherTopicDetailPage {
               private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
               private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
               private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
-              private menuCtrl: MenuController, private socket: Socket) {
+              private menuCtrl: MenuController, private socket: Socket, private httpClient: HttpClient) {
     this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
@@ -86,9 +92,10 @@ export class GodfatherTopicDetailPage {
     });
   }
 
-  requestHistoryEvent(){
+  requestHistoryEvent() {
     this.loader.present();
     this.threadProvider.getThreadMessages(this.thread.id, 0).then((observable: any) => {
+      this.loader.dismiss();
       observable.subscribe((response) => {
         console.log(response);
       }, (error) => {
@@ -99,6 +106,7 @@ export class GodfatherTopicDetailPage {
 
   subscribeSocketMessages() {
     this.messagesSubscription = this.getMessages().subscribe((socketMessagesData: any) => {
+      console.log(socketMessagesData);
       switch (socketMessagesData.event) {
         case 'App\\Events\\ThreadHistoryRequested':
           for (let message of socketMessagesData.data.thread.messages) {
@@ -118,9 +126,9 @@ export class GodfatherTopicDetailPage {
     this.loader.present();
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
+        this.loader.dismiss();
         observable.subscribe((response) => {
           console.log(response);
-          this.loader.dismiss();
         });
       });
     this.message = new Message();
@@ -132,22 +140,22 @@ export class GodfatherTopicDetailPage {
       this.loader.present();
       this.filePath.resolveNativePath(uri).then(file => {
 
-          let filePath: string = file;
-          if (filePath) {
+        let filePath: string = file;
+        if (filePath) {
 
-            this.message.file_extension = filePath.substr(filePath.lastIndexOf('/') + 1);
-            this.message.file_name = this.message.file_extension.substr(this.message.file_extension.lastIndexOf('.') + 1);
+          this.message.file_extension = filePath.substr(filePath.lastIndexOf('/') + 1);
+          this.message.file_name = this.message.file_extension.substr(this.message.file_extension.lastIndexOf('.') + 1);
 
-            this.base64.encodeFile(filePath).then((base64File: string) => {
+          this.base64.encodeFile(filePath).then((base64File: string) => {
 
-              this.message.base64_file = base64File;
+            this.message.base64_file = base64File;
 
-            }, (err) => {
-              alert('err' + JSON.stringify(err));
-            });
-          }
+          }, (err) => {
+            alert('err' + JSON.stringify(err));
+          });
+        }
 
-        })
+      })
         .catch(err => console.log(err));
     });
   }
@@ -169,12 +177,23 @@ export class GodfatherTopicDetailPage {
     });
   }
 
-  downloadFile(file){
-    let encodedURI = encodeURI(this.threadProvider.API + file.path + file.name);
-    console.log(encodedURI);
-    this.fileTransfer.download(encodedURI, this.file.externalRootDirectory + file.name).then((response) => {
+  downloadFile(file) {
+    let encodedURI = encodeURI(this.threadProvider.API + "files/" + file.id + "/download");
+    console.log("getting");
+    this.httpClient.get(encodedURI, {responseType: 'blob'})
+      .flatMap((data: Blob) => {
+        console.log("writing");
+        return Observable.from(this.file.writeFile(this.file.externalRootDirectory, file.name, data, {replace: true}))
+      }).subscribe(response => {
+        console.log(response);
+    });
+
+    /*this.fileTransfer.download(encodedURI, this.file.externalRootDirectory + file.name, true)
+      .then((response) => {
         console.log(response.toURL());
-    }, (e) => { console.log(e); });
+      }, (e) => {
+        console.log(e);
+      });*/
   }
 
   toggleMenu() {
