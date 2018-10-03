@@ -1,5 +1,13 @@
 import {Component} from '@angular/core';
-import {Events, IonicPage, MenuController, NavController, NavParams, PopoverController} from 'ionic-angular';
+import {
+  AlertController,
+  Events,
+  IonicPage,
+  MenuController,
+  NavController,
+  NavParams,
+  PopoverController
+} from 'ionic-angular';
 import {ThreadProvider} from "../../../../../providers/thread/thread";
 import {Thread} from "../../../../../models/thread";
 import {Message} from "../../../../../models/message";
@@ -19,7 +27,7 @@ import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 import {Socket} from "ng-socket-io";
 import {HttpClient} from "@angular/common/http";
 
-declare var window : any;
+declare var window: any;
 declare var cordova: any;
 
 @IonicPage()
@@ -46,7 +54,8 @@ export class GodfatherTopicDetailPage {
               private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
               private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
               private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
-              private menuCtrl: MenuController, private socket: Socket, private httpClient: HttpClient) {
+              private menuCtrl: MenuController, private socket: Socket, private httpClient: HttpClient,
+              private alertCtrl: AlertController) {
     this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
@@ -177,31 +186,39 @@ export class GodfatherTopicDetailPage {
     });
   }
 
+  // TODO Regresar el get del httpclient desde un provider
   downloadFile(file) {
     let encodedURI = encodeURI(this.threadProvider.API + "files/" + file.id + "/download");
-    console.log("getting");
+    this.loader.present("Descargando archivo...");
+
+    let alertTitle = "", alertSubtitle = "";
     this.httpClient.get(encodedURI, {responseType: 'blob'})
       .flatMap((data: Blob) => {
-        console.log("writing");
-        return Observable.from(this.file.writeFile(this.file.externalRootDirectory, file.name, data, {replace: true}))
+        return Observable.from(this.file.writeFile(this.file.externalRootDirectory + "/Download", file.name,
+          data, { replace: true }))
       }).subscribe(response => {
-        console.log(response);
-    });
+        alertTitle = "Éxito";
+        alertSubtitle = "El archivo lo puedes encontrar en tu carpeta de descargas. Su nombre es " + file.name;
+      }, err => {
+        alertTitle = "Ooops!";
+        alertSubtitle = "Ha habido un problema con éste archivo, es posible que no exista o que no " +
+          "tengas espacio de almacenamiento";
+      },
+      () => {
+        this.loader.dismiss();
+        this.alertCtrl.create({
+          title: alertTitle,
+          subTitle: alertSubtitle,
+          buttons: [
+            {text: "Ok"}
+          ]
+        }).present();
+      });
+}
 
-    /*this.fileTransfer.download(encodedURI, this.file.externalRootDirectory + file.name, true)
-      .then((response) => {
-        console.log(response.toURL());
-      }, (e) => {
-        console.log(e);
-      });*/
-  }
-
-  toggleMenu() {
-    this.menuCtrl.toggle('right');
-  }
-
-  closeMenu() {
-    this.menuCtrl.close();
-  }
+toggleMenu()
+{
+  this.menuCtrl.toggle('right');
+}
 
 }

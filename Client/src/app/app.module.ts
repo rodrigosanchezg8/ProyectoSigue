@@ -45,7 +45,7 @@ import { NewsListPage } from "../pages/news/list/news-list";
 import {SocketIoConfig, SocketIoModule } from "ng-socket-io";
 import {NewsListPopoverPage} from "../pages/news/list/news-list-popover/news-list-popover";
 
-const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
+const config: SocketIoConfig = { url: "http://192.168.0.12:3001/", options: {} };
 
 @NgModule({
   declarations: [
