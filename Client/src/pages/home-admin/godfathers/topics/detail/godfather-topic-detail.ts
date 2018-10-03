@@ -104,11 +104,12 @@ export class GodfatherTopicDetailPage {
   requestHistoryEvent() {
     this.loader.present();
     this.threadProvider.getThreadMessages(this.thread.id, 0).then((observable: any) => {
-      this.loader.dismiss();
       observable.subscribe((response) => {
         console.log(response);
       }, (error) => {
         console.log(error);
+      }, () => {
+        this.loader.dismiss();
       });
     });
   }
