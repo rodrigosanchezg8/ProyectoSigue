@@ -1,6 +1,6 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {NativeStorage} from "@ionic-native/native-storage";
+import { NativeStorage } from "@ionic-native/native-storage";
 import { Singleton } from '../singleton/singleton';
 
 /*
@@ -15,13 +15,13 @@ export class GodsonProvider {
   BASE_URL = 'godsons';
 
   constructor(
-    public http: HttpClient, 
+    public http: HttpClient,
     private singletonService: Singleton
   ) {
 
   }
 
-  getGodsons(){
+  getGodsons() {
     return this.singletonService.get(this.BASE_URL, true);
   }
 
@@ -30,13 +30,20 @@ export class GodsonProvider {
   }
 
   putGodson(godson) {
-    return this.singletonService.put(this.BASE_URL, godson, true);
+    return this.singletonService.put(
+      this.BASE_URL + '/' + godson.id,
+      godson,
+      true
+    );
   }
 
   // TODO: Fix delete method on singleton service, it needs to catch
   // which item is deleting
-  deleteGodson() {
-    return this.singletonService.delete(this.BASE_URL, true);
+  deleteGodson(godsonId) {
+    return this.singletonService.delete(
+      this.BASE_URL + '/' + godsonId,
+      true
+    );
   }
 
 }
