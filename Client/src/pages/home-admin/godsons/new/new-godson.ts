@@ -7,7 +7,6 @@ import {
 } from 'ionic-angular';
 import { GodsonProvider } from '../../../../providers/godson/godson';
 import { Godson } from '../../../../models/godson';
-import { resolveDefinition } from '@angular/core/src/view/util';
 
 @IonicPage()
 @Component({
@@ -50,8 +49,8 @@ export class NewGodsonPage {
 
     addNewGodson() {
         return this.godsonProvider.postGodson({
-            first_name: this.godson.firstName,
-            last_name: this.godson.lastName,
+            first_name: this.godson.first_name,
+            last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
             profile_image: '',
@@ -62,8 +61,8 @@ export class NewGodsonPage {
     editGodson(){
         return this.godsonProvider.putGodson({
             id: this.godson.id,
-            first_name: this.godson.firstName,
-            last_name: this.godson.lastName,
+            first_name: this.godson.first_name,
+            last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
             profile_image: '',

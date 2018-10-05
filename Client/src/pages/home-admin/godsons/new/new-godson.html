@@ -20,22 +20,17 @@
     <ion-list>
       <ion-item>
         <ion-label floating>Nombre/s</ion-label>
-        <ion-input type="text" name="first_name" [(ngModel)]="godson.firstName"></ion-input>
+        <ion-input type="text" name="first_name" [(ngModel)]="godson.first_name"></ion-input>
       </ion-item>
   
       <ion-item>
         <ion-label floating>Apellidos</ion-label>
-        <ion-input type="text" name="last_name" [(ngModel)]="godson.lastName"></ion-input>
+        <ion-input type="text" name="last_name" [(ngModel)]="godson.last_name"></ion-input>
       </ion-item>
   
       <ion-item>
         <ion-label floating>Edad</ion-label>
         <ion-input type="email" name="email" [(ngModel)]="godson.age"></ion-input>
-      </ion-item>
-  
-      <ion-item>
-        <ion-label floating>Padrino</ion-label>
-        <ion-input type="text" name="interests" [(ngModel)]="godson.godFatherId"></ion-input>
       </ion-item>
   
     </ion-list>

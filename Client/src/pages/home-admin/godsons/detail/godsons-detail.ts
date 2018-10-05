@@ -1,5 +1,13 @@
 import { Component } from '@angular/core';
-import {ActionSheetController, IonicPage, NavController, NavParams} from 'ionic-angular';
+import { 
+  ActionSheetController, 
+  IonicPage, 
+  NavController, 
+  NavParams, 
+  ViewController,
+  App
+} from 'ionic-angular';
+import { NewGodsonPage } from '../new/new-godson';
 
 /**
  * Generated class for the GodsonsDetailPage page.
@@ -17,7 +25,13 @@ export class GodsonsDetailPage {
 
   godson: object;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController) {
+  constructor(
+    public navCtrl: NavController,
+    public viewCtrl: ViewController,
+    public navParams: NavParams,
+    public actionSheetCtrl: ActionSheetController,
+    public appCtrl: App
+  ) {
     this.godson = this.navParams.data;
   }
 
@@ -25,14 +39,18 @@ export class GodsonsDetailPage {
     console.log('ionViewDidLoad GodsonsDetailPage');
   }
 
-  presentActionSheet(){
+  presentActionSheet() {
     const actionSheet = this.actionSheetCtrl.create({
       title: 'Acción',
       buttons: [
         {
           text: 'Editar',
           handler: () => {
-            console.log('Editar');
+            this.viewCtrl.dismiss().then(() => {
+              this.appCtrl.getRootNav().push(NewGodsonPage, {
+                godson: this.godson
+              });
+            });
           }
         },
         {

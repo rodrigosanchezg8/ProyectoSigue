@@ -1,11 +1,13 @@
 export class Godson {
 
-    id: number;
-    firstName: string;
-    lastName: string;
     age: number;
-    orphanHouseId: number;
-    profileImage: string;
+    created_at: string;
+    first_name: string;
+    full_name: string;
+    id: number;
+    last_name: string;
+    orphan_house_id: number;
+    profile_image: string;
     status: number;
-    godFatherId: number;
+    updated_at: string;
 }
