@@ -8,6 +8,7 @@ import {
   App
 } from 'ionic-angular';
 import { NewGodsonPage } from '../new/new-godson';
+import { GodsonProvider } from '../../../../providers/godson/godson';
 
 /**
  * Generated class for the GodsonsDetailPage page.
@@ -23,14 +24,15 @@ import { NewGodsonPage } from '../new/new-godson';
 })
 export class GodsonsDetailPage {
 
-  godson: object;
+  godson: any;
 
   constructor(
     public navCtrl: NavController,
     public viewCtrl: ViewController,
     public navParams: NavParams,
     public actionSheetCtrl: ActionSheetController,
-    public appCtrl: App
+    public appCtrl: App,
+    private godsonProvider: GodsonProvider
   ) {
     this.godson = this.navParams.data;
   }
@@ -57,7 +59,17 @@ export class GodsonsDetailPage {
           text: 'Eliminar',
           role: 'destructive',
           handler: () => {
-            console.log('Eliminar');
+            this.godsonProvider.deleteGodson(this.godson.id)
+            .then((observable:any) => {
+              observable.subscribe(
+                (successResponse) => {
+                  console.log(successResponse);
+                },
+                (errorResponse) => {
+                  console.log(errorResponse);
+                }
+              );
+            });
           }
         },
         {
