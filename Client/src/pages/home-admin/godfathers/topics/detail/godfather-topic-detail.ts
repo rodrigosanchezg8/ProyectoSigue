@@ -27,9 +27,6 @@ import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 import {Socket} from "ng-socket-io";
 import {HttpClient} from "@angular/common/http";
 
-declare var window: any;
-declare var cordova: any;
-
 @IonicPage()
 @Component({
   selector: 'page-godfather-topic-detail',
@@ -40,8 +37,6 @@ export class GodfatherTopicDetailPage {
   thread: Thread;
   message: Message;
   files: any = [];
-
-  logOb: any;
 
   sessionUser: Godfather;
 
@@ -74,6 +69,7 @@ export class GodfatherTopicDetailPage {
   ionViewDidEnter() {
     console.log('ionViewDidEnter GodfatherTopicDetailPage');
 
+    //this.socket.on('connect', () => { alert('connected')});
     this.subscribePopoverEvents();
 
     this.requestHistoryEvent();
@@ -119,9 +115,11 @@ export class GodfatherTopicDetailPage {
       console.log(socketMessagesData);
       switch (socketMessagesData.event) {
         case 'App\\Events\\ThreadHistoryRequested':
-          for (let message of socketMessagesData.data.thread.messages) {
-            let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
-            this.thread.messages.push(newMessage);
+          if(this.thread.messages.length == 0) {
+            for (let message of socketMessagesData.data.thread.messages) {
+              let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
+              this.thread.messages.push(newMessage);
+            }
           }
           this.loader.dismiss();
           break;
@@ -137,11 +135,11 @@ export class GodfatherTopicDetailPage {
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
         this.loader.dismiss();
+        this.message = new Message();
         observable.subscribe((response) => {
           console.log(response);
         });
       });
-    this.message = new Message();
   }
 
   attachMessageFile() {
