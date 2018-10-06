@@ -115,7 +115,7 @@ export class GodfatherTopicDetailPage {
       console.log(socketMessagesData);
       switch (socketMessagesData.event) {
         case 'App\\Events\\ThreadHistoryRequested':
-          if(this.thread.messages.length == 0) {
+          if (this.thread.messages.length == 0) {
             for (let message of socketMessagesData.data.thread.messages) {
               let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
               this.thread.messages.push(newMessage);
@@ -132,14 +132,18 @@ export class GodfatherTopicDetailPage {
 
   sendMessage() {
     this.loader.present();
+    alert("woa a enviar");
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
         this.loader.dismiss();
         this.message = new Message();
+        alert('enviado');
         observable.subscribe((response) => {
-          console.log(response);
+          alert(response);
         });
-      });
+      }).catch(e => {
+      alert(e);
+    });
   }
 
   attachMessageFile() {
@@ -148,23 +152,34 @@ export class GodfatherTopicDetailPage {
       this.loader.present();
       this.filePath.resolveNativePath(uri).then(file => {
 
+        alert('resolvenativepathuri')
+
         let filePath: string = file;
         if (filePath) {
 
-          this.message.file_extension = filePath.substr(filePath.lastIndexOf('/') + 1);
-          this.message.file_name = this.message.file_extension.substr(this.message.file_extension.lastIndexOf('.') + 1);
+          this.message.file_name = filePath.substr(filePath.lastIndexOf('/') + 1);
+          this.message.file_extension = this.message.file_name.substr(this.message.file_name.lastIndexOf('.') + 1);
+
+          alert("archivito nomb " + this.message.file_name);
+          alert("archivito ext " + this.message.file_extension);
 
           this.base64.encodeFile(filePath).then((base64File: string) => {
 
+            alert('encodeado');
             this.message.base64_file = base64File;
+            this.loader.dismiss();
 
           }, (err) => {
             alert('err' + JSON.stringify(err));
+            this.loader.dismiss();
           });
         }
 
       })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err)
+          this.loader.dismiss();
+        });
     });
   }
 
@@ -194,7 +209,7 @@ export class GodfatherTopicDetailPage {
     this.httpClient.get(encodedURI, {responseType: 'blob'})
       .flatMap((data: Blob) => {
         return Observable.from(this.file.writeFile(this.file.externalRootDirectory + "/Download", file.name,
-          data, { replace: true }))
+          data, {replace: true}))
       }).subscribe(response => {
         alertTitle = "Éxito";
         alertSubtitle = "El archivo lo puedes encontrar en tu carpeta de descargas. Su nombre es " + file.name;
@@ -213,11 +228,10 @@ export class GodfatherTopicDetailPage {
           ]
         }).present();
       });
-}
+  }
 
-toggleMenu()
-{
-  this.menuCtrl.toggle('right');
-}
+  toggleMenu() {
+    this.menuCtrl.toggle('right');
+  }
 
 }
