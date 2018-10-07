@@ -1,5 +1,13 @@
 import {Component} from '@angular/core';
-import {Events, IonicPage, MenuController, NavController, NavParams, PopoverController} from 'ionic-angular';
+import {
+  AlertController,
+  Events,
+  IonicPage,
+  MenuController,
+  NavController,
+  NavParams,
+  PopoverController
+} from 'ionic-angular';
 import {ThreadProvider} from "../../../../../providers/thread/thread";
 import {Thread} from "../../../../../models/thread";
 import {Message} from "../../../../../models/message";
@@ -7,8 +15,8 @@ import {Observable, Subscription} from "rxjs";
 import {Godfather} from "../../../../../models/godfather";
 import {NativeStorage} from "@ionic-native/native-storage";
 import {Loader} from "../../../../../traits/Loader";
-import {Camera } from "@ionic-native/camera";
-import {FormBuilder } from "@angular/forms";
+import {Camera} from "@ionic-native/camera";
+import {FormBuilder} from "@angular/forms";
 import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
 import {File} from '@ionic-native/file';
 import {FileChooser} from "@ionic-native/file-chooser";
@@ -17,6 +25,7 @@ import {Base64} from "@ionic-native/base64";
 import {FileProvider} from "../../../../../providers/file/file";
 import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 import {Socket} from "ng-socket-io";
+import {HttpClient} from "@angular/common/http";
 
 @IonicPage()
 @Component({
@@ -40,7 +49,8 @@ export class GodfatherTopicDetailPage {
               private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
               private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
               private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
-              private menuCtrl: MenuController, private socket: Socket) {
+              private menuCtrl: MenuController, private socket: Socket, private httpClient: HttpClient,
+              private alertCtrl: AlertController) {
     this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
@@ -59,6 +69,7 @@ export class GodfatherTopicDetailPage {
   ionViewDidEnter() {
     console.log('ionViewDidEnter GodfatherTopicDetailPage');
 
+    //this.socket.on('connect', () => { alert('connected')});
     this.subscribePopoverEvents();
 
     this.requestHistoryEvent();
@@ -86,24 +97,29 @@ export class GodfatherTopicDetailPage {
     });
   }
 
-  requestHistoryEvent(){
+  requestHistoryEvent() {
     this.loader.present();
     this.threadProvider.getThreadMessages(this.thread.id, 0).then((observable: any) => {
       observable.subscribe((response) => {
         console.log(response);
       }, (error) => {
         console.log(error);
+      }, () => {
+        this.loader.dismiss();
       });
     });
   }
 
   subscribeSocketMessages() {
     this.messagesSubscription = this.getMessages().subscribe((socketMessagesData: any) => {
+      console.log(socketMessagesData);
       switch (socketMessagesData.event) {
         case 'App\\Events\\ThreadHistoryRequested':
-          for (let message of socketMessagesData.data.thread.messages) {
-            let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
-            this.thread.messages.push(newMessage);
+          if (this.thread.messages.length == 0) {
+            for (let message of socketMessagesData.data.thread.messages) {
+              let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
+              this.thread.messages.push(newMessage);
+            }
           }
           this.loader.dismiss();
           break;
@@ -118,12 +134,14 @@ export class GodfatherTopicDetailPage {
     this.loader.present();
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
+        this.loader.dismiss();
+        this.message = new Message();
         observable.subscribe((response) => {
-          console.log(response);
-          this.loader.dismiss();
+          alert(response);
         });
-      });
-    this.message = new Message();
+      }).catch(e => {
+      alert(e);
+    });
   }
 
   attachMessageFile() {
@@ -132,23 +150,32 @@ export class GodfatherTopicDetailPage {
       this.loader.present();
       this.filePath.resolveNativePath(uri).then(file => {
 
-          let filePath: string = file;
-          if (filePath) {
+        let filePath: string = file;
+        if (filePath) {
 
-            this.message.file_extension = filePath.substr(filePath.lastIndexOf('/') + 1);
-            this.message.file_name = this.message.file_extension.substr(this.message.file_extension.lastIndexOf('.') + 1);
+          this.message.file_name = filePath.substr(filePath.lastIndexOf('/') + 1);
+          this.message.file_extension = this.message.file_name.substr(this.message.file_name.lastIndexOf('.') + 1);
 
-            this.base64.encodeFile(filePath).then((base64File: string) => {
+          alert("archivito nomb " + this.message.file_name);
+          alert("archivito ext " + this.message.file_extension);
 
-              this.message.base64_file = base64File;
+          this.base64.encodeFile(filePath).then((base64File: string) => {
 
-            }, (err) => {
-              alert('err' + JSON.stringify(err));
-            });
-          }
+            alert('encodeado');
+            this.message.base64_file = base64File;
+            this.loader.dismiss();
 
-        })
-        .catch(err => console.log(err));
+          }, (err) => {
+            alert('err' + JSON.stringify(err));
+            this.loader.dismiss();
+          });
+        }
+
+      })
+        .catch(err => {
+          console.log(err)
+          this.loader.dismiss();
+        });
     });
   }
 
@@ -169,20 +196,38 @@ export class GodfatherTopicDetailPage {
     });
   }
 
-  downloadFile(file){
-    let encodedURI = encodeURI(this.threadProvider.API + file.path + file.name);
-    console.log(encodedURI);
-    this.fileTransfer.download(encodedURI, this.file.externalRootDirectory + file.name).then((response) => {
-        console.log(response.toURL());
-    }, (e) => { console.log(e); });
+  // TODO Regresar el get del httpclient desde un provider
+  downloadFile(file) {
+    let encodedURI = encodeURI(this.threadProvider.API + "files/" + file.id + "/download");
+    this.loader.present("Descargando archivo...");
+
+    let alertTitle = "", alertSubtitle = "";
+    this.httpClient.get(encodedURI, {responseType: 'blob'})
+      .flatMap((data: Blob) => {
+        return Observable.from(this.file.writeFile(this.file.externalRootDirectory + "/Download", file.name,
+          data, {replace: true}))
+      }).subscribe(response => {
+        alertTitle = "Éxito";
+        alertSubtitle = "El archivo lo puedes encontrar en tu carpeta de descargas. Su nombre es " + file.name;
+      }, err => {
+        alertTitle = "Ooops!";
+        alertSubtitle = "Ha habido un problema con éste archivo, es posible que no exista o que no " +
+          "tengas espacio de almacenamiento";
+      },
+      () => {
+        this.loader.dismiss();
+        this.alertCtrl.create({
+          title: alertTitle,
+          subTitle: alertSubtitle,
+          buttons: [
+            {text: "Ok"}
+          ]
+        }).present();
+      });
   }
 
   toggleMenu() {
     this.menuCtrl.toggle('right');
-  }
-
-  closeMenu() {
-    this.menuCtrl.close();
   }
 
 }

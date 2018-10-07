@@ -9,6 +9,7 @@ import {Camera, CameraOptions} from "@ionic-native/camera";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {UserProvider} from "../../providers/user/user";
 import {GodfatherProvider} from "../../providers/godfather/godfather";
+import {Loader} from "../../traits/Loader";
 
 @IonicPage()
 @Component({
@@ -33,7 +34,7 @@ export class RegisterPage {
   constructor(public navParams: NavParams, private camera: Camera,
               public toastCtrl: ToastController, private godfatherProvider: GodfatherProvider,
               private formBuilderCtrl: FormBuilder, private userProvider: UserProvider, public alertCtrl: AlertController,
-              public navCtrl: NavController) {
+              public navCtrl: NavController, private loaderCtrl: Loader) {
     this.createForm();
   }
 
@@ -49,17 +50,20 @@ export class RegisterPage {
   }
 
   signUp() {
-    let self = this;
+
     let userData = {
       "first_name": this.first_name, "password": this.password, "email": this.email,
       "last_name": this.last_name, "interests": this.interests, "profile_image": this.profile_image
     };
+
+    this.loaderCtrl.present();
     this.userProvider.signUp(userData).then((observable: any) => {
       observable.subscribe((signUpRes: any) => {
+        this.loaderCtrl.dismiss();
         switch (signUpRes.status) {
           case "success":
             if (this.imageURI !== "") {
-              self.godfatherProvider.uploadProfileImage(self.form.value, signUpRes.data.id).then((observable: any) => {
+              this.godfatherProvider.uploadProfileImage(this.form.value, signUpRes.data.id).then((observable: any) => {
                 observable.subscribe((profileImgRes: any) => {
                   this.presentResponse(signUpRes);
                 });
