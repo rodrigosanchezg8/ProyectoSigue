@@ -132,12 +132,10 @@ export class GodfatherTopicDetailPage {
 
   sendMessage() {
     this.loader.present();
-    alert("woa a enviar");
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
         this.loader.dismiss();
         this.message = new Message();
-        alert('enviado');
         observable.subscribe((response) => {
           alert(response);
         });
@@ -151,8 +149,6 @@ export class GodfatherTopicDetailPage {
 
       this.loader.present();
       this.filePath.resolveNativePath(uri).then(file => {
-
-        alert('resolvenativepathuri')
 
         let filePath: string = file;
         if (filePath) {
