@@ -82,12 +82,8 @@
       "cordova-plugin-filechooser": {},
       "cordova-plugin-filepath": {},
       "com-badrit-base64": {},
-<<<<<<< HEAD
-      "cordova-plugin-statusbar": {}
-=======
       "cordova-plugin-statusbar": {},
       "cordova-plugin-advanced-http": {}
->>>>>>> feature/godsons
     },
     "platforms": [
       "ios",
