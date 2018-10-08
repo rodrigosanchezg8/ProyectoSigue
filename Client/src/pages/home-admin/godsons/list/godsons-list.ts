@@ -31,6 +31,11 @@ export class GodsonsPage {
     this.loadGodsons();
   }
 
+  ionViewDidEnter() {
+    console.log('viewDidEnter');
+    this.loadGodsons();
+  }
+
   private loadGodsons(){
     this.godsonProvider.getGodsons().then((res: any) => {
       res.subscribe( (data:any ) => {
