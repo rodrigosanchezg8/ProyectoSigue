@@ -33,6 +33,15 @@
         <ion-input type="email" name="email" [(ngModel)]="godson.age"></ion-input>
       </ion-item>
   
+      <ion-item>
+        <ion-select [(ngModel)]="selectedGodfather">
+          <ion-option *ngFor="let godfather of godfathers" 
+                      value="godfather.id">
+                      {{godfather.first_name}} {{godfather.last_name}}
+          </ion-option>
+        </ion-select>
+      </ion-item>
+  
     </ion-list>
   
     <div padding text-center="true">
