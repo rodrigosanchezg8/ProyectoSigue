@@ -37,11 +37,8 @@ export class GodfatherTopicDetailPage {
   thread: Thread;
   message: Message;
   files: any = [];
-
   sessionUser: Godfather;
-
   messagesSubscription: Subscription;
-
   fileTransfer: FileTransferObject;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private threadProvider: ThreadProvider,

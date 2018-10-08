@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams, PopoverController} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {NativeStorage} from "@ionic-native/native-storage";
 import {GodsonProvider} from "../../../../providers/godson/godson";
 import {GodsonsDetailPage} from "../detail/godsons-detail";
 import {GodsonsPopoverPage} from "./popover/godsons-popover";
@@ -23,17 +22,24 @@ export class GodsonsPage {
   godsons: any;
   godsonsDetailPage: any;
 
-  constructor(public http: HttpClient, private godsonProvider: GodsonProvider, public popoverCtrl: PopoverController) {
+  constructor(
+    public http: HttpClient, 
+    private godsonProvider: GodsonProvider, 
+    public popoverCtrl: PopoverController
+  ) {
     this.godsonsDetailPage = GodsonsDetailPage;
+    this.loadGodsons();
+  }
+
+  ionViewDidEnter() {
+    console.log('viewDidEnter');
     this.loadGodsons();
   }
 
   private loadGodsons(){
     this.godsonProvider.getGodsons().then((res: any) => {
       res.subscribe( (data:any ) => {
-
         this.godsons = data;
-
       });
     });
   }

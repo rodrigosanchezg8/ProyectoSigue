@@ -1,5 +1,14 @@
 import { Component } from '@angular/core';
-import {ActionSheetController, IonicPage, NavController, NavParams} from 'ionic-angular';
+import { 
+  ActionSheetController, 
+  IonicPage, 
+  NavController, 
+  NavParams, 
+  ViewController,
+  App
+} from 'ionic-angular';
+import { NewGodsonPage } from '../new/new-godson';
+import { GodsonProvider } from '../../../../providers/godson/godson';
 
 /**
  * Generated class for the GodsonsDetailPage page.
@@ -15,9 +24,16 @@ import {ActionSheetController, IonicPage, NavController, NavParams} from 'ionic-
 })
 export class GodsonsDetailPage {
 
-  godson: object;
+  godson: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController) {
+  constructor(
+    public navCtrl: NavController,
+    public viewCtrl: ViewController,
+    public navParams: NavParams,
+    public actionSheetCtrl: ActionSheetController,
+    public appCtrl: App,
+    private godsonProvider: GodsonProvider
+  ) {
     this.godson = this.navParams.data;
   }
 
@@ -25,21 +41,35 @@ export class GodsonsDetailPage {
     console.log('ionViewDidLoad GodsonsDetailPage');
   }
 
-  presentActionSheet(){
+  presentActionSheet() {
     const actionSheet = this.actionSheetCtrl.create({
       title: 'Acción',
       buttons: [
         {
           text: 'Editar',
           handler: () => {
-            console.log('Editar');
+            this.viewCtrl.dismiss().then(() => {
+              this.appCtrl.getRootNav().push(NewGodsonPage, {
+                godson: this.godson
+              });
+            });
           }
         },
         {
           text: 'Eliminar',
           role: 'destructive',
           handler: () => {
-            console.log('Eliminar');
+            this.godsonProvider.deleteGodson(this.godson.id)
+            .then((observable:any) => {
+              observable.subscribe(
+                (successResponse) => {
+                  console.log(successResponse);
+                },
+                (errorResponse) => {
+                  console.log(errorResponse);
+                }
+              );
+            });
           }
         },
         {

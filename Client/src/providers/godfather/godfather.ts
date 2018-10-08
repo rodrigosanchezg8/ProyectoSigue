@@ -11,7 +11,10 @@ export class GodfatherProvider {
   UPLOAD_PROFILE_IMAGE: string;
   DELETE_GODFATHER: string;
 
-  constructor(public http: HttpClient, private nativeStorage: NativeStorage, private singletonService: Singleton) {
+  constructor(
+    public http: HttpClient, 
+    private singletonService: Singleton
+  ) {
     console.log('Hello GodfatherProvider Provider');
     this.GET_GODFATHERS = "godfathers";
   }
