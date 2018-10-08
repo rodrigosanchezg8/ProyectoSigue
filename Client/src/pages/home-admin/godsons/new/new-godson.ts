@@ -1,12 +1,13 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import {
     AlertController,
-    IonicPage,
+    IonicPage, 
     NavController,
     NavParams
 } from 'ionic-angular';
 import { GodsonProvider } from '../../../../providers/godson/godson';
 import { Godson } from '../../../../models/godson';
+import { GodfatherProvider } from '../../../../providers/godfather/godfather';
 
 @IonicPage()
 @Component({
@@ -17,10 +18,13 @@ export class NewGodsonPage {
 
     godson: Godson;
     isEditMode: boolean;
+    godfathers: any;
+    selectedGodfather: any;
 
     constructor(
         public navParams: NavParams,
         private godsonProvider: GodsonProvider,
+        private godfatherProvider: GodfatherProvider,
         public alertCtrl: AlertController
     ) {
         this.godson = navParams.get('godson');
@@ -33,7 +37,22 @@ export class NewGodsonPage {
         }
     }
 
-    ionViewDidLoad() {}
+    ionViewDidLoad() {
+        this.godfatherProvider.getGodfathers()
+        .then((observable: any) => {
+            observable.subscribe(
+                (success) => {
+                    this.godfathers = success;
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
 
     sendRequest() {
         if (this.isEditMode) {
@@ -54,7 +73,8 @@ export class NewGodsonPage {
             age: this.godson.age,
             orphan_house_id: 0,
             profile_image: '',
-            status: 1
+            status: 1,
+            godfather_id: this.selectedGodfather.id
         });
     }
 
