@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController, NavParams, PopoverController} from 'ionic-angular';
+import {IonicPage, Events, PopoverController} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {GodsonProvider} from "../../../../providers/godson/godson";
 import {GodsonsDetailPage} from "../detail/godsons-detail";
@@ -25,14 +25,17 @@ export class GodsonsPage {
   constructor(
     public http: HttpClient, 
     private godsonProvider: GodsonProvider, 
-    public popoverCtrl: PopoverController
+    public popoverCtrl: PopoverController,
+    public events: Events
   ) {
     this.godsonsDetailPage = GodsonsDetailPage;
-    this.loadGodsons();
+    this.events.subscribe('godson:reload-list', () => {
+      this.loadGodsons();
+    });
   }
 
-  ionViewDidEnter() {
-    console.log('viewDidEnter');
+  ionViewWillEnter() {
+    console.log('ionViewWillEnter');
     this.loadGodsons();
   }
 

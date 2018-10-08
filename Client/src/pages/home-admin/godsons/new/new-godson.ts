@@ -1,9 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import {
     AlertController,
     IonicPage, 
     NavController,
-    NavParams
+    NavParams,
+    Events
 } from 'ionic-angular';
 import { GodsonProvider } from '../../../../providers/godson/godson';
 import { Godson } from '../../../../models/godson';
@@ -25,7 +26,9 @@ export class NewGodsonPage {
         public navParams: NavParams,
         private godsonProvider: GodsonProvider,
         private godfatherProvider: GodfatherProvider,
-        public alertCtrl: AlertController
+        public alertCtrl: AlertController,
+        public navCtrl: NavController,
+        public events: Events
     ) {
         this.godson = navParams.get('godson');
 
@@ -94,7 +97,8 @@ export class NewGodsonPage {
     responseHandler(response: any) {
         response.subscribe(
             (success) => {
-                console.log(success);
+                this.events.publish('godson:reload-list');
+                this.navCtrl.pop();
             },
             (error) => {
                 console.log(error);
