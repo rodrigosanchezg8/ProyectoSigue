@@ -36,7 +36,7 @@
       <ion-item>
         <ion-select [(ngModel)]="selectedGodfather">
           <ion-option *ngFor="let godfather of godfathers" 
-                      value="godfather.id">
+                      [value]="godfather.id">
                       {{godfather.first_name}} {{godfather.last_name}}
           </ion-option>
         </ion-select>

@@ -67,6 +67,7 @@ export class NewGodsonPage {
     }
 
     addNewGodson() {
+        console.log(this.selectedGodfather);
         return this.godsonProvider.postGodson({
             first_name: this.godson.first_name,
             last_name: this.godson.last_name,
@@ -74,7 +75,7 @@ export class NewGodsonPage {
             orphan_house_id: 0,
             profile_image: '',
             status: 1,
-            godfather_id: this.selectedGodfather.id
+            godfather_id: this.selectedGodfather
         });
     }
 
