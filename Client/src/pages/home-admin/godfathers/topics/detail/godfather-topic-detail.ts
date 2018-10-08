@@ -51,10 +51,14 @@ export class GodfatherTopicDetailPage {
               private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
               private menuCtrl: MenuController, private socket: Socket, private httpClient: HttpClient,
               private alertCtrl: AlertController) {
-    this.message = new Message();
+    //this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
+  }
+
+  ngOnInit() {
+    this.message = new Message();
   }
 
   ionViewDidLoad() {
@@ -134,10 +138,9 @@ export class GodfatherTopicDetailPage {
     this.loader.present();
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
-        this.loader.dismiss();
-        this.message = new Message();
         observable.subscribe((response) => {
-          alert(response);
+          this.loader.dismiss();
+          this.message.body = "";
         });
       }).catch(e => {
       alert(e);
@@ -229,5 +232,4 @@ export class GodfatherTopicDetailPage {
   toggleMenu() {
     this.menuCtrl.toggle('right');
   }
-
 }
