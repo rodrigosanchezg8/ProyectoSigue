@@ -34,6 +34,7 @@
       </ion-item>
   
       <ion-item>
+        <ion-label floating>Edad</ion-label>
         <ion-select [(ngModel)]="selectedGodfather">
           <ion-option *ngFor="let godfather of godfathers" 
                       [value]="godfather.id">
@@ -41,6 +42,16 @@
           </ion-option>
         </ion-select>
       </ion-item>
+
+      <ion-grid margin-top>
+        <ion-row>
+          <ion-col col-2><ion-label>Adjuntar imagen</ion-label></ion-col>
+          <ion-col col-2><button ion-button color="secondary" (click)="getImage()" #fileInput>Seleccionar</button></ion-col>
+        </ion-row>
+        <ion-row *ngIf="imgURI" margin-top>
+          <img src="{{imgURI}}" alt="Ionic File" class="preview-sign-up-profile-image"/>
+        </ion-row>
+      </ion-grid>
   
     </ion-list>
   

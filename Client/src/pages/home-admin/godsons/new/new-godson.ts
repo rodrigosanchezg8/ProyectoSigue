@@ -9,6 +9,7 @@ import {
 import { GodsonProvider } from '../../../../providers/godson/godson';
 import { Godson } from '../../../../models/godson';
 import { GodfatherProvider } from '../../../../providers/godfather/godfather';
+import { CameraOptions, Camera } from '@ionic-native/camera';
 
 @IonicPage()
 @Component({
@@ -21,6 +22,8 @@ export class NewGodsonPage {
     isEditMode: boolean;
     godfathers: any;
     selectedGodfather: any;
+    imgURI: any;
+    imgData: any;
 
     constructor(
         public navParams: NavParams,
@@ -28,7 +31,8 @@ export class NewGodsonPage {
         private godfatherProvider: GodfatherProvider,
         public alertCtrl: AlertController,
         public navCtrl: NavController,
-        public events: Events
+        public events: Events,
+        private camera: Camera
     ) {
         this.godson = navParams.get('godson');
 
@@ -76,7 +80,7 @@ export class NewGodsonPage {
             last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
-            profile_image: '',
+            profile_image: this.imgData ? this.imgData : '',
             status: 1,
             godfather_id: this.selectedGodfather
         });
@@ -105,4 +109,21 @@ export class NewGodsonPage {
             }
         );
     }
+
+    getImage() {
+        const options: CameraOptions = {
+          quality: 100,
+          destinationType: this.camera.DestinationType.FILE_URI,
+          encodingType: this.camera.EncodingType.JPEG,
+          sourceType: 0,
+        };
+    
+        this.camera.getPicture(options).then((imageData) => {
+          this.imgURI = "data:image/jpeg;base64," + imageData;
+          this.imgData = imageData;
+    
+        }, (error) => {
+          console.log(error)
+        });
+      }
 }
