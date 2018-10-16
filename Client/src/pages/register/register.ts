@@ -62,16 +62,16 @@ export class RegisterPage {
         this.loaderCtrl.dismiss();
         switch (signUpRes.status) {
           case "success":
-            //if (this.imageURI !== "") {
+            if (this.imageURI !== "") {
               this.godfatherProvider.uploadProfileImage(this.form.value, signUpRes.data.id).then((observable: any) => {
                 observable.subscribe((profileImgRes: any) => {
                   this.presentResponse(signUpRes);
                 }).catch(e => console.log(e));
               }).catch(e => console.log(e));
-            //}
-            //else {
-             // this.presentResponse(signUpRes);
-           // }
+            }
+            else {
+              this.presentResponse(signUpRes);
+            }
             break;
           case "error":
           default:
