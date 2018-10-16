@@ -11,10 +11,10 @@ import {NewsListPage} from '../news-list';
     <ion-list>
       <ion-list-header>Acciones</ion-list-header>
         <div *ngIf="sessionUser === undefined">
-          <button (click)="pushLogin()">Iniciar sesion</button>
+          <button ion-item (click)="pushLogin()">Iniciar sesion</button>
         </div>
         <div *ngIf="sessionUser !== undefined">
-          <button (click)="logout()">Cerrar sesión</button>
+          <button ion-item (click)="logout()">Cerrar sesión</button>
         </div>
     </ion-list>
   `
