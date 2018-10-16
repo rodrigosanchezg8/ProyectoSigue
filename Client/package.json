@@ -83,7 +83,8 @@
       "cordova-plugin-filepath": {},
       "com-badrit-base64": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-advanced-http": {}
+      "cordova-plugin-advanced-http": {},
+      "cordova-plugin-camera": {}
     },
     "platforms": [
       "ios",

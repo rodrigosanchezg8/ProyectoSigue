@@ -63,7 +63,7 @@ export class GodsonsDetailPage {
             .then((observable:any) => {
               observable.subscribe(
                 (successResponse) => {
-                  console.log(successResponse);
+                  this.navCtrl.pop();
                 },
                 (errorResponse) => {
                   console.log(errorResponse);
