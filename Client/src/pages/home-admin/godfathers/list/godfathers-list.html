@@ -12,9 +12,9 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-list>
+  <ion-label *ngIf="godfathers.length === 0">{{ listDisplayMessage }}</ion-label>
+  <ion-list *ngIf="godfathers.length > 0">
     <ion-item-sliding *ngFor="let godfather of godfathers">
-
       <ion-item [navPush]="godfathersDetailPage" [navParams]="godfather">
         <ion-avatar item-start>
           <img src="{{ godfather.profile_image }}" width="40" height="40">
@@ -22,7 +22,7 @@
         <h2>{{ godfather.full_name }}</h2>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="primary" [navPush]="godfatherTopicsListPage" [navParams]="godfather">
+        <button ion-button color="primary" [navPush]="godfatherTopicsListPage" [navParams]="{ godfather: godfather }">
           <ion-icon name="text"></ion-icon>
           Temas
         </button>

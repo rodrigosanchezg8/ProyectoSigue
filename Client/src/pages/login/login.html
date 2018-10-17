@@ -33,8 +33,11 @@
   </ion-list>
 
   <div padding text-center>
-    <button ion-button (click)="signIn()">Entrar</button>
     <button ion-button (click)="adminDebugSignIn()">Entrar como admin</button>
   </div>
 
 </ion-content>
+
+<ion-footer no-shadow no-margin no-padding no-border no-lines>
+    <button ion-button full large (click)="signIn()">Entrar</button>
+</ion-footer>

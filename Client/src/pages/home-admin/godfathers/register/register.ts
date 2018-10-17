@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {
-  AlertController,
+  AlertController, Events,
   IonicPage, NavController,
   NavParams,
   ToastController
@@ -34,10 +34,12 @@ export class RegisterPage {
               private formBuilderCtrl: FormBuilder,
               public alertCtrl: AlertController,
               public navCtrl: NavController,
-              private loaderCtrl: Loader) {
+              private loaderCtrl: Loader,
+              private eventsCtrl: Events) {
     this.godfather = navParams.get('godfather');
     if (this.godfather) {
       this.isEditMode = true;
+      this.godfather.password = null;
     }
     else {
       this.godfather = new Godfather();
@@ -64,11 +66,9 @@ export class RegisterPage {
     new Promise((resolve, reject) => {
       this.loaderCtrl.present();
       if(this.isEditMode){
-        console.log('updategodfather');
         resolve(this.godfatherProvider.putGodfather(this.godfather));
       }
       else {
-        console.log('addgodfather');
         resolve(this.godfatherProvider.postGodfather(this.godfather));
       }
     }).then((observable: any) => {
@@ -76,7 +76,7 @@ export class RegisterPage {
         this.loaderCtrl.dismiss();
         switch (res.status) {
           case "success":
-            this.imageURI === "" ? this.presentResponse(res) : this.sendProfileImage(res);
+            this.imageURI === undefined ? this.presentResponse(res) : this.sendProfileImage(res);
             break;
           case "error":
           default:
@@ -88,8 +88,9 @@ export class RegisterPage {
 
 
   sendProfileImage(res: any) {
-    if (this.imageURI !== "") {
+    if (this.imageURI !== undefined) {
       this.loaderCtrl.present();
+      console.log(res);
       this.godfatherProvider.uploadProfileImage(this.form.value, res.data.id).then((observable: any) => {
         observable.subscribe((profileImgRes: any) => {
           this.loaderCtrl.dismiss();
@@ -125,25 +126,42 @@ export class RegisterPage {
   }
 
   presentResponse(response) {
-    let self = this;
-    let messages = "";
-    for (let i = 0; i < response["messages"].length; i++) {
-      messages += response["messages"][i];
-      if (response["messages"].length > 1 && response["status"] == "error") messages += "<br>";
-    }
     let alert = this.alertCtrl.create({
       title: response["header"],
-      subTitle: messages,
+      subTitle: this.parseResponseMessages(response),
       buttons: [
         {
           text: 'OK',
           handler: () => {
-            if (response["status"] == "success") self.navCtrl.pop();
+            if (response["status"] == "success") {
+              alert.dismiss().then(() => {
+
+                if(this.isEditMode)
+                  this.publishUpdatedEvent();
+
+                this.navCtrl.pop();
+
+              });
+            }
+            return false;
           }
         }
       ]
     });
     alert.present();
+  }
+
+  parseResponseMessages(response){
+    let messages = "";
+    for (let i = 0; i < response["messages"].length; i++) {
+      messages += response["messages"][i];
+      if (response["messages"].length > 1 && response["status"] == "error") messages += "<br>";
+    }
+    return messages;
+  }
+
+  publishUpdatedEvent(){
+    this.eventsCtrl.publish('godfather:updated', this.godfather.id);
   }
 
   presentToast(msg) {

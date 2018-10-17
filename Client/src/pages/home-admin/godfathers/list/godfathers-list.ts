@@ -13,16 +13,16 @@ import {Godfather} from "../../../../models/godfather";
 })
 export class GodfathersPage {
 
-  godfathersDetailPage: any;
-  godfatherTopicsListPage: any;
-
   godfathers: Godfather[] = [];
+  listDisplayMessage: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
-              private godfatherProvider: GodfatherProvider) {
-    this.godfathersDetailPage = GodfathersDetailPage;
-    this.godfatherTopicsListPage = GodfatherTopicsListPage;
-  }
+  godfathersDetailPage = GodfathersDetailPage;
+  godfatherTopicsListPage = GodfatherTopicsListPage;
+
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public popoverCtrl: PopoverController,
+              private godfatherProvider: GodfatherProvider) {}
 
   ionViewDidEnter(){
     console.log('ionViewDidEnter GodfathersPage');
@@ -30,9 +30,11 @@ export class GodfathersPage {
   }
 
   fillGodfathers(){
+    this.listDisplayMessage = "Cargando padrinos...";
     this.godfatherProvider.getGodfathers().then((observable: any) => {
       observable.subscribe((data: Godfather[]) => {
         this.godfathers = data;
+        this.listDisplayMessage = this.godfathers.length === 0 ? "Aún no has agregado padrinos." : "";
       });
     });
   }

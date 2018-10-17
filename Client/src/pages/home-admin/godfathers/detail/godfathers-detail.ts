@@ -28,16 +28,15 @@ export class GodfathersDetailPage {
     this.godfather = this.navParams.data;
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad GodfathersDetailPage');
-  }
 
   ionViewDidEnter(){
     this.subscribeDeleteGodfather();
+    this.subscribeUpdatedGodfather();
   }
 
   ionViewDidLeave(){
     this.events.unsubscribe('godfather:delete');
+    this.events.unsubscribe('godfather:updated');
   }
 
   presentPopover(event) {
@@ -51,6 +50,17 @@ export class GodfathersDetailPage {
     this.events.subscribe('godfather:delete', () => {
       this.deleteGodfather();
     })
+  }
+
+  subscribeUpdatedGodfather(){
+    this.events.subscribe('godfather:updated', (id) => {
+      this.godfatherProvider.getGodfather(id).then((observable: any) => {
+        observable.subscribe(res => {
+          console.log(res);
+          this.godfather = res.godfather;
+        });
+      })
+    });
   }
 
   deleteGodfather(){

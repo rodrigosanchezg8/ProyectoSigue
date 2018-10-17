@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Nuevo padrino</ion-title>
+    <ion-title>{{ isEditMode ? 'Editar padrino' : 'Nuevo padrino' }}</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -15,7 +15,7 @@
 
 <ion-content padding>
 
-  <ion-img src="{{ assets?.children }}" width="300" height="300" text-center class="center transparent"></ion-img>
+  <ion-img src="{{ isEditMode ? godfather.profile_image : assets?.children }}" width="300" height="300" text-center class="center transparent"></ion-img>
 
   <ion-list>
     <ion-item>
@@ -57,7 +57,7 @@
   </ion-list>
 
   <div padding text-center="true">
-    <button ion-button (click)="sendRequest()">Registrar</button>
+    <button ion-button (click)="sendRequest()">Guardar</button>
   </div>
 
 </ion-content>

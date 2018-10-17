@@ -14,16 +14,20 @@ export class GodfatherProvider {
     console.log('Hello GodfatherProvider Provider');
   }
 
+  getGodfathers() {
+    return this.singletonService.get(this.GODFATHER_URL);
+  }
+
+  getGodfather(id){
+    return this.singletonService.get(this.GODFATHER_URL + "/" + id);
+  }
+
   postGodfather(godfather: Godfather) {
     return this.singletonService.post(this.GODFATHER_URL, godfather);
   }
 
   putGodfather(godfather: Godfather) {
     return this.singletonService.put(this.GODFATHER_URL + "/" + godfather.id, godfather);
-  }
-
-  getGodfathers() {
-    return this.singletonService.get(this.GODFATHER_URL);
   }
 
   uploadProfileImage(formModel, userId) {

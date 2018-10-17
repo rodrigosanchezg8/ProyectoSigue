@@ -34,7 +34,7 @@ export class GodfatherTopicsListPage {
               private threadProvider: ThreadProvider, public events: Events, public alertCtrl: AlertController,
               private loaderCtrl: Loader) {
     this.threads = [];
-    this.godfather = this.navParams.data;
+    this.godfather = this.navParams.get('godfather');
     this.godfatherTopicDetailPage = GodfatherTopicDetailPage;
   }
 
