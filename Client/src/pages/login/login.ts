@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
-import { RegisterPage } from "../register/register";
+import { RegisterPage } from "../home-admin/godfathers/register/register";
 import { AdminTabsPage } from "../home-admin/tabs/admin-tabs";
 import { UserProvider } from "../../providers/user/user";
 import { NativeStorage } from '@ionic-native/native-storage';
@@ -58,14 +58,6 @@ export class LoginPage {
   }
 
   adminDebugSignIn() {
-    // this.userProvider.login(this.email, this.password).subscribe(
-    //   (success) => {
-    //     console.log(success);
-    //   },
-    //   (error) => {
-    //     console.log(error); 
-    //   }
-    // );
     let self = this;
     this.loader.present();
     this.userProvider.validateUser("coordinacion@proyectosigue.com.mx", "123456").then((observable: any) => {

@@ -7,9 +7,9 @@ import {
 } from 'ionic-angular';
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {FormBuilder, FormGroup} from "@angular/forms";
-import {UserProvider} from "../../providers/user/user";
-import {GodfatherProvider} from "../../providers/godfather/godfather";
-import {Loader} from "../../traits/Loader";
+import {GodfatherProvider} from "../../../../providers/godfather/godfather";
+import {Loader} from "../../../../traits/Loader";
+import {Godfather} from "../../../../models/godfather";
 
 @IonicPage()
 @Component({
@@ -18,29 +18,40 @@ import {Loader} from "../../traits/Loader";
 })
 export class RegisterPage {
 
-  first_name: string = "";
-  last_name: string = "";
-  interests: string = "";
-  password: string = "";
-  email: string = "";
-  profile_image: string = "";
+  godfather: Godfather;
   imageURI: any;
   imageData: any;
   form: FormGroup;
   assets: string[] = [];
+  isEditMode: boolean;
 
   @ViewChild('fileInput') fileInput: ElementRef;
 
-  constructor(public navParams: NavParams, private camera: Camera,
-              public toastCtrl: ToastController, private godfatherProvider: GodfatherProvider,
-              private formBuilderCtrl: FormBuilder, private userProvider: UserProvider, public alertCtrl: AlertController,
-              public navCtrl: NavController, private loaderCtrl: Loader) {
+  constructor(public navParams: NavParams,
+              private camera: Camera,
+              public toastCtrl: ToastController,
+              private godfatherProvider: GodfatherProvider,
+              private formBuilderCtrl: FormBuilder,
+              public alertCtrl: AlertController,
+              public navCtrl: NavController,
+              private loaderCtrl: Loader) {
+    this.godfather = navParams.get('godfather');
+    if (this.godfather) {
+      this.isEditMode = true;
+    }
+    else {
+      this.godfather = new Godfather();
+      this.isEditMode = false;
+    }
+  }
+
+  ionViewWillEnter() {
     this.createForm();
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RegisterPage');
-    this.assets['children'] = this.userProvider.singletonService.API + "storage/assets/children.png";
+    this.assets['children'] = this.godfatherProvider.singletonService.API + "storage/assets/children.png";
   }
 
   createForm() {
@@ -49,36 +60,45 @@ export class RegisterPage {
     });
   }
 
-  signUp() {
-
-    let userData = {
-      "first_name": this.first_name, "password": this.password, "email": this.email,
-      "last_name": this.last_name, "interests": this.interests, "profile_image": this.profile_image
-    };
-
-    this.loaderCtrl.present();
-    this.userProvider.signUp(userData).then((observable: any) => {
-      observable.subscribe((signUpRes: any) => {
+  sendRequest() {
+    new Promise((resolve, reject) => {
+      this.loaderCtrl.present();
+      if(this.isEditMode){
+        console.log('updategodfather');
+        resolve(this.godfatherProvider.putGodfather(this.godfather));
+      }
+      else {
+        console.log('addgodfather');
+        resolve(this.godfatherProvider.postGodfather(this.godfather));
+      }
+    }).then((observable: any) => {
+      observable.subscribe((res: any) => {
         this.loaderCtrl.dismiss();
-        switch (signUpRes.status) {
+        switch (res.status) {
           case "success":
-            if (this.imageURI !== "") {
-              this.godfatherProvider.uploadProfileImage(this.form.value, signUpRes.data.id).then((observable: any) => {
-                observable.subscribe((profileImgRes: any) => {
-                  this.presentResponse(signUpRes);
-                }).catch(e => console.log(e));
-              }).catch(e => console.log(e));
-            }
-            else {
-              this.presentResponse(signUpRes);
-            }
+            this.imageURI === "" ? this.presentResponse(res) : this.sendProfileImage(res);
             break;
           case "error":
           default:
-            this.presentResponse(signUpRes);
+            this.presentResponse(res);
         }
       });
     });
+  }
+
+
+  sendProfileImage(res: any) {
+    if (this.imageURI !== "") {
+      this.loaderCtrl.present();
+      this.godfatherProvider.uploadProfileImage(this.form.value, res.data.id).then((observable: any) => {
+        observable.subscribe((profileImgRes: any) => {
+          this.loaderCtrl.dismiss();
+          this.presentResponse(res);
+        });
+      }).catch(e => {
+        this.loaderCtrl.dismiss();
+      });
+    }
   }
 
   getImage() {

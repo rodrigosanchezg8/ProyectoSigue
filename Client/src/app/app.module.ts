@@ -9,7 +9,7 @@ import { NativeStorage } from '@ionic-native/native-storage';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LoginPage } from "../pages/login/login";
-import { RegisterPage } from "../pages/register/register";
+import { RegisterPage } from "../pages/home-admin/godfathers/register/register";
 import { HomeAdminPage } from '../pages/home-admin/home-admin'
 import { HomeUserPage } from '../pages/home-godfather/home-godfather'
 import { AdminTabsPage } from '../pages/home-admin/tabs/admin-tabs';
@@ -17,9 +17,9 @@ import { GodfathersPage } from "../pages/home-admin/godfathers/list/godfathers-l
 import { GodfathersPopoverPage } from "../pages/home-admin/godfathers/list/godfathers-popover/godfathers-popover";
 import { GodfathersDetailPage } from "../pages/home-admin/godfathers/detail/godfathers-detail";
 import { GodfathersDetailPopoverPage } from "../pages/home-admin/godfathers/detail/popover/godfathers-detail-popover";
-import { GodfatherTopicsListPage } from "../pages/home-admin/godfathers/topics/list/godfather-topics-list";
-import { GodfatherTopicsListPopoverPage } from "../pages/home-admin/godfathers/topics/list/popover/godfather-topics-list-popover";
-import { GodfatherTopicDetailPage } from "../pages/home-admin/godfathers/topics/detail/godfather-topic-detail";
+import { GodfatherTopicsListPage } from "../pages/topics/list/godfather-topics-list";
+import { GodfatherTopicsListPopoverPage } from "../pages/topics/list/popover/godfather-topics-list-popover";
+import { GodfatherTopicDetailPage } from "../pages/topics/detail/godfather-topic-detail";
 import { GodsonsPage } from "../pages/home-admin/godsons/list/godsons-list";
 import { GodsonsPopoverPage } from "../pages/home-admin/godsons/list/popover/godsons-popover";
 import { GodsonsDetailPage } from "../pages/home-admin/godsons/detail/godsons-detail";
@@ -41,7 +41,7 @@ import {FileChooser} from "@ionic-native/file-chooser";
 import {FilePath} from "@ionic-native/file-path";
 import {Base64} from "@ionic-native/base64";
 import { FileProvider } from '../providers/file/file';
-import {TopicsDetailPopoverPage} from "../pages/home-admin/godfathers/topics/detail/popover/topics-detail-popover";
+import {TopicsDetailPopoverPage} from "../pages/topics/detail/popover/topics-detail-popover";
 import { NewsListPage } from "../pages/news/list/news-list";
 import {SocketIoConfig, SocketIoModule } from "ng-socket-io";
 import {NewsListPopoverPage} from "../pages/news/list/news-list-popover/news-list-popover";

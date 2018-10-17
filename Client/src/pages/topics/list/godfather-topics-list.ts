@@ -8,10 +8,10 @@ import {
   PopoverController
 } from 'ionic-angular';
 import {GodfatherTopicsListPopoverPage} from "./popover/godfather-topics-list-popover";
-import {ThreadProvider} from "../../../../../providers/thread/thread";
+import {ThreadProvider} from "../../../providers/thread/thread";
 import {GodfatherTopicDetailPage} from "../detail/godfather-topic-detail";
-import {Thread} from "../../../../../models/thread";
-import {Loader} from "../../../../../traits/Loader";
+import {Thread} from "../../../models/thread";
+import {Loader} from "../../../traits/Loader";
 import {Observer, Subscription} from "rxjs";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
 

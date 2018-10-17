@@ -1,36 +1,38 @@
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { NativeStorage } from "@ionic-native/native-storage";
-import { Singleton } from "../singleton/singleton";
-import {Platform} from "ionic-angular";
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Singleton} from "../singleton/singleton";
+import {Godfather} from "../../models/godfather";
 
 @Injectable()
 export class GodfatherProvider {
 
-  GET_GODFATHERS: string;
   UPLOAD_PROFILE_IMAGE: string;
-  DELETE_GODFATHER: string;
+  GODFATHER_URL = "godfathers";
 
-  constructor(
-    public http: HttpClient, 
-    private singletonService: Singleton
-  ) {
+  constructor(public http: HttpClient,
+              public singletonService: Singleton) {
     console.log('Hello GodfatherProvider Provider');
-    this.GET_GODFATHERS = "godfathers";
   }
 
-  getGodfathers(){
-    return this.singletonService.get(this.GET_GODFATHERS);
+  postGodfather(godfather: Godfather) {
+    return this.singletonService.post(this.GODFATHER_URL, godfather);
   }
 
-  uploadProfileImage(formModel, userId){
+  putGodfather(godfather: Godfather) {
+    return this.singletonService.put(this.GODFATHER_URL + "/" + godfather.id, godfather);
+  }
+
+  getGodfathers() {
+    return this.singletonService.get(this.GODFATHER_URL);
+  }
+
+  uploadProfileImage(formModel, userId) {
     this.UPLOAD_PROFILE_IMAGE = "/godfathers/" + userId + "/upload-profile-image";
     return this.singletonService.post(this.UPLOAD_PROFILE_IMAGE, formModel);
   }
 
-  deleteGodfather(userId){
-    this.DELETE_GODFATHER = "godfathers/" + userId;
-    return this.singletonService.delete(this.DELETE_GODFATHER);
+  deleteGodfather(userId) {
+    return this.singletonService.delete("godfathers/" + userId);
   }
 
 }

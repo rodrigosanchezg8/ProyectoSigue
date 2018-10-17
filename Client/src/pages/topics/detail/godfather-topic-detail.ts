@@ -8,13 +8,13 @@ import {
   NavParams,
   PopoverController
 } from 'ionic-angular';
-import {ThreadProvider} from "../../../../../providers/thread/thread";
-import {Thread} from "../../../../../models/thread";
-import {Message} from "../../../../../models/message";
+import {ThreadProvider} from "../../../providers/thread/thread";
+import {Thread} from "../../../models/thread";
+import {Message} from "../../../models/message";
 import {Observable, Subscription} from "rxjs";
-import {Godfather} from "../../../../../models/godfather";
+import {Godfather} from "../../../models/godfather";
 import {NativeStorage} from "@ionic-native/native-storage";
-import {Loader} from "../../../../../traits/Loader";
+import {Loader} from "../../../traits/Loader";
 import {Camera} from "@ionic-native/camera";
 import {FormBuilder} from "@angular/forms";
 import {FileTransfer, FileTransferObject} from "@ionic-native/file-transfer";
@@ -22,7 +22,7 @@ import {File} from '@ionic-native/file';
 import {FileChooser} from "@ionic-native/file-chooser";
 import {FilePath} from "@ionic-native/file-path";
 import {Base64} from "@ionic-native/base64";
-import {FileProvider} from "../../../../../providers/file/file";
+import {FileProvider} from "../../../providers/file/file";
 import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 import {Socket} from "ng-socket-io";
 import {HttpClient} from "@angular/common/http";

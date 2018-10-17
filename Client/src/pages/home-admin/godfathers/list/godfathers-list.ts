@@ -3,7 +3,7 @@ import {IonicPage, NavController, NavParams, PopoverController} from 'ionic-angu
 import {GodfathersPopoverPage} from "./godfathers-popover/godfathers-popover";
 import {GodfathersDetailPage} from "../detail/godfathers-detail";
 import {GodfatherProvider} from "../../../../providers/godfather/godfather";
-import {GodfatherTopicsListPage} from "../topics/list/godfather-topics-list";
+import {GodfatherTopicsListPage} from "../../../topics/list/godfather-topics-list";
 import {Godfather} from "../../../../models/godfather";
 
 @IonicPage()

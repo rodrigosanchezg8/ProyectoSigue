@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Proyecto Sigue - Registro</ion-title>
+    <ion-title>Nuevo padrino</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -20,27 +20,27 @@
   <ion-list>
     <ion-item>
       <ion-label floating>Nombre/s</ion-label>
-      <ion-input type="text" name="first_name" [(ngModel)]="first_name"></ion-input>
+      <ion-input type="text" name="first_name" [(ngModel)]="godfather.first_name"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Apellidos</ion-label>
-      <ion-input type="text" name="last_name" [(ngModel)]="last_name"></ion-input>
+      <ion-input type="text" name="last_name" [(ngModel)]="godfather.last_name"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Correo</ion-label>
-      <ion-input type="email" name="email" [(ngModel)]="email"></ion-input>
+      <ion-input type="email" name="email" [(ngModel)]="godfather.email"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Intereses</ion-label>
-      <ion-input type="text" name="interests" [(ngModel)]="interests"></ion-input>
+      <ion-input type="text" name="interests" [(ngModel)]="godfather.interests"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label floating>Contraseña</ion-label>
-      <ion-input type="password" name="password" [(ngModel)]="password"></ion-input>
+      <ion-input type="password" name="password" [(ngModel)]="godfather.password"></ion-input>
     </ion-item>
 
 
@@ -57,7 +57,7 @@
   </ion-list>
 
   <div padding text-center="true">
-    <button ion-button (click)="signUp()">Registrar</button>
+    <button ion-button (click)="sendRequest()">Registrar</button>
   </div>
 
 </ion-content>

@@ -11,7 +11,6 @@ import {
 import {GodfathersDetailPopoverPage} from "./popover/godfathers-detail-popover";
 import {GodfatherProvider} from "../../../../providers/godfather/godfather";
 import {Godfather} from "../../../../models/godfather";
-import {GodfatherTopicDetailPage} from "../topics/detail/godfather-topic-detail";
 import {Loader} from "../../../../traits/Loader";
 
 @IonicPage()
