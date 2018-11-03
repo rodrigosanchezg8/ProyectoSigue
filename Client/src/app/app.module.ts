@@ -45,8 +45,23 @@ import {TopicsDetailPopoverPage} from "../pages/topics/detail/popover/topics-det
 import { NewsListPage } from "../pages/news/list/news-list";
 import {SocketIoConfig, SocketIoModule } from "ng-socket-io";
 import {NewsListPopoverPage} from "../pages/news/list/news-list-popover/news-list-popover";
+import {LocalNotifications} from "@ionic-native/local-notifications";
+import {BackgroundMode} from "@ionic-native/background-mode";
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { Firebase } from '@ionic-native/firebase';
+import {FcmProvider} from "../providers/fcm/fcm";
 
-const config: SocketIoConfig = { url: "http://192.168.43.138:3001", options: {} };
+const config: SocketIoConfig = { url: "http://192.168.1.69:3001", options: {} };
+
+const firebase = {
+  apiKey: "AIzaSyD8fiT_kktU1S10M1AhVeguw2iSb6tiFqQ",
+  authDomain: "proyecto-sigue.firebaseapp.com",
+  databaseURL: "https://proyecto-sigue.firebaseio.com",
+  projectId: "proyecto-sigue",
+  storageBucket: "proyecto-sigue.appspot.com",
+  messagingSenderId: "582783243751"
+};
 
 @NgModule({
   declarations: [
@@ -80,6 +95,8 @@ const config: SocketIoConfig = { url: "http://192.168.43.138:3001", options: {} 
     HttpClientModule,
     FormsModule,
     TruncateModule,
+    AngularFireModule.initializeApp(firebase),
+    AngularFirestoreModule,
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -123,7 +140,11 @@ const config: SocketIoConfig = { url: "http://192.168.43.138:3001", options: {} 
     FileChooser,
     FilePath,
     Base64,
-    FileProvider
+    FileProvider,
+    LocalNotifications,
+    BackgroundMode,
+    Firebase,
+    FcmProvider
   ]
 })
 export class AppModule {}

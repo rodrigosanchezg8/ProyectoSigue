@@ -1,21 +1,39 @@
-import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
+import {Component} from '@angular/core';
+import {Platform, ToastController} from 'ionic-angular';
+import {StatusBar} from '@ionic-native/status-bar';
+import {SplashScreen} from '@ionic-native/splash-screen';
 import {NewsListPage} from "../pages/news/list/news-list";
+import {FcmProvider} from "../providers/fcm/fcm";
+import {tap} from "rxjs/operators";
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = NewsListPage;
+  rootPage: any = NewsListPage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(platform: Platform,
+              statusBar: StatusBar,
+              splashScreen: SplashScreen,
+              fcm: FcmProvider,
+              toastCtrl: ToastController) {
+
     platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
+
       statusBar.styleDefault();
       splashScreen.hide();
+
+      fcm.getToken();
+      fcm.listenToNotifications().pipe(
+        tap(msg => {
+          const toast = toastCtrl.create({
+            message: msg.body,
+            duration: 3000
+          });
+          toast.present();
+        })
+      ).subscribe();
+
     });
   }
 }

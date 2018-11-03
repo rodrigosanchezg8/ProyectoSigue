@@ -1,4 +1,7 @@
-import {AlertController, IonicPage, NavController, NavParams, PopoverController, ToastController} from 'ionic-angular';
+import {
+  AlertController, IonicPage, NavController, NavParams, Platform, PopoverController,
+  ToastController
+} from 'ionic-angular';
 import {Camera, CameraOptions} from "@ionic-native/camera";
 import {Component} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -9,6 +12,7 @@ import {NativeStorage} from "@ionic-native/native-storage";
 import { New } from "../../../models/new";
 import {NewProvider} from "../../../providers/new/new";
 import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
+import {BackgroundMode} from "@ionic-native/background-mode";
 
 @IonicPage()
 @Component({
@@ -31,8 +35,9 @@ export class NewsListPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
               private newsProvider: NewProvider, private nativeStorage: NativeStorage, private toastCtrl: ToastController,
               private formBuilderCtrl: FormBuilder, private camera: Camera, public alertCtrl: AlertController,
-              private loader: Loader, private loaderCtrl: Loader) {
+              private loader: Loader, private loaderCtrl: Loader, private backgroundMode: BackgroundMode, private platform: Platform) {
     this.createForm();
+    this.platform.ready().then((ready) => this.background());
   }
 
   ionViewDidLoad() {
@@ -175,6 +180,16 @@ export class NewsListPage {
     this.new_image = "";
     this.imageURI = "";
     this.imageData = "";
+  }
+
+  background(){
+    console.log("ENTRE A BACKGROUND");
+    this.backgroundMode.enable();
+    this.backgroundMode.on("activate").subscribe(() => {
+      setInterval(() => {
+        console.log("I AM ON BACKGROUND MODE");
+      }, 3000)
+    });
   }
 
 }

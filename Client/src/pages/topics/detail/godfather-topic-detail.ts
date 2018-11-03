@@ -5,7 +5,7 @@ import {
   IonicPage,
   MenuController,
   NavController,
-  NavParams,
+  NavParams, Platform,
   PopoverController
 } from 'ionic-angular';
 import {ThreadProvider} from "../../../providers/thread/thread";
@@ -26,6 +26,9 @@ import {FileProvider} from "../../../providers/file/file";
 import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 import {Socket} from "ng-socket-io";
 import {HttpClient} from "@angular/common/http";
+import {LocalNotifications} from "@ionic-native/local-notifications";
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/from';
 
 @IonicPage()
 @Component({
@@ -41,17 +44,42 @@ export class GodfatherTopicDetailPage {
   messagesSubscription: Subscription;
   fileTransfer: FileTransferObject;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private threadProvider: ThreadProvider,
-              private nativeStorage: NativeStorage, private loader: Loader, private camera: Camera,
-              private formBuilderCtrl: FormBuilder, private transfer: FileTransfer, private file: File,
-              private fileChooser: FileChooser, private filePath: FilePath, private base64: Base64,
-              private fileProvider: FileProvider, public popoverCtrl: PopoverController, public events: Events,
-              private menuCtrl: MenuController, private socket: Socket, private httpClient: HttpClient,
-              private alertCtrl: AlertController) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              private threadProvider: ThreadProvider,
+              private nativeStorage: NativeStorage,
+              private loader: Loader,
+              private camera: Camera,
+              private formBuilderCtrl: FormBuilder,
+              private transfer: FileTransfer,
+              private file: File,
+              private fileChooser: FileChooser,
+              private filePath: FilePath,
+              private base64: Base64,
+              private fileProvider: FileProvider,
+              public popoverCtrl: PopoverController,
+              public events: Events,
+              private menuCtrl: MenuController,
+              private socket: Socket,
+              private httpClient: HttpClient,
+              private alertCtrl: AlertController,
+              private localNotifications: LocalNotifications,
+              private platform: Platform) {
     //this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
+
+    this.platform.ready().then((ready) => {
+      this.localNotifications.on('click').subscribe((notification) => {
+        let alert = this.alertCtrl.create({
+          title: notification.title,
+          subTitle: notification.data.mydata
+        });
+        alert.present();
+      });
+    });
+
   }
 
   ngOnInit() {
@@ -88,6 +116,13 @@ export class GodfatherTopicDetailPage {
       this.openMenu();
       this.toggleMenu();
     })
+  }
+
+  presentPopover(event) {
+    let popover = this.popoverCtrl.create(TopicsDetailPopoverPage);
+    popover.present({
+      ev: event
+    });
   }
 
   getMessages() {
@@ -179,31 +214,13 @@ export class GodfatherTopicDetailPage {
     });
   }
 
-  presentPopover(event) {
-    let popover = this.popoverCtrl.create(TopicsDetailPopoverPage);
-    popover.present({
-      ev: event
-    });
-  }
-
-  openMenu() {
-    this.menuCtrl.open('right').then((opened) => {
-      this.threadProvider.getThreadFiles(this.thread.id).then((observable: any) => {
-        observable.subscribe((data: any) => {
-          this.files = data;
-        });
-      })
-    });
-  }
-
-  // TODO Regresar el get del httpclient desde un provider
+  // TODO Simplicar código y regresar el get del httpclient desde un provider
   downloadFile(file) {
     let encodedURI = encodeURI(this.threadProvider.API + "files/" + file.id + "/download");
     this.loader.present("Descargando archivo...");
 
     let alertTitle = "", alertSubtitle = "";
-    this.httpClient.get(encodedURI, {responseType: 'blob'})
-      .flatMap((data: Blob) => {
+    this.httpClient.get(encodedURI, {responseType: 'blob'}).flatMap((data: Blob) => {
         return Observable.from(this.file.writeFile(this.file.externalRootDirectory + "/Download", file.name,
           data, {replace: true}))
       }).subscribe(response => {
@@ -224,6 +241,27 @@ export class GodfatherTopicDetailPage {
           ]
         }).present();
       });
+  }
+
+  scheduleNotification(){
+    this.localNotifications.schedule({
+      id: 1,
+      title: 'Attention',
+      text: 'Aldo Notification',
+      trigger: { at: new Date(new Date().getTime() + 5 * 1000)},
+      data: { mydata: 'This is my hidden message' }
+    });
+    console.log(this.localNotifications);
+  }
+
+  openMenu() {
+    this.menuCtrl.open('right').then((opened) => {
+      this.threadProvider.getThreadFiles(this.thread.id).then((observable: any) => {
+        observable.subscribe((data: any) => {
+          this.files = data;
+        });
+      })
+    });
   }
 
   toggleMenu() {
