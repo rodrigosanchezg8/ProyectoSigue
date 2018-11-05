@@ -26,7 +26,6 @@ import {FileProvider} from "../../../providers/file/file";
 import {TopicsDetailPopoverPage} from "./popover/topics-detail-popover";
 import {Socket} from "ng-socket-io";
 import {HttpClient} from "@angular/common/http";
-import {LocalNotifications} from "@ionic-native/local-notifications";
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/from';
 
@@ -63,21 +62,19 @@ export class GodfatherTopicDetailPage {
               private socket: Socket,
               private httpClient: HttpClient,
               private alertCtrl: AlertController,
-              private localNotifications: LocalNotifications,
               private platform: Platform) {
-    //this.message = new Message();
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
 
     this.platform.ready().then((ready) => {
-      this.localNotifications.on('click').subscribe((notification) => {
-        let alert = this.alertCtrl.create({
-          title: notification.title,
-          subTitle: notification.data.mydata
-        });
-        alert.present();
-      });
+
+      if (this.sessionUser === undefined) {
+        this.nativeStorage.getItem("session").then(res => {
+          this.sessionUser = res.user;
+        }).catch(e => console.log(e));
+      }
+
     });
 
   }
@@ -88,11 +85,6 @@ export class GodfatherTopicDetailPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GodfatherTopicDetailPage');
-    if (this.sessionUser === undefined) {
-      this.nativeStorage.getItem("session").then(res => {
-        this.sessionUser = res.user;
-      }).catch(e => console.log(e));
-    }
   }
 
   ionViewDidEnter() {
@@ -168,6 +160,10 @@ export class GodfatherTopicDetailPage {
 
   sendMessage() {
     this.loader.present();
+
+    this.message.user_id_receiver = this.thread.user_id_issuing === this.sessionUser.id ?
+      this.thread.user_id_receiver : this.thread.user_id_issuing;
+
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
         observable.subscribe((response) => {
@@ -241,17 +237,6 @@ export class GodfatherTopicDetailPage {
           ]
         }).present();
       });
-  }
-
-  scheduleNotification(){
-    this.localNotifications.schedule({
-      id: 1,
-      title: 'Attention',
-      text: 'Aldo Notification',
-      trigger: { at: new Date(new Date().getTime() + 5 * 1000)},
-      data: { mydata: 'This is my hidden message' }
-    });
-    console.log(this.localNotifications);
   }
 
   openMenu() {

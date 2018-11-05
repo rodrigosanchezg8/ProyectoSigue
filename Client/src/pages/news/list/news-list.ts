@@ -37,7 +37,7 @@ export class NewsListPage {
               private formBuilderCtrl: FormBuilder, private camera: Camera, public alertCtrl: AlertController,
               private loader: Loader, private loaderCtrl: Loader, private backgroundMode: BackgroundMode, private platform: Platform) {
     this.createForm();
-    this.platform.ready().then((ready) => this.background());
+    //this.platform.ready().then((ready) => this.background());
   }
 
   ionViewDidLoad() {
@@ -183,13 +183,13 @@ export class NewsListPage {
   }
 
   background(){
-    console.log("ENTRE A BACKGROUND");
+   /* console.log("ENTRE A BACKGROUND");
     this.backgroundMode.enable();
     this.backgroundMode.on("activate").subscribe(() => {
       setInterval(() => {
         console.log("I AM ON BACKGROUND MODE");
       }, 3000)
-    });
+    });*/
   }
 
 }

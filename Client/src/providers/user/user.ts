@@ -6,12 +6,19 @@ import {Singleton} from "../singleton/singleton";
 export class UserProvider {
 
   LOGIN = "login";
+  BASE_URL = "users";
 
   constructor(public http: HttpClient, public singletonService: Singleton) {}
 
   validateUser(email, password){
     let userData = { "email": email, "password": password };
     return this.singletonService.post(this.LOGIN, userData, false);
+  }
+
+  updateFCMToken(id, token){
+    let tokenData = { "fcm_token": token };
+    let url = this.BASE_URL + "/" + id + "/fcm";
+    return this.singletonService.put(url, tokenData, true);
   }
 
 }

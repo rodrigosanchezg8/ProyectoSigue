@@ -23,7 +23,6 @@ export class MyApp {
       statusBar.styleDefault();
       splashScreen.hide();
 
-      fcm.getToken();
       fcm.listenToNotifications().pipe(
         tap(msg => {
           const toast = toastCtrl.create({

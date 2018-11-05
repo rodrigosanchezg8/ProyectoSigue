@@ -5,6 +5,7 @@ export class Message {
   body: string;
   thread_id: number;
   user_id_replier: number;
+  user_id_receiver: number;
   status: boolean;
   created_at: Date;
   updated_at: Date;

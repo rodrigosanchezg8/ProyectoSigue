@@ -31,14 +31,14 @@ export class ThreadProvider extends Singleton {
     this.DELETE_THREAD = "threads/" + id;
     return this.singletonService.delete(this.DELETE_THREAD);
   }
-  
+
   deleteAllUserThreads(id: Number){
     this.DELETE_ALL_USER_THREADS = "threads/" + id + "/delete-all";
     return this.singletonService.delete(this.DELETE_ALL_USER_THREADS);
   }
 
-  storeThreadMessage(receiverId: Number, threadId: Number, data: object){
-    this.STORE_THREAD_MESSAGE = "message/" + threadId + "/user/" + receiverId;
+  storeThreadMessage(replierId: Number, threadId: Number, data: object){
+    this.STORE_THREAD_MESSAGE = "message/" + threadId + "/user/" + replierId;
     return this.singletonService.post(this.STORE_THREAD_MESSAGE, data);
   }
 

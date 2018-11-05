@@ -36,24 +36,15 @@ export class FcmProvider {
       await this.firebaseNative.grantPermission();
     }
 
-    return this.saveTokenToFirestore(token)
-  }
-
-  private saveTokenToFirestore(token) {
-    if (!token) return;
-
-    const devicesRef = this.afs.collection('devices')
-
-    const docData = {
-      token,
-      userId: 'testUser',
-    }
-
-    return devicesRef.doc(token).set(docData)
+    return token;
   }
 
   listenToNotifications() {
     return this.firebaseNative.onNotificationOpen()
+  }
+
+  listenToOnTokenRefresh(){
+    return this.firebaseNative.onTokenRefresh();
   }
 
 }
