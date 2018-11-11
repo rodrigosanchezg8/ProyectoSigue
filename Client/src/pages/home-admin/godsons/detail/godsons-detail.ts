@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { 
-  ActionSheetController, 
-  IonicPage, 
-  NavController, 
-  NavParams, 
+import {
+  ActionSheetController,
+  IonicPage,
+  NavController,
+  NavParams,
   ViewController,
   App
 } from 'ionic-angular';
@@ -27,12 +27,12 @@ export class GodsonsDetailPage {
   godson: any;
 
   constructor(
-    public navCtrl: NavController,
-    public viewCtrl: ViewController,
-    public navParams: NavParams,
+    private godsonProvider: GodsonProvider,
     public actionSheetCtrl: ActionSheetController,
     public appCtrl: App,
-    private godsonProvider: GodsonProvider
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public viewCtrl: ViewController
   ) {
     this.godson = this.navParams.data;
   }

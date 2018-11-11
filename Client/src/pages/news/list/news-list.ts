@@ -1,14 +1,15 @@
-import {AlertController, IonicPage, NavController, NavParams, PopoverController, ToastController} from 'ionic-angular';
-import {Camera, CameraOptions} from "@ionic-native/camera";
-import {Component} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {Godfather} from "../../../models/godfather";
+import { AlertController, IonicPage, NavController, NavParams, PopoverController, ToastController } from 'ionic-angular';
+import { Camera, CameraOptions } from "@ionic-native/camera";
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { Godfather } from "../../../models/godfather";
 import { GodfatherProvider } from "../../../providers/godfather/godfather";
-import {Loader} from "../../../traits/Loader";
-import {NativeStorage} from "@ionic-native/native-storage";
+import { Loader } from "../../../traits/Loader";
+import { NativeStorage } from "@ionic-native/native-storage";
 import { New } from "../../../models/new";
-import {NewProvider} from "../../../providers/new/new";
+import { NewProvider } from "../../../providers/new/new";
 import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
+import { NewsDetailPage } from "../detail/news-detail";
 
 @IonicPage()
 @Component({
@@ -27,12 +28,14 @@ export class NewsListPage {
   news: New[] = [];
 
   sessionUser: Godfather;
+  newsDetailPage: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
               private newsProvider: NewProvider, private nativeStorage: NativeStorage, private toastCtrl: ToastController,
               private formBuilderCtrl: FormBuilder, private camera: Camera, public alertCtrl: AlertController,
               private loader: Loader, private loaderCtrl: Loader) {
     this.createForm();
+    this.newsDetailPage = NewsDetailPage;
   }
 
   ionViewDidLoad() {
@@ -45,6 +48,10 @@ export class NewsListPage {
       }).catch(e => console.log(e));
     }
 
+    this.fillNews();
+  }
+
+  ionViewWillEnter() {
     this.fillNews();
   }
 
@@ -142,31 +149,6 @@ export class NewsListPage {
     popover.present({
       ev: event
     });
-  }
-
-  deleteNew(id: number) {
-    let self = this;
-    this.alertCtrl.create({
-      title: '¡Atención!',
-      subTitle: "¿Está seguro de eliminar la noticia?",
-      buttons: [
-        {
-          text: 'Sí',
-          handler: () => {
-            this.loaderCtrl.present();
-            this.newsProvider.deleteNew(id).then((observable: any) => {
-              observable.subscribe(() => {
-                this.loaderCtrl.dismiss();
-                self.fillNews();
-              })
-            });
-          }
-        },
-        {
-          text: 'No',
-        }
-      ]
-    }).present();
   }
 
   clearRegisterNewForm() {
