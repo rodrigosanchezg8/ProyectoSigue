@@ -1,4 +1,4 @@
-import { AlertController, IonicPage, NavController, NavParams, PopoverController, ToastController } from 'ionic-angular';
+import { AlertController, Events, IonicPage, NavController, NavParams, PopoverController, ToastController } from 'ionic-angular';
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
@@ -30,12 +30,26 @@ export class NewsListPage {
   sessionUser: Godfather;
   newsDetailPage: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
-              private newsProvider: NewProvider, private nativeStorage: NativeStorage, private toastCtrl: ToastController,
-              private formBuilderCtrl: FormBuilder, private camera: Camera, public alertCtrl: AlertController,
-              private loader: Loader, private loaderCtrl: Loader) {
-    this.createForm();
-    this.newsDetailPage = NewsDetailPage;
+  constructor(
+    private camera: Camera,
+    private formBuilderCtrl: FormBuilder,
+    private loaderCtrl: Loader,
+    private loader: Loader,
+    private nativeStorage: NativeStorage,
+    private newsProvider: NewProvider,
+    private toastCtrl: ToastController,
+    public alertCtrl: AlertController,
+    public events: Events,
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public popoverCtrl: PopoverController
+
+    ) {
+      this.createForm();
+      this.newsDetailPage = NewsDetailPage;
+      this.events.subscribe('new:reload-list', () => {
+        this.fillNews();
+      });
   }
 
   ionViewDidLoad() {
@@ -115,7 +129,7 @@ export class NewsListPage {
   presentResponse(response) {
     let messages = "";
     for (let i = 0; i < response["messages"].length; i++) {
-      messages += response["messages"][i];
+      messages += response["messages"][i] + "<br>";
       if (response["messages"].length > 1 && response["status"] == "error") messages += "<br>";
     }
     let alert = this.alertCtrl.create({

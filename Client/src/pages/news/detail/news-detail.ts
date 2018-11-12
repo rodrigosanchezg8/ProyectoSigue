@@ -7,7 +7,7 @@ import {
   NavParams,
   ViewController
 } from 'ionic-angular';
-//import { NewGodsonPage } from '../new/new-godson';
+import { CreateNewPage } from '../create/create-new';
 import { Component } from '@angular/core';
 import { Godfather } from "../../../models/godfather";
 import { Loader } from "../../../traits/Loader";
@@ -64,6 +64,11 @@ export class NewsDetailPage {
         {
           text: 'Editar',
           handler: () => {
+            this.viewCtrl.dismiss().then(() => {
+              this.appCtrl.getRootNav().push(CreateNewPage, {
+                new: this.new
+              });
+            });
           }
         },
         {

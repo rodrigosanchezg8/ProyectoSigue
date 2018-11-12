@@ -25,6 +25,7 @@ import { GodsonsPopoverPage } from "../pages/home-admin/godsons/list/popover/god
 import { GodsonsDetailPage } from "../pages/home-admin/godsons/detail/godsons-detail";
 import { NewsDetailPage } from "../pages/news/detail/news-detail";
 import { NewGodsonPage } from '../pages/home-admin/godsons/new/new-godson';
+import { CreateNewPage } from '../pages/news/create/create-new';
 import { UserProvider } from '../providers/user/user';
 import { NewProvider } from '../providers/new/new';
 import { GodsonProvider } from '../providers/godson/godson';
@@ -69,6 +70,7 @@ const config: SocketIoConfig = { url: "http://192.168.43.138:3001", options: {} 
     GodsonsDetailPage,
     NewsDetailPage,
     NewGodsonPage,
+    CreateNewPage,
     GodfatherTabsPage,
     LastPipe,
     TopicsDetailPopoverPage,
@@ -103,6 +105,7 @@ const config: SocketIoConfig = { url: "http://192.168.43.138:3001", options: {} 
     GodsonsDetailPage,
     NewsDetailPage,
     NewGodsonPage,
+    CreateNewPage,
     GodfatherTabsPage,
     TopicsDetailPopoverPage,
     NewsListPage,
