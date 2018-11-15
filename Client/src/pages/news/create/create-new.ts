@@ -88,7 +88,7 @@ export class CreateNewPage {
         this.camera.getPicture(options).then((imageData) => {
           this.imageURI = "data:image/jpeg;base64," + imageData;
           this.imageData = imageData;
-
+          this.new.image = this.imageURI;
         }, (error) => {
           console.log(error)
         });
