@@ -10,8 +10,8 @@ import { Loader } from "../../../traits/Loader";
 import { NativeStorage } from "@ionic-native/native-storage";
 import { New } from "../../../models/new";
 import { NewProvider } from "../../../providers/new/new";
-import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
 import { NewsDetailPage } from "../detail/news-detail";
+import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
 
 @IonicPage()
 @Component({
@@ -164,7 +164,7 @@ export class NewsListPage {
 
     toast.present();
   }
-
+  
   presentPopover(event) {
     let popover = this.popoverCtrl.create(NewsListPopoverPage);
     popover.present({

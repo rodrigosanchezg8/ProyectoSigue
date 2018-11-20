@@ -11,6 +11,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { LoginPage } from "../pages/login/login";
 import { RegisterPage } from "../pages/home-admin/godfathers/register/register";
 import { HomeAdminPage } from '../pages/home-admin/home-admin'
+import { ConfigPage } from '../pages/config/config';
 import { HomeUserPage } from '../pages/home-godfather/home-godfather'
 import { AdminTabsPage } from '../pages/home-admin/tabs/admin-tabs';
 import { GodfathersPage } from "../pages/home-admin/godfathers/list/godfathers-list";
@@ -57,6 +58,7 @@ const config: SocketIoConfig = { url: "http://192.168.43.138:3001", options: {} 
     LoginPage,
     RegisterPage,
     HomeAdminPage,
+    ConfigPage,
     HomeUserPage,
     GodfathersPage,
     GodfathersDetailPage,
@@ -92,6 +94,7 @@ const config: SocketIoConfig = { url: "http://192.168.43.138:3001", options: {} 
     LoginPage,
     RegisterPage,
     HomeAdminPage,
+    ConfigPage,
     HomeUserPage,
     GodfathersPage,
     GodfathersDetailPage,

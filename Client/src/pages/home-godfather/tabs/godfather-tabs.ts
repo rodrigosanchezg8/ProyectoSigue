@@ -1,3 +1,4 @@
+import { ConfigPage } from '../../config/config';
 import { Component } from '@angular/core';
 import {IonicPage, NavController, NavParams} from 'ionic-angular';
 import { GodfatherTopicsListPage } from "../../topics/list/godfather-topics-list";
@@ -21,6 +22,7 @@ export class GodfatherTabsPage {
   godfather: Godfather;
   newsRoot = NewsListPage;
   topicsRoot = GodfatherTopicsListPage;
+  configRoot = ConfigPage;
 
   constructor(public navCtrl: NavController, private navParams: NavParams) {
     this.godfather = this.navParams.data;

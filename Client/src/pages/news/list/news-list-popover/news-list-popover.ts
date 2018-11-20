@@ -13,9 +13,6 @@ import {NewsListPage} from '../news-list';
         <div *ngIf="sessionUser === undefined">
           <button ion-item (click)="pushLogin()">Iniciar sesion</button>
         </div>
-        <div *ngIf="sessionUser !== undefined">
-          <button ion-item (click)="logout()">Cerrar sesión</button>
-        </div>
     </ion-list>
   `
 })

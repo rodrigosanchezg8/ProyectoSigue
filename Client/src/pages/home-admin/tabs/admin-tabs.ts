@@ -1,3 +1,4 @@
+import { ConfigPage } from '../../config/config';
 import { Component } from '@angular/core';
 import { GodfathersPage } from '../godfathers/list/godfathers-list';
 import { GodsonsPage } from '../godsons/list/godsons-list';
@@ -11,6 +12,7 @@ export class AdminTabsPage {
   tab1Root = NewsListPage;
   tab2Root = GodfathersPage;
   tab3Root = GodsonsPage;
+  tab4Root = ConfigPage;
 
   constructor() {}
 }
