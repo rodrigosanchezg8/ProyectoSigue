@@ -55,30 +55,21 @@ export class NewsListPage {
       });
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad NewsListPage');
-    let self = this;
-    if (this.sessionUser === undefined) {
-            this.nativeStorage.getItem("session").then(res => {
-              this.sessionUser = res.user !== undefined ? res.user : null;
-              console.log(this.sessionUser);
-              this.fillNews();
-        }).catch(e => console.log(e));
-    } else {
-      this.fillNews();
-    }
-  }
-
   ionViewWillEnter() {
     console.log('ionViewWillEnter NewsListPage');
     let self = this;
     this.platform.ready().then(() => {
       if (this.sessionUser === undefined) {
-            this.nativeStorage.getItem("session").then(res => {
+          this.nativeStorage.getItem("session").then(
+            (res) => {
               this.sessionUser = res.user !== undefined ? res.user : null;
               console.log(this.sessionUser);
               this.fillNews();
-        }).catch(e => console.log(e));
+            },
+            (error) => {
+              this.fillNews();
+            }
+          ).catch(e => console.log(e));
       } else {
         this.fillNews();
       }
