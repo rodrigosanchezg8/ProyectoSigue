@@ -46,12 +46,12 @@ export class NewsDetailPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad GodsonsDetailPage');
+    console.log('ionViewDidLoad NewsDetailPage');
 
     if (this.sessionUser === undefined) {
-      this.nativeStorage.getItem("session").then(res => {
-        this.sessionUser = res.user !== undefined ? res.user : null;
-        console.log(this.sessionUser);
+        this.nativeStorage.getItem("session").then(res => {
+          this.sessionUser = res.user !== undefined ? res.user : null;
+          console.log(this.sessionUser);
       }).catch(e => console.log(e));
     }
 

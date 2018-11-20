@@ -1,9 +1,11 @@
-import { AlertController, Events, IonicPage, NavController, NavParams, PopoverController, ToastController } from 'ionic-angular';
+import { AdminTabsPage } from "../../home-admin/tabs/admin-tabs";
+import { AlertController, Events, IonicPage, NavController, NavParams, Platform, PopoverController, ToastController } from 'ionic-angular';
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Godfather } from "../../../models/godfather";
 import { GodfatherProvider } from "../../../providers/godfather/godfather";
+import { GodfatherTabsPage } from "../../home-godfather/tabs/godfather-tabs";
 import { Loader } from "../../../traits/Loader";
 import { NativeStorage } from "@ionic-native/native-storage";
 import { New } from "../../../models/new";
@@ -42,6 +44,7 @@ export class NewsListPage {
     public events: Events,
     public navCtrl: NavController,
     public navParams: NavParams,
+    public platform: Platform,
     public popoverCtrl: PopoverController
 
     ) {
@@ -54,19 +57,32 @@ export class NewsListPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad NewsListPage');
-
+    let self = this;
     if (this.sessionUser === undefined) {
-      this.nativeStorage.getItem("session").then(res => {
-        this.sessionUser = res.user !== undefined ? res.user : null;
-        console.log(this.sessionUser);
-      }).catch(e => console.log(e));
+            this.nativeStorage.getItem("session").then(res => {
+              this.sessionUser = res.user !== undefined ? res.user : null;
+              console.log(this.sessionUser);
+              this.fillNews();
+        }).catch(e => console.log(e));
+    } else {
+      this.fillNews();
     }
-
-    this.fillNews();
   }
 
   ionViewWillEnter() {
-    this.fillNews();
+    console.log('ionViewWillEnter NewsListPage');
+    let self = this;
+    this.platform.ready().then(() => {
+      if (this.sessionUser === undefined) {
+            this.nativeStorage.getItem("session").then(res => {
+              this.sessionUser = res.user !== undefined ? res.user : null;
+              console.log(this.sessionUser);
+              this.fillNews();
+        }).catch(e => console.log(e));
+      } else {
+        this.fillNews();
+      }
+    });
   }
 
   fillNews(){
