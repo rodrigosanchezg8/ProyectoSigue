@@ -38,7 +38,7 @@ export class GodsonsPage {
     });
     this.godfatherId = this.navParams.get('godfatherId');
     if (this.godfatherId) {
-      // TODO: get godsons for given godfatherId
+      this.godsonProvider.getGodsonsByGodfatherId(this.godfatherId);
     }
   }
 
@@ -47,13 +47,22 @@ export class GodsonsPage {
     this.loadGodsons();
   }
 
-  private loadGodsons(){
-    this.godsonProvider.getGodsons().then((res: any) => {
-      res.subscribe( (data:any ) => {
-        this.godsons = data;
-        this.godsonsList = this.godsons.map((godson) => godson);
+  private loadGodsons(godfatherId: string = undefined){
+    if (this.godfatherId) { 
+      this.godsonProvider.getGodsonsByGodfatherId(godfatherId).then((res: any) => {
+        res.subscribe( (data:any ) => {
+          this.godsons = data;
+          this.godsonsList = this.godsons.map((godson) => godson);
+        });
       });
-    });
+    } else {
+      this.godsonProvider.getGodsons().then((res: any) => {
+        res.subscribe( (data:any ) => {
+          this.godsons = data;
+          this.godsonsList = this.godsons.map((godson) => godson);
+        });
+      });
+    }
   }
 
   presentPopover(event) {
