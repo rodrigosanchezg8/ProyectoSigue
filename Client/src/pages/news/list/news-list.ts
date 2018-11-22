@@ -31,6 +31,8 @@ export class NewsListPage {
 
   sessionUser: Godfather;
   newsDetailPage: any;
+  limit: number = 5;
+  topList: number = 0;
 
   constructor(
     private camera: Camera,
@@ -79,7 +81,6 @@ export class NewsListPage {
   fillNews(){
     this.newsProvider.getNews().then((observable: any) => {
       observable.subscribe((data: New[]) => {
-        console.log(data);
         this.news = data;
       });
     }).catch(e => console.log(e));
@@ -164,7 +165,7 @@ export class NewsListPage {
 
     toast.present();
   }
-  
+
   presentPopover(event) {
     let popover = this.popoverCtrl.create(NewsListPopoverPage);
     popover.present({

@@ -48,8 +48,11 @@
     </div>
   </div>
 
+  <div *ngIf="topList > 0" text-center>
+    <h3 (click)="topList=topList-5; limit=limit-5">Show less</h3>
+  </div>
   <ion-list>
-    <ion-item-sliding *ngFor="let new of news">
+    <ion-item-sliding *ngFor="let new of news | slice:topList:limit">
       <ion-item [navPush]="newsDetailPage" [navParams]="new">
 
         <ion-card>
@@ -74,4 +77,7 @@
       </ion-item>
     </ion-item-sliding>
   </ion-list>
+  <div *ngIf="limit < news.length" text-center>
+    <h3 (click)="limit=limit+5; topList=topList+5">Show more</h3>
+  </div>
 </ion-content>
