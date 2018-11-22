@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {IonicPage, Events, PopoverController} from 'ionic-angular';
+import {IonicPage, Events, PopoverController, NavParams} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {GodsonProvider} from "../../../../providers/godson/godson";
 import {GodsonsDetailPage} from "../detail/godsons-detail";
@@ -23,17 +23,23 @@ export class GodsonsPage {
   godsonsList: any;
   godsonsDetailPage: any;
   searchValue: string;
+  godfatherId: string;
 
   constructor(
     public http: HttpClient, 
     private godsonProvider: GodsonProvider, 
     public popoverCtrl: PopoverController,
-    public events: Events
+    public events: Events,
+    public navParams: NavParams
   ) {
     this.godsonsDetailPage = GodsonsDetailPage;
     this.events.subscribe('godson:reload-list', () => {
       this.loadGodsons();
     });
+    this.godfatherId = this.navParams.get('godfatherId');
+    if (this.godfatherId) {
+      // TODO: get godsons for given godfatherId
+    }
   }
 
   ionViewWillEnter() {
@@ -58,7 +64,8 @@ export class GodsonsPage {
   }
 
   search() {
-    this.godsonsList = this.godsons.filter((godson) => godson.full_name.indexOf(this.searchValue) !== -1);
+      this.godsonsList = this.godsons.filter(
+        (godson) => godson.full_name.indexOf(this.searchValue) !== -1);
   }
 
 }

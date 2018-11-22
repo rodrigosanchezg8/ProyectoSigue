@@ -6,12 +6,15 @@ import {
   ActionSheetController,
   PopoverController,
   Events,
-  AlertController
+  AlertController,
+  ViewController,
+  App
 } from 'ionic-angular';
 import {GodfathersDetailPopoverPage} from "./popover/godfathers-detail-popover";
 import {GodfatherProvider} from "../../../../providers/godfather/godfather";
 import {Godfather} from "../../../../models/godfather";
 import {Loader} from "../../../../traits/Loader";
+import { GodsonsPage } from '../../godsons/list/godsons-list';
 
 @IonicPage()
 @Component({
@@ -22,9 +25,17 @@ export class GodfathersDetailPage {
 
   godfather: Godfather;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public actionSheetCtrl: ActionSheetController,
-              public popoverCtrl: PopoverController, private events: Events, private godfatherProvider: GodfatherProvider,
-              private alertCtrl: AlertController, private loaderCtrl: Loader) {
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams, 
+    public actionSheetCtrl: ActionSheetController,
+    public popoverCtrl: PopoverController, 
+    private events: Events, 
+    private godfatherProvider: GodfatherProvider,
+    private alertCtrl: AlertController, 
+    private loaderCtrl: Loader,
+    public viewCtrl: ViewController,
+    public appCtrl: App) {
     this.godfather = this.navParams.data;
   }
 
@@ -89,6 +100,14 @@ export class GodfathersDetailPage {
         }
       ]
     }).present();
+  }
+
+  viewGodsons() {
+    this.viewCtrl.dismiss().then(() => {
+      this.appCtrl.getRootNav().push(GodsonsPage, {
+        godson: this.godfather.id
+      });
+    });
   }
 
 }
