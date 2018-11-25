@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {IonicPage, Events, PopoverController} from 'ionic-angular';
+import {IonicPage, Events, PopoverController, NavParams} from 'ionic-angular';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {GodsonProvider} from "../../../../providers/godson/godson";
 import {GodsonsDetailPage} from "../detail/godsons-detail";
@@ -23,17 +23,23 @@ export class GodsonsPage {
   godsonsList: any;
   godsonsDetailPage: any;
   searchValue: string;
+  godfatherId: string;
 
   constructor(
     public http: HttpClient, 
     private godsonProvider: GodsonProvider, 
     public popoverCtrl: PopoverController,
-    public events: Events
+    public events: Events,
+    public navParams: NavParams
   ) {
     this.godsonsDetailPage = GodsonsDetailPage;
     this.events.subscribe('godson:reload-list', () => {
       this.loadGodsons();
     });
+    this.godfatherId = this.navParams.get('godfatherId');
+    if (this.godfatherId) {
+      this.godsonProvider.getGodsonsByGodfatherId(this.godfatherId);
+    }
   }
 
   ionViewWillEnter() {
@@ -41,13 +47,22 @@ export class GodsonsPage {
     this.loadGodsons();
   }
 
-  private loadGodsons(){
-    this.godsonProvider.getGodsons().then((res: any) => {
-      res.subscribe( (data:any ) => {
-        this.godsons = data;
-        this.godsonsList = this.godsons.map((godson) => godson);
+  private loadGodsons(godfatherId: string = undefined){
+    if (this.godfatherId) { 
+      this.godsonProvider.getGodsonsByGodfatherId(godfatherId).then((res: any) => {
+        res.subscribe( (data:any ) => {
+          this.godsons = data;
+          this.godsonsList = this.godsons.map((godson) => godson);
+        });
       });
-    });
+    } else {
+      this.godsonProvider.getGodsons().then((res: any) => {
+        res.subscribe( (data:any ) => {
+          this.godsons = data;
+          this.godsonsList = this.godsons.map((godson) => godson);
+        });
+      });
+    }
   }
 
   presentPopover(event) {
@@ -58,7 +73,8 @@ export class GodsonsPage {
   }
 
   search() {
-    this.godsonsList = this.godsons.filter((godson) => godson.full_name.indexOf(this.searchValue) !== -1);
+      this.godsonsList = this.godsons.filter(
+        (godson) => godson.full_name.indexOf(this.searchValue) !== -1);
   }
 
 }

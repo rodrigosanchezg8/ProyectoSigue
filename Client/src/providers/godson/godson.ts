@@ -25,6 +25,10 @@ export class GodsonProvider {
     return this.singletonService.get(this.BASE_URL, true);
   }
 
+  getGodsonsByGodfatherId(godfatherId) {
+    return this.singletonService.get(this.BASE_URL, true);
+  }
+
   postGodson(godson) {
     return this.singletonService.post(this.BASE_URL, godson, true);
   }
