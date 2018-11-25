@@ -14,6 +14,7 @@ export class NewProvider {
   GET_NEWS: string;
   POST_NEWS: string;
   DELETE_NEW: string;
+  PUT_NEWS: string;
 
   constructor(public http: HttpClient, private singletonService: Singleton) {
     console.log('Hello NewProvider Provider');
@@ -23,6 +24,11 @@ export class NewProvider {
 
   registerNew(eventData){
     return this.singletonService.post(this.POST_NEWS, eventData);
+  }
+
+  updateNew(id: Number, eventData) {
+    this.PUT_NEWS = "events/" + id;
+    return this.singletonService.put(this.PUT_NEWS, eventData);
   }
 
   getNews(){

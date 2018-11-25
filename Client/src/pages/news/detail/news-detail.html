@@ -1,0 +1,33 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{ new.title }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+
+  <ion-grid>
+    <ion-row class="profile-image-row">
+      <ion-col>
+        <img src="{{ new.image }}">
+      </ion-col>
+    </ion-row>
+    <ion-row class="profile-summary-row">
+      <ion-grid>
+        <ion-row text-wrap>
+          {{ new.description }}
+        </ion-row>
+      </ion-grid>
+      <ion-grid>
+        <ion-row>
+          <ion-icon name="person"></ion-icon> {{ new.created_at }}
+        </ion-row>
+      </ion-grid>
+    </ion-row>
+  </ion-grid>
+  <div *ngIf="sessionUser !== undefined && sessionUser.role_description === 'Administrador'">
+    <button ion-button block (click)="presentActionSheet()">Acciones</button>
+  </div>
+</ion-content>

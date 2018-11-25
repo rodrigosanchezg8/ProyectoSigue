@@ -1,16 +1,16 @@
-import {
-  AlertController, IonicPage, NavController, NavParams, Platform, PopoverController,
-  ToastController
-} from 'ionic-angular';
-import {Camera, CameraOptions} from "@ionic-native/camera";
-import {Component} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
-import {Godfather} from "../../../models/godfather";
+import { AdminTabsPage } from "../../home-admin/tabs/admin-tabs";
+import { AlertController, Events, IonicPage, NavController, NavParams, Platform, PopoverController, ToastController } from 'ionic-angular';
+import { Camera, CameraOptions } from "@ionic-native/camera";
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { Godfather } from "../../../models/godfather";
 import { GodfatherProvider } from "../../../providers/godfather/godfather";
-import {Loader} from "../../../traits/Loader";
-import {NativeStorage} from "@ionic-native/native-storage";
+import { GodfatherTabsPage } from "../../home-godfather/tabs/godfather-tabs";
+import { Loader } from "../../../traits/Loader";
+import { NativeStorage } from "@ionic-native/native-storage";
 import { New } from "../../../models/new";
-import {NewProvider} from "../../../providers/new/new";
+import { NewProvider } from "../../../providers/new/new";
+import { NewsDetailPage } from "../detail/news-detail";
 import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
 import {BackgroundMode} from "@ionic-native/background-mode";
 
@@ -32,31 +32,57 @@ export class NewsListPage {
 
   sessionUser: Godfather;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
-              private newsProvider: NewProvider, private nativeStorage: NativeStorage, private toastCtrl: ToastController,
-              private formBuilderCtrl: FormBuilder, private camera: Camera, public alertCtrl: AlertController,
-              private loader: Loader, private loaderCtrl: Loader, private backgroundMode: BackgroundMode, private platform: Platform) {
-    this.createForm();
-    //this.platform.ready().then((ready) => this.background());
+  newsDetailPage: any;
+  limit: number = 5;
+  topList: number = 0;
+
+  constructor(
+    private camera: Camera,
+    private formBuilderCtrl: FormBuilder,
+    private loaderCtrl: Loader,
+    private loader: Loader,
+    private nativeStorage: NativeStorage,
+    private newsProvider: NewProvider,
+    private toastCtrl: ToastController,
+    public alertCtrl: AlertController,
+    public events: Events,
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public platform: Platform,
+    public popoverCtrl: PopoverController
+
+    ) {
+      this.createForm();
+      this.newsDetailPage = NewsDetailPage;
+      this.events.subscribe('new:reload-list', () => {
+        this.fillNews();
+      });
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad NewsListPage');
-
-    if (this.sessionUser === undefined) {
-      this.nativeStorage.getItem("session").then(res => {
-        this.sessionUser = res.user !== undefined ? res.user : null;
-        console.log(this.sessionUser);
-      }).catch(e => console.log(e));
-    }
-
-    this.fillNews();
+  ionViewWillEnter() {
+    console.log('ionViewWillEnter NewsListPage');
+    let self = this;
+    this.platform.ready().then(() => {
+      if (this.sessionUser === undefined) {
+          this.nativeStorage.getItem("session").then(
+            (res) => {
+              this.sessionUser = res.user !== undefined ? res.user : null;
+              console.log(this.sessionUser);
+              this.fillNews();
+            },
+            (error) => {
+              this.fillNews();
+            }
+          ).catch(e => console.log(e));
+      } else {
+        this.fillNews();
+      }
+    });
   }
 
   fillNews(){
     this.newsProvider.getNews().then((observable: any) => {
       observable.subscribe((data: New[]) => {
-        console.log(data);
         this.news = data;
       });
     }).catch(e => console.log(e));
@@ -113,7 +139,7 @@ export class NewsListPage {
   presentResponse(response) {
     let messages = "";
     for (let i = 0; i < response["messages"].length; i++) {
-      messages += response["messages"][i];
+      messages += response["messages"][i] + "<br>";
       if (response["messages"].length > 1 && response["status"] == "error") messages += "<br>";
     }
     let alert = this.alertCtrl.create({
@@ -149,47 +175,12 @@ export class NewsListPage {
     });
   }
 
-  deleteNew(id: number) {
-    let self = this;
-    this.alertCtrl.create({
-      title: '¡Atención!',
-      subTitle: "¿Está seguro de eliminar la noticia?",
-      buttons: [
-        {
-          text: 'Sí',
-          handler: () => {
-            this.loaderCtrl.present();
-            this.newsProvider.deleteNew(id).then((observable: any) => {
-              observable.subscribe(() => {
-                this.loaderCtrl.dismiss();
-                self.fillNews();
-              })
-            });
-          }
-        },
-        {
-          text: 'No',
-        }
-      ]
-    }).present();
-  }
-
   clearRegisterNewForm() {
     this.title = "";
     this.description =  "";
     this.new_image = "";
     this.imageURI = "";
     this.imageData = "";
-  }
-
-  background(){
-   /* console.log("ENTRE A BACKGROUND");
-    this.backgroundMode.enable();
-    this.backgroundMode.on("activate").subscribe(() => {
-      setInterval(() => {
-        console.log("I AM ON BACKGROUND MODE");
-      }, 3000)
-    });*/
   }
 
 }

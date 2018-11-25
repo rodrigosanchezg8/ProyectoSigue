@@ -11,6 +11,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { LoginPage } from "../pages/login/login";
 import { RegisterPage } from "../pages/home-admin/godfathers/register/register";
 import { HomeAdminPage } from '../pages/home-admin/home-admin'
+import { ConfigPage } from '../pages/config/config';
 import { HomeUserPage } from '../pages/home-godfather/home-godfather'
 import { AdminTabsPage } from '../pages/home-admin/tabs/admin-tabs';
 import { GodfathersPage } from "../pages/home-admin/godfathers/list/godfathers-list";
@@ -23,7 +24,9 @@ import { GodfatherTopicDetailPage } from "../pages/topics/detail/godfather-topic
 import { GodsonsPage } from "../pages/home-admin/godsons/list/godsons-list";
 import { GodsonsPopoverPage } from "../pages/home-admin/godsons/list/popover/godsons-popover";
 import { GodsonsDetailPage } from "../pages/home-admin/godsons/detail/godsons-detail";
+import { NewsDetailPage } from "../pages/news/detail/news-detail";
 import { NewGodsonPage } from '../pages/home-admin/godsons/new/new-godson';
+import { CreateNewPage } from '../pages/news/create/create-new';
 import { UserProvider } from '../providers/user/user';
 import { NewProvider } from '../providers/new/new';
 import { GodsonProvider } from '../providers/godson/godson';
@@ -70,6 +73,7 @@ const firebase = {
     LoginPage,
     RegisterPage,
     HomeAdminPage,
+    ConfigPage,
     HomeUserPage,
     GodfathersPage,
     GodfathersDetailPage,
@@ -81,7 +85,9 @@ const firebase = {
     GodsonsPage,
     GodsonsPopoverPage,
     GodsonsDetailPage,
+    NewsDetailPage,
     NewGodsonPage,
+    CreateNewPage,
     GodfatherTabsPage,
     LastPipe,
     TopicsDetailPopoverPage,
@@ -105,6 +111,7 @@ const firebase = {
     LoginPage,
     RegisterPage,
     HomeAdminPage,
+    ConfigPage,
     HomeUserPage,
     GodfathersPage,
     GodfathersDetailPage,
@@ -116,7 +123,9 @@ const firebase = {
     GodsonsPage,
     GodsonsPopoverPage,
     GodsonsDetailPage,
+    NewsDetailPage,
     NewGodsonPage,
+    CreateNewPage,
     GodfatherTabsPage,
     TopicsDetailPopoverPage,
     NewsListPage,
