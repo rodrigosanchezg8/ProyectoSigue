@@ -20,7 +20,9 @@ import {GodsonsPopoverPage} from "./popover/godsons-popover";
 export class GodsonsPage {
 
   godsons: any;
+  godsonsList: any;
   godsonsDetailPage: any;
+  searchValue: string;
 
   constructor(
     public http: HttpClient, 
@@ -43,6 +45,7 @@ export class GodsonsPage {
     this.godsonProvider.getGodsons().then((res: any) => {
       res.subscribe( (data:any ) => {
         this.godsons = data;
+        this.godsonsList = this.godsons.map((godson) => godson);
       });
     });
   }
@@ -52,6 +55,10 @@ export class GodsonsPage {
     popover.present({
       ev: event
     });
+  }
+
+  search() {
+    this.godsonsList = this.godsons.filter((godson) => godson.full_name.indexOf(this.searchValue) !== -1);
   }
 
 }

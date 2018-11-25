@@ -1,8 +1,17 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Ahijados</ion-title>
+      <ion-item>
+          <ion-label color="primary">Buscar</ion-label>
+          <ion-input [(ngModel)]="searchValue"></ion-input>
+        </ion-item>
     <ion-buttons end>
+        <button (click)="search()" icon-only="" ion-button="" class="disable-hover bar-button bar-button-md bar-button-default bar-button-default-md"
+        style="transition: none 0s ease 0s;"><span class="button-inner">
+          <ion-icon name="search" role="img" class="icon icon-md ion-md-search" aria-label="search"></ion-icon>
+        </span>
+        <div class="button-effect" style="transform: translate3d(-15px, -9px, 0px) scale(1); height: 64px; width: 64px; opacity: 0; transition: transform 260ms ease 0s, opacity 182ms ease 78ms;"></div>
+      </button>
       <button ion-button icon-only (click)="presentPopover($event)">
         <ion-icon name="more"></ion-icon>
       </button>
@@ -13,7 +22,7 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item-sliding *ngFor="let godson of godsons">
+    <ion-item-sliding *ngFor="let godson of godsonsList">
       <ion-item [navPush]="godsonsDetailPage" [navParams]="godson">
         <ion-avatar item-start>
           <img src="{{ godson.profile_image }}" width="40" height="40">

@@ -38,7 +38,7 @@ export class GodsonsDetailPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad GodsonsDetailPage');
+    console.log(this.godson);
   }
 
   presentActionSheet() {
