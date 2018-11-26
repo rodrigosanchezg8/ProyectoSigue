@@ -12,7 +12,7 @@ import { New } from "../../../models/new";
 import { NewProvider } from "../../../providers/new/new";
 import { NewsDetailPage } from "../detail/news-detail";
 import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
-import {BackgroundMode} from "@ionic-native/background-mode";
+import { BackgroundMode } from "@ionic-native/background-mode";
 
 @IonicPage()
 @Component({
@@ -67,7 +67,6 @@ export class NewsListPage {
           this.nativeStorage.getItem("session").then(
             (res) => {
               this.sessionUser = res.user !== undefined ? res.user : null;
-              console.log(this.sessionUser);
               this.fillNews();
             },
             (error) => {
