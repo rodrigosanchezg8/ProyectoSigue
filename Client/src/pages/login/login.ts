@@ -56,7 +56,7 @@ export class LoginPage {
       this.loader.dismiss();
     })
       .catch((err) => {
-        console.log(err);
+        console.log(err.toJSON());
       });
   }
 
@@ -78,8 +78,8 @@ export class LoginPage {
       });
 
       loginRes.user.role_description === 'Administrador' ?
-        this.navCtrl.setRoot(AdminTabsPage, loginRes) :
-        this.navCtrl.setRoot(GodfatherTabsPage, loginRes.user);
+        this.navCtrl.setRoot(AdminTabsPage) :
+        this.navCtrl.setRoot(GodfatherTabsPage);
 
     }
   }

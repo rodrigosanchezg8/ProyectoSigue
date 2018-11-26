@@ -15,7 +15,7 @@ export class Singleton {
     console.log('Hello SingletonProvider Provider');
     //this.API = "http://localhost:8000/"; // Usar esta URL para testing en plataforma BROWSER
     //  this.API = "http://10.0.2.2:8010/"; // Usar esta IP (es por default de Android) para testing en plataforma EMULADOR
-    this.API = "http://10.160.202.250:8000/"; // Usando un host con php artisan serve --host 0.0.0.0 --port=8010 para acceder
+    this.API = "http://192.168.43.24:8000/"; // Usando un host con php artisan serve --host 0.0.0.0 --port=8010 para acceder
     // desde el movil con I.P.V.4:8010 dentro de la misma red WIFI
   }
 

@@ -55,7 +55,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { Firebase } from '@ionic-native/firebase';
 import {FcmProvider} from "../providers/fcm/fcm";
 
-const config: SocketIoConfig = { url: "http://192.168.1.69:3001", options: {} };
+const config: SocketIoConfig = { url: "http://192.168.43.24:3001", options: {} };
 
 const firebase = {
   apiKey: "AIzaSyD8fiT_kktU1S10M1AhVeguw2iSb6tiFqQ",

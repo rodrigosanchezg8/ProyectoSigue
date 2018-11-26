@@ -4,8 +4,8 @@ import {
   Events,
   IonicPage,
   NavController,
-  NavParams,
-  PopoverController
+  NavParams, Platform,
+  PopoverController,
 } from 'ionic-angular';
 import {GodfatherTopicsListPopoverPage} from "./popover/godfather-topics-list-popover";
 import {ThreadProvider} from "../../../providers/thread/thread";
@@ -14,6 +14,8 @@ import {Thread} from "../../../models/thread";
 import {Loader} from "../../../traits/Loader";
 import {Observer, Subscription} from "rxjs";
 import {TimerObservable} from "rxjs/observable/TimerObservable";
+import {Godfather} from "../../../models/godfather";
+import {NativeStorage} from "@ionic-native/native-storage";
 
 @IonicPage()
 @Component({
@@ -28,14 +30,31 @@ export class GodfatherTopicsListPage {
   threadsSubscription: Subscription;
   threadsObserver: Observer<Thread[]>;
 
+  sessionUser: Godfather;
+
   godfatherTopicDetailPage: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public popoverCtrl: PopoverController,
-              private threadProvider: ThreadProvider, public events: Events, public alertCtrl: AlertController,
-              private loaderCtrl: Loader) {
+  constructor(public navCtrl: NavController,
+              public navParams: NavParams,
+              public popoverCtrl: PopoverController,
+              private threadProvider: ThreadProvider,
+              public events: Events,
+              public alertCtrl: AlertController,
+              private loaderCtrl: Loader,
+              private platform: Platform,
+              private nativeStorage: NativeStorage) {
     this.threads = [];
     this.godfather = this.navParams.get('godfather');
     this.godfatherTopicDetailPage = GodfatherTopicDetailPage;
+
+    this.platform.ready().then((ready) => {
+      if (this.sessionUser === undefined) {
+        this.nativeStorage.getItem("session").then(res => {
+          this.sessionUser = res.user;
+        }).catch(e => console.log(e));
+      }
+    });
+
   }
 
   ionViewDidLoad() {
@@ -62,10 +81,17 @@ export class GodfatherTopicsListPage {
   subscribeCreateEvent() {
     this.events.subscribe('threads:create', (godfather, subject) => {
 
-      let requestParams = {'subject': subject};
+      let requestParams = {
+        'subject': subject,
+        'user_issuing_id': this.sessionUser.id,
+        'user_receiver_id': this.sessionUser.id === 1 ? this.godfather.id : 1
+      };
+
+      console.log(this);
+      console.log(requestParams);
 
       this.loaderCtrl.present();
-      this.threadProvider.storeUserThead(godfather.id, requestParams).then((observable: any) => {
+      this.threadProvider.storeUserThead(requestParams).then((observable: any) => {
         observable.subscribe((data: any) => {
 
           this.threads.splice(0, 0, new Thread().deserialize(data.thread));

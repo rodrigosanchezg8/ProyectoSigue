@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {Platform, Toast, ToastController} from 'ionic-angular';
+import {Platform, ToastController} from 'ionic-angular';
 import {StatusBar} from '@ionic-native/status-bar';
 import {SplashScreen} from '@ionic-native/splash-screen';
 import {NewsListPage} from "../pages/news/list/news-list";
@@ -39,12 +39,16 @@ export class MyApp {
 
       nativeStorage.getItem("session").then(
         (res) => {
-          if (res.user.role_description === 'Administrador')
+
+          console.log("SI HUBO SESSION");
+
+         if (res.user.role_description === 'Administrador')
             this.rootPage = AdminTabsPage;
           else
             this.rootPage = GodfatherTabsPage;
         },
         (error) => {
+          console.log("NO HUBO SESSION");
           this.rootPage = NewsListPage;
         }
       ).catch(e => console.log(e));

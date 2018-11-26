@@ -17,8 +17,8 @@ export class ThreadProvider extends Singleton {
     console.log('Hello GodfatherProvider Provider');
   }
 
-  storeUserThead(receiverId: Number, data: any){
-    this.STORE_USER_THREAD = "threads/messages/" + receiverId;
+  storeUserThead(data: any){
+    this.STORE_USER_THREAD = "threads/messages/";
     return this.singletonService.post(this.STORE_USER_THREAD, data);
   }
 
