@@ -1,7 +1,9 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Opciones</ion-title>
+    <div *ngIf="sessionUser !== undefined">
+      <ion-title>{{sessionUser.first_name + " " + sessionUser.last_name}} (Opciones)</ion-title>
+    </div>
   </ion-navbar>
 
 </ion-header>
