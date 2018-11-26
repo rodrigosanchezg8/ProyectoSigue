@@ -8,6 +8,7 @@ export class GodfatherProvider {
 
   UPLOAD_PROFILE_IMAGE: string;
   GODFATHER_URL = "godfathers";
+  GODFATHER_GODSONS_ULR = 'godfathers/{godfatherId}/godsons';
 
   constructor(public http: HttpClient,
               public singletonService: Singleton) {
@@ -16,6 +17,13 @@ export class GodfatherProvider {
 
   getGodfathers() {
     return this.singletonService.get(this.GODFATHER_URL);
+  }
+
+  getGodsonsByGodfatherId(godfatherId) {
+    return this.singletonService.get(
+      this.GODFATHER_GODSONS_ULR.replace('{godfatherId}', godfatherId), 
+      true
+    );
   }
 
   getGodfather(id){
