@@ -4,6 +4,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {GodsonProvider} from "../../../../providers/godson/godson";
 import {GodsonsDetailPage} from "../detail/godsons-detail";
 import {GodsonsPopoverPage} from "./popover/godsons-popover";
+import { GodfatherProvider } from '../../../../providers/godfather/godfather';
 
 /**
  * Generated class for the GodsonsPage page.
@@ -27,7 +28,8 @@ export class GodsonsPage {
 
   constructor(
     public http: HttpClient, 
-    private godsonProvider: GodsonProvider, 
+    private godsonProvider: GodsonProvider,
+    private godfatherProvider: GodfatherProvider,
     public popoverCtrl: PopoverController,
     public events: Events,
     public navParams: NavParams
@@ -36,22 +38,19 @@ export class GodsonsPage {
     this.events.subscribe('godson:reload-list', () => {
       this.loadGodsons();
     });
-    this.godfatherId = this.navParams.get('godfatherId');
-    if (this.godfatherId) {
-      this.godsonProvider.getGodsonsByGodfatherId(this.godfatherId);
-    }
   }
 
   ionViewWillEnter() {
     console.log('ionViewWillEnter');
-    this.loadGodsons();
+    this.godfatherId = this.navParams.get('godfatherId');
+    this.loadGodsons(this.godfatherId);
   }
 
   private loadGodsons(godfatherId: string = undefined){
     if (this.godfatherId) { 
-      this.godsonProvider.getGodsonsByGodfatherId(godfatherId).then((res: any) => {
+      this.godfatherProvider.getGodsonsByGodfatherId(godfatherId).then((res: any) => {
         res.subscribe( (data:any ) => {
-          this.godsons = data;
+          this.godsons = data.data;
           this.godsonsList = this.godsons.map((godson) => godson);
         });
       });
@@ -74,7 +73,7 @@ export class GodsonsPage {
 
   search() {
       this.godsonsList = this.godsons.filter(
-        (godson) => godson.full_name.indexOf(this.searchValue) !== -1);
+        (godson) => godson.full_name.toUpperCase().indexOf(this.searchValue.toUpperCase()) !== -1);
   }
 
 }
