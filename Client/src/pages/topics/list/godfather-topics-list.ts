@@ -19,7 +19,7 @@ import {NativeStorage} from "@ionic-native/native-storage";
 
 @IonicPage()
 @Component({
-  selector: 'page-godfather-topic',
+  selector: 'page-godfather-topics-list',
   templateUrl: 'godfather-topics-list.html',
 })
 export class GodfatherTopicsListPage {
@@ -122,6 +122,8 @@ export class GodfatherTopicsListPage {
     this.threadsObserver = {
       next: (response: Thread[]) => {
 
+        console.log(response);
+
         for (let thread of response) {
 
           let pushed, updated;
@@ -217,6 +219,10 @@ export class GodfatherTopicsListPage {
         }
       ]
     }).present();
+  }
+
+  hasNotification(thread: Thread){
+    return thread.notification !== null &&  thread.notification !== undefined && thread.notification.user_id === this.sessionUser.id;
   }
 
 }

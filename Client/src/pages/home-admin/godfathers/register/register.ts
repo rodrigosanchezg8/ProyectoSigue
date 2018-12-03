@@ -10,6 +10,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {GodfatherProvider} from "../../../../providers/godfather/godfather";
 import {Loader} from "../../../../traits/Loader";
 import {Godfather} from "../../../../models/godfather";
+import {Base64} from "@ionic-native/base64";
 
 @IonicPage()
 @Component({
@@ -35,7 +36,8 @@ export class RegisterPage {
               public alertCtrl: AlertController,
               public navCtrl: NavController,
               private loaderCtrl: Loader,
-              private eventsCtrl: Events) {
+              private eventsCtrl: Events,
+              private base64: Base64) {
     this.godfather = navParams.get('godfather');
     if (this.godfather) {
       this.isEditMode = true;
@@ -104,24 +106,28 @@ export class RegisterPage {
 
   getImage() {
     const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.FILE_URI,
+      quality: 80,
+      destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       sourceType: 0,
     };
 
+    this.loaderCtrl.present('Cargando imagen...');
     this.camera.getPicture(options).then((imageData) => {
-      this.imageURI = "data:image/jpeg;base64," + imageData;
-      this.imageData = imageData;
 
-      this.form.get('profile_image').setValue({
-        filename: "profile_image",
-        filetype: "jpeg",
-        value: imageData
-      });
+        this.imageURI = "data:image/jpeg;base64," + imageData;
+        this.imageData = imageData;
+
+        this.form.get('profile_image').setValue({
+          filename: "profile_image",
+          filetype: "jpeg",
+          value: imageData
+        });
+
+        this.loaderCtrl.dismiss();
 
     }, (err) => {
-      this.presentToast(err);
+      this.loaderCtrl.dismiss();
     });
   }
 
@@ -142,6 +148,8 @@ export class RegisterPage {
                 this.navCtrl.pop();
 
               });
+            } else {
+              alert.dismiss();
             }
             return false;
           }
@@ -155,27 +163,13 @@ export class RegisterPage {
     let messages = "";
     for (let i = 0; i < response["messages"].length; i++) {
       messages += response["messages"][i];
-      if (response["messages"].length > 1 && response["status"] == "error") messages += "<br>";
+      if (response["messages"].length > 1) messages += "<br\>";
     }
     return messages;
   }
 
   publishUpdatedEvent(){
     this.eventsCtrl.publish('godfather:updated', this.godfather.id);
-  }
-
-  presentToast(msg) {
-    let toast = this.toastCtrl.create({
-      message: msg,
-      duration: 3000,
-      position: 'bottom'
-    });
-
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
-
-    toast.present();
   }
 
 }

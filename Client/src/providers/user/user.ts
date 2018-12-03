@@ -16,8 +16,8 @@ export class UserProvider {
   }
 
   updateFCMToken(id, token){
-    let tokenData = { "fcm_token": token };
-    let url = this.BASE_URL + "/" + id + "/fcm";
+    let tokenData = { "fcm_token": token, 'user_id': id };
+    let url = this.BASE_URL + "/fcm";
     return this.singletonService.put(url, tokenData, true);
   }
 

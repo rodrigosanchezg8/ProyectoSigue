@@ -27,6 +27,7 @@ export class TopicsDetailPopoverPage {
     this.viewCtrl.dismiss().then(() => {
       this.events.publish('thread-files:list');
     });
+    return false;
   }
 
 }

@@ -39,16 +39,12 @@ export class MyApp {
 
       nativeStorage.getItem("session").then(
         (res) => {
-
-          console.log("SI HUBO SESSION");
-
          if (res.user.role_description === 'Administrador')
             this.rootPage = AdminTabsPage;
           else
             this.rootPage = GodfatherTabsPage;
         },
         (error) => {
-          console.log("NO HUBO SESSION");
           this.rootPage = NewsListPage;
         }
       ).catch(e => console.log(e));

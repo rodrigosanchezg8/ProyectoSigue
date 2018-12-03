@@ -31,7 +31,7 @@ export class CreateNewPage {
       public events: Events,
       public navCtrl: NavController,
       public navParams: NavParams,
-      private nativeStorage: NativeStorage
+      private nativeStorage: NativeStorage,
     ) {
         this.new = navParams.get('new');
     }
@@ -56,6 +56,8 @@ export class CreateNewPage {
           this.events.publish('new:reload-list');
           this.navCtrl.pop();
         });
+      }).catch(() => {
+        this.loader.dismiss();
       });
     }
 
@@ -80,17 +82,21 @@ export class CreateNewPage {
     getImage() {
         const options: CameraOptions = {
           quality: 100,
-          destinationType: this.camera.DestinationType.FILE_URI,
+          destinationType: this.camera.DestinationType.DATA_URL,
           encodingType: this.camera.EncodingType.JPEG,
           sourceType: 0,
         };
+
+        this.loader.present('Cargando imagen...');
 
         this.camera.getPicture(options).then((imageData) => {
           this.imageURI = "data:image/jpeg;base64," + imageData;
           this.imageData = imageData;
           this.new.image = this.imageURI;
+          this.loader.dismiss();
         }, (error) => {
           console.log(error)
+          this.loader.dismiss();
         });
       }
 }

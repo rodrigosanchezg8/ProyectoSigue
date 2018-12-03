@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {
     AlertController,
-    IonicPage, 
+    IonicPage,
     NavController,
     NavParams,
     Events
@@ -10,6 +10,7 @@ import { GodsonProvider } from '../../../../providers/godson/godson';
 import { Godson } from '../../../../models/godson';
 import { GodfatherProvider } from '../../../../providers/godfather/godfather';
 import { CameraOptions, Camera } from '@ionic-native/camera';
+import {Loader} from "../../../../traits/Loader";
 
 @IonicPage()
 @Component({
@@ -32,7 +33,8 @@ export class NewGodsonPage {
         public alertCtrl: AlertController,
         public navCtrl: NavController,
         public events: Events,
-        private camera: Camera
+        private camera: Camera,
+        private loaderCtrl: Loader
     ) {
         this.godson = navParams.get('godson');
 
@@ -62,6 +64,9 @@ export class NewGodsonPage {
     }
 
     sendRequest() {
+
+        this.loaderCtrl.present('Espere un momento...');
+
         if (this.isEditMode) {
             this.editGodson()
             .then((res: any) => this.responseHandler(res))
@@ -101,10 +106,12 @@ export class NewGodsonPage {
     responseHandler(response: any) {
         response.subscribe(
             (success) => {
+                this.loaderCtrl.dismiss();
                 this.events.publish('godson:reload-list');
                 this.navCtrl.pop();
             },
             (error) => {
+                this.loaderCtrl.dismiss();
                 console.log(error);
             }
         );
@@ -112,18 +119,22 @@ export class NewGodsonPage {
 
     getImage() {
         const options: CameraOptions = {
-          quality: 100,
-          destinationType: this.camera.DestinationType.FILE_URI,
+          quality: 80,
+          destinationType: this.camera.DestinationType.DATA_URL,
           encodingType: this.camera.EncodingType.JPEG,
           sourceType: 0,
         };
-    
+
+        this.loaderCtrl.present('Cargando imagen...');
+
         this.camera.getPicture(options).then((imageData) => {
           this.imgURI = "data:image/jpeg;base64," + imageData;
           this.imgData = imageData;
-    
+
+          this.loaderCtrl.dismiss();
+
         }, (error) => {
-          console.log(error)
+          this.loaderCtrl.dismiss();
         });
       }
 }

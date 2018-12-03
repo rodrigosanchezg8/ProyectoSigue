@@ -12,6 +12,7 @@ export class Thread {
   last_message: Message;
 
   messages: Message[] = [];
+  notification: any;
 
   deserialize(object : Thread){
     Object.assign(this, object);

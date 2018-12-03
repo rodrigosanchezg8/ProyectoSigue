@@ -50,8 +50,9 @@ export class ConfigPage {
   }
 
   closeSession() {
-      this.nativeStorage.remove("session");
-      this.navCtrl.setRoot(NewsListPage);
+      this.nativeStorage.remove("session").then(() => {
+        this.appCtrl.getRootNav().setRoot(NewsListPage)
+      });
   }
 
 }

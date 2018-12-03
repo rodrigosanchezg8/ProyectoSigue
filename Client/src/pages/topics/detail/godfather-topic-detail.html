@@ -16,7 +16,7 @@
     <ion-grid>
       <ion-row *ngFor="let message of thread.messages">
         <ion-card [ngClass]="message.class">
-          <ion-card-content padding ion-col end>
+          <ion-card-content padding-left padding-bottom ion-col end>
             <ion-row>
               <ion-col text-right>
                 <ion-label float-right>{{ message.created_at }}</ion-label>
@@ -44,20 +44,23 @@
 
 <ion-footer>
   <ion-grid>
+    <ion-row *ngIf="message.base64_file && message.file_name" justify-content-center align-items-center>
+      <ion-col col-auto>
+        <ion-label *ngIf="message.file_name">{{ message.file_name }}</ion-label>
+      </ion-col>
+    </ion-row>
     <ion-row justify-content-center align-items-center>
       <ion-col col-auto>
-        <ion-label *ngIf="message.file_extension">{{ message.file_extension }}</ion-label>
-        <ion-label *ngIf="message.file_name">{{ message.file_name }}</ion-label>
         <ion-icon name="attach" class="large-icon" (click)="attachMessageFile()"></ion-icon>
       </ion-col>
-      <ion-col col-10>
+      <ion-col col-8>
         <ion-item>
           <ion-textarea maxlength="200" [(ngModel)]="message.body"  [ngModelOptions]="{standalone: true}"
                         placeholder="Escribe un mensaje"></ion-textarea>
         </ion-item>
       </ion-col>
       <ion-col col-auto>
-        <button ion-button color="secondary" (click)="sendMessage()">
+        <button ion-button color="secondary" [disabled]="!message || !message.body || message.body.length === 0" (click)="sendMessage()">
           <ion-icon name="send"></ion-icon>
         </button>
       </ion-col>

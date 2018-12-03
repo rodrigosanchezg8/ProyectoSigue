@@ -1,12 +1,12 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController,
+  AlertController, App, Content,
   Events,
   IonicPage,
   MenuController,
   NavController,
   NavParams, Platform,
-  PopoverController
+  PopoverController,
 } from 'ionic-angular';
 import {ThreadProvider} from "../../../providers/thread/thread";
 import {Thread} from "../../../models/thread";
@@ -28,6 +28,8 @@ import {Socket} from "ng-socket-io";
 import {HttpClient} from "@angular/common/http";
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/from';
+import {NotificationProvider} from "../../../providers/notification/notification";
+import {Route} from "@angular/compiler/src/core";
 
 @IonicPage()
 @Component({
@@ -36,6 +38,9 @@ import 'rxjs/add/observable/from';
 })
 export class GodfatherTopicDetailPage {
 
+  @ViewChild(Content) content: Content;
+
+  active: boolean;
   thread: Thread;
   message: Message;
   files: any = [];
@@ -62,11 +67,11 @@ export class GodfatherTopicDetailPage {
               private socket: Socket,
               private httpClient: HttpClient,
               private alertCtrl: AlertController,
-              private platform: Platform) {
+              private platform: Platform,
+              private notificationProvider: NotificationProvider) {
     this.thread = this.navParams.data.thread;
     this.thread.messages = [];
     this.fileTransfer = this.transfer.create();
-
     this.platform.ready().then((ready) => {
 
       if (this.sessionUser === undefined) {
@@ -83,13 +88,7 @@ export class GodfatherTopicDetailPage {
     this.message = new Message();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad GodfatherTopicDetailPage');
-  }
-
   ionViewDidEnter() {
-    console.log('ionViewDidEnter GodfatherTopicDetailPage');
-
     //this.socket.on('connect', () => { alert('connected')});
     this.subscribePopoverEvents();
 
@@ -98,9 +97,28 @@ export class GodfatherTopicDetailPage {
   }
 
   ionViewDidLeave() {
-    console.log('ionViewDidLeave GodfatherTopicDetailPage');
     this.messagesSubscription.unsubscribe();
     this.events.unsubscribe('thread-files:list');
+  }
+
+  ionViewWillEnter() {
+
+    this.active = true;
+
+    this.platform.ready().then(() => {
+      this.platform.pause.subscribe(() => {
+        this.active = false;
+      });
+
+      this.platform.resume.subscribe(() => {
+        this.active = true;
+        this.providerNotificationDelete();
+      });
+    });
+  }
+
+  ionViewWillLeave() {
+    this.active = false;
   }
 
   subscribePopoverEvents() {
@@ -131,16 +149,14 @@ export class GodfatherTopicDetailPage {
       observable.subscribe((response) => {
         console.log(response);
       }, (error) => {
-        console.log(error);
-      }, () => {
-        this.loader.dismiss();
+        alert('No se pudieron obtener los mensajes de este tema, contacte al equipo de desarrollo')
       });
     });
   }
 
+  // TODO Notify the other user when a file is sent
   subscribeSocketMessages() {
     this.messagesSubscription = this.getMessages().subscribe((socketMessagesData: any) => {
-      console.log(socketMessagesData);
       switch (socketMessagesData.event) {
         case 'App\\Events\\ThreadHistoryRequested':
           if (this.thread.messages.length == 0) {
@@ -150,11 +166,16 @@ export class GodfatherTopicDetailPage {
             }
           }
           this.loader.dismiss();
+          setTimeout(() => this.content.scrollToBottom(), 300);
           break;
         case 'App\\Events\\NewThreadMessage':
           let newMessage = new Message().deserialize(socketMessagesData.data.message).setClass(this.sessionUser.id);
           this.thread.messages.push(newMessage);
+          setTimeout(() => this.content.scrollToBottom(), 300);
+        case 'App\\Events\\NewFile':
+          break;
       }
+      this.providerNotificationDelete();
     });
   }
 
@@ -167,11 +188,19 @@ export class GodfatherTopicDetailPage {
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
         observable.subscribe((response) => {
-          this.loader.dismiss();
+
           this.message.body = "";
+          this.message.file_name = null;
+          this.message.base64_file = null;
+
+          this.content.resize();
+          this.content.scrollToBottom();
+
+          this.loader.dismiss();
+
         });
       }).catch(e => {
-      alert(e);
+      alert("Error al enviar mensaje. Contacte al equipo de desarrollo");
     });
   }
 
@@ -185,28 +214,34 @@ export class GodfatherTopicDetailPage {
         if (filePath) {
 
           this.message.file_name = filePath.substr(filePath.lastIndexOf('/') + 1);
-          this.message.file_extension = this.message.file_name.substr(this.message.file_name.lastIndexOf('.') + 1);
-
-          alert("archivito nomb " + this.message.file_name);
-          alert("archivito ext " + this.message.file_extension);
 
           this.base64.encodeFile(filePath).then((base64File: string) => {
 
-            alert('encodeado');
             this.message.base64_file = base64File;
+            this.content.resize();
             this.loader.dismiss();
 
+            let alert = this.alertCtrl.create({
+              title: 'Listo',
+              subTitle: 'Envíe el mensaje para enviar el archivo.',
+              buttons: [
+                {
+                  text: 'OK',
+                }
+              ]
+            });
+            alert.present();
+
           }, (err) => {
-            alert('err' + JSON.stringify(err));
+            alert('Error al subir el archivo, asegúrese de que es un archivo válido y comuníquese con el equipo desarrollador.');
             this.loader.dismiss();
           });
         }
 
-      })
-        .catch(err => {
-          console.log(err)
-          this.loader.dismiss();
-        });
+      }).catch(err => {
+        alert('Error al subir el archivo, asegúrese de que es un archivo válido y comuníquese con el equipo desarrollador.');
+        this.loader.dismiss();
+      });
     });
   }
 
@@ -217,9 +252,9 @@ export class GodfatherTopicDetailPage {
 
     let alertTitle = "", alertSubtitle = "";
     this.httpClient.get(encodedURI, {responseType: 'blob'}).flatMap((data: Blob) => {
-        return Observable.from(this.file.writeFile(this.file.externalRootDirectory + "/Download", file.name,
-          data, {replace: true}))
-      }).subscribe(response => {
+      return Observable.from(this.file.writeFile(this.file.externalRootDirectory + "/Download", file.name,
+        data, {replace: true}))
+    }).subscribe(response => {
         alertTitle = "Éxito";
         alertSubtitle = "El archivo lo puedes encontrar en tu carpeta de descargas. Su nombre es " + file.name;
       }, err => {
@@ -252,4 +287,21 @@ export class GodfatherTopicDetailPage {
   toggleMenu() {
     this.menuCtrl.toggle('right');
   }
+
+  providerNotificationDelete() {
+
+    if(this.active) {
+
+      this.notificationProvider.deleteNotification(this.thread.id, this.sessionUser.id).then((observable: any) => {
+        observable.subscribe(res => {
+          this.thread.notification = null;
+        });
+      }).catch((error) => {
+        console.log(error);
+      });
+    }
+
+
+  }
+
 }

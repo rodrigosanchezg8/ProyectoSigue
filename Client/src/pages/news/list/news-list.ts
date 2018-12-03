@@ -39,7 +39,6 @@ export class NewsListPage {
   constructor(
     private camera: Camera,
     private formBuilderCtrl: FormBuilder,
-    private loaderCtrl: Loader,
     private loader: Loader,
     private nativeStorage: NativeStorage,
     private newsProvider: NewProvider,
@@ -54,7 +53,17 @@ export class NewsListPage {
     ) {
       this.createForm();
       this.newsDetailPage = NewsDetailPage;
-      this.events.subscribe('new:reload-list', () => {
+      this.platform.ready().then((ready) => {
+
+        if (this.sessionUser === undefined) {
+          this.nativeStorage.getItem("session").then(res => {
+            this.sessionUser = res.user;
+          }).catch(e => console.log(e));
+        }
+
+      });
+
+    this.events.subscribe('new:reload-list', () => {
         this.fillNews();
       });
   }
@@ -94,11 +103,12 @@ export class NewsListPage {
   }
 
   registerNew() {
+
     let self = this;
     let newData = {
       "title": this.title,
       "description": this.description,
-      "created_by": this.nativeStorage.getItem("session")["__zone_symbol__value"].user.id,
+      "created_by": this.sessionUser.id,
       "image": (this.imageURI !== "") ? self.form.value : null,
     };
     this.loader.present();
@@ -109,16 +119,18 @@ export class NewsListPage {
         self.fillNews();
         self.clearRegisterNewForm();
       });
-    });
+    }).catch(() => this.loader.dismiss() );
   }
 
   getImage() {
     const options: CameraOptions = {
       quality: 100,
-      destinationType: this.camera.DestinationType.FILE_URI,
+      destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       sourceType: 0,
     };
+
+    this.loader.present('Cargando imagen');
 
     this.camera.getPicture(options).then((imageData) => {
       this.imageURI = "data:image/jpeg;base64," + imageData;
@@ -130,9 +142,9 @@ export class NewsListPage {
         value: imageData
       });
 
-    }, (err) => {
-      this.presentToast(err);
-    });
+      this.loader.dismiss();
+
+    }, (err) => this.loader.dismiss() );
   }
 
   presentResponse(response) {
@@ -151,20 +163,6 @@ export class NewsListPage {
       ]
     });
     alert.present();
-  }
-
-  presentToast(msg) {
-    let toast = this.toastCtrl.create({
-      message: msg,
-      duration: 3000,
-      position: 'bottom'
-    });
-
-    toast.onDidDismiss(() => {
-      console.log('Dismissed toast');
-    });
-
-    toast.present();
   }
 
   presentPopover(event) {

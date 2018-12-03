@@ -33,9 +33,10 @@ export class GodfatherTopicsListPopoverPage {
         {
           text: 'Continuar',
           handler: () => {
-            this.viewCtrl.dismiss().then(() => {
+            alert.dismiss().then(() => {
               this.events.publish('threads:delete-all', this.godfather)
             });
+            return false;
           }
         }
       ]
@@ -60,9 +61,10 @@ export class GodfatherTopicsListPopoverPage {
         {
           text: 'Crear',
           handler: data => {
-            this.viewCtrl.dismiss().then(() => {
+            alert.dismiss().then(() => {
               this.events.publish('threads:create', this.godfather, data.subject)
             });
+            return false;
           }
         }
       ]

@@ -35,3 +35,9 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+
+providers/singleton/singleton.ts
+config.xml
+ionic.config.json
+../.idea/ProyectoSigue.iml
+../.idea/workspace.xml

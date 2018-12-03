@@ -22,27 +22,11 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item-sliding *ngFor="let godson of godsonsList">
-      <ion-item [navPush]="godsonsDetailPage" [navParams]="godson">
+      <ion-item *ngFor="let godson of godsonsList" [navPush]="godsonsDetailPage" [navParams]="godson">
         <ion-avatar item-start>
           <img src="{{ godson.profile_image }}" width="40" height="40">
         </ion-avatar>
         <h2>{{ godson.full_name }}</h2>
       </ion-item>
-      <ion-item-options side="right">
-        <button ion-button color="primary">
-          <ion-icon name="text"></ion-icon>
-          Mensaje
-        </button>
-        <button ion-button color="primary">
-          <ion-icon name="mail"></ion-icon>
-          Email
-        </button>
-        <button ion-button color="secondary">
-          <ion-icon name="mail"></ion-icon>
-          Llamar
-        </button>
-      </ion-item-options>
-    </ion-item-sliding>
   </ion-list>
 </ion-content>
