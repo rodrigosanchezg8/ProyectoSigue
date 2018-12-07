@@ -144,7 +144,7 @@ export class GodfatherTopicDetailPage {
   }
 
   requestHistoryEvent() {
-    this.loader.present();
+    //this.loader.present();
     this.threadProvider.getThreadMessages(this.thread.id, 0).then((observable: any) => {
       observable.subscribe((response) => {
         console.log(response);
@@ -157,6 +157,7 @@ export class GodfatherTopicDetailPage {
   // TODO Notify the other user when a file is sent
   subscribeSocketMessages() {
     this.messagesSubscription = this.getMessages().subscribe((socketMessagesData: any) => {
+      this.loader.present();
       switch (socketMessagesData.event) {
         case 'App\\Events\\ThreadHistoryRequested':
           if (this.thread.messages.length == 0) {
@@ -171,16 +172,20 @@ export class GodfatherTopicDetailPage {
         case 'App\\Events\\NewThreadMessage':
           let newMessage = new Message().deserialize(socketMessagesData.data.message).setClass(this.sessionUser.id);
           this.thread.messages.push(newMessage);
+          this.loader.dismiss();
           setTimeout(() => this.content.scrollToBottom(), 300);
         case 'App\\Events\\NewFile':
           break;
       }
       this.providerNotificationDelete();
-    });
+    },
+      () => {
+        this.loader.dismiss();
+        alert('Error al obtener los mensajes. Comuníquese con el equipo desarrollador.');
+      });
   }
 
   sendMessage() {
-    this.loader.present();
 
     this.message.user_id_receiver = this.thread.user_id_issuing === this.sessionUser.id ?
       this.thread.user_id_receiver : this.thread.user_id_issuing;
@@ -194,9 +199,8 @@ export class GodfatherTopicDetailPage {
           this.message.base64_file = null;
 
           this.content.resize();
-          this.content.scrollToBottom();
 
-          this.loader.dismiss();
+          this.content.scrollToBottom();
 
         });
       }).catch(e => {

@@ -52,6 +52,9 @@ export class ConfigPage {
   closeSession() {
       this.nativeStorage.remove("session").then(() => {
         this.appCtrl.getRootNav().setRoot(NewsListPage)
+      }).catch((error) => {
+        console.log('Error removing session item');
+        console.log(error);
       });
   }
 

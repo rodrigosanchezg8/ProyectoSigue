@@ -56,7 +56,7 @@ import { Firebase } from '@ionic-native/firebase';
 import {FcmProvider} from "../providers/fcm/fcm";
 import {NotificationProvider} from "../providers/notification/notification";
 
-const config: SocketIoConfig = { url: "http://192.168.1.69:3001", options: {} };
+const config: SocketIoConfig = { url: "https://proyecto-sigue-server-socket.herokuapp.com", options: {} };
 
 const firebase = {
   apiKey: "AIzaSyD8fiT_kktU1S10M1AhVeguw2iSb6tiFqQ",
