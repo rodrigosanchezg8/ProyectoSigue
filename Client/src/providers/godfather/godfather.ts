@@ -21,7 +21,7 @@ export class GodfatherProvider {
 
   getGodsonsByGodfatherId(godfatherId) {
     return this.singletonService.get(
-      this.GODFATHER_GODSONS_ULR.replace('{godfatherId}', godfatherId), 
+      this.GODFATHER_GODSONS_ULR.replace('{godfatherId}', godfatherId),
       true
     );
   }
@@ -39,7 +39,7 @@ export class GodfatherProvider {
   }
 
   uploadProfileImage(formModel, userId) {
-    this.UPLOAD_PROFILE_IMAGE = "/godfathers/" + userId + "/upload-profile-image";
+    this.UPLOAD_PROFILE_IMAGE = "godfathers/" + userId + "/upload-profile-image";
     return this.singletonService.post(this.UPLOAD_PROFILE_IMAGE, formModel);
   }
 

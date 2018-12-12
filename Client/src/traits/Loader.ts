@@ -6,18 +6,25 @@ import {LoadingController, Loading} from "ionic-angular";
 export class Loader {
 
   loader: Loading;
+  displaying: boolean;
 
-  constructor( public http: HttpClient, public loadingCtrl: LoadingController ){ }
+  constructor( public http: HttpClient, public loadingCtrl: LoadingController ){
+    this.displaying = false;
+  }
 
   present(msg: string = "Espere por favor..."){
     this.loader = this.loadingCtrl.create({
       content: msg
     });
     this.loader.present();
+    this.displaying = true;
   }
 
   dismiss(){
-    this.loader.dismiss();
+    if(this.displaying)
+      this.loader.dismiss();
+
+    this.displaying = false;
   }
 
 }

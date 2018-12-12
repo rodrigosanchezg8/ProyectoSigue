@@ -157,25 +157,28 @@ export class GodfatherTopicDetailPage {
   // TODO Notify the other user when a file is sent
   subscribeSocketMessages() {
     this.messagesSubscription = this.getMessages().subscribe((socketMessagesData: any) => {
-      this.loader.present();
-      switch (socketMessagesData.event) {
-        case 'App\\Events\\ThreadHistoryRequested':
-          if (this.thread.messages.length == 0) {
-            for (let message of socketMessagesData.data.thread.messages) {
-              let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
-              this.thread.messages.push(newMessage);
+      if(socketMessagesData.data.thread && socketMessagesData.data.thread.id === this.thread.id) {
+        switch (socketMessagesData.event) {
+          case 'App\\Events\\ThreadHistoryRequested':
+            if (this.thread.messages.length == 0) {
+              this.loader.present();
+              for (let message of socketMessagesData.data.thread.messages) {
+                let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
+                this.thread.messages.push(newMessage);
+              }
+              this.loader.dismiss();
             }
-          }
-          this.loader.dismiss();
-          setTimeout(() => this.content.scrollToBottom(), 300);
-          break;
-        case 'App\\Events\\NewThreadMessage':
-          let newMessage = new Message().deserialize(socketMessagesData.data.message).setClass(this.sessionUser.id);
-          this.thread.messages.push(newMessage);
-          this.loader.dismiss();
-          setTimeout(() => this.content.scrollToBottom(), 300);
-        case 'App\\Events\\NewFile':
-          break;
+            setTimeout(() => this.content.scrollToBottom(), 300);
+            break;
+          case 'App\\Events\\NewThreadMessage':
+            this.loader.present();
+            let newMessage = new Message().deserialize(socketMessagesData.data.message).setClass(this.sessionUser.id);
+            this.thread.messages.push(newMessage);
+            this.loader.dismiss();
+            setTimeout(() => this.content.scrollToBottom(), 300);
+          case 'App\\Events\\NewFile':
+            break;
+        }
       }
       this.providerNotificationDelete();
     },
@@ -190,6 +193,8 @@ export class GodfatherTopicDetailPage {
     this.message.user_id_receiver = this.thread.user_id_issuing === this.sessionUser.id ?
       this.thread.user_id_receiver : this.thread.user_id_issuing;
 
+    this.loader.present('Enviando mensaje...');
+
     this.threadProvider.storeThreadMessage(this.sessionUser.id, this.thread.id, this.message)
       .then((observable: any) => {
         observable.subscribe((response) => {
@@ -202,9 +207,12 @@ export class GodfatherTopicDetailPage {
 
           this.content.scrollToBottom();
 
+          this.loader.dismiss();
+
         });
       }).catch(e => {
-      alert("Error al enviar mensaje. Contacte al equipo de desarrollo");
+        alert("Error al enviar mensaje. Contacte al equipo de desarrollo");
+        this.loader.dismiss();
     });
   }
 
@@ -251,11 +259,11 @@ export class GodfatherTopicDetailPage {
 
   // TODO Simplicar código y regresar el get del httpclient desde un provider
   downloadFile(file) {
-    let encodedURI = encodeURI(this.threadProvider.API + "files/" + file.id + "/download");
+    let encodedURI = encodeURI(file.cloud_path);
     this.loader.present("Descargando archivo...");
 
     let alertTitle = "", alertSubtitle = "";
-    this.httpClient.get(encodedURI, {responseType: 'blob'}).flatMap((data: Blob) => {
+    this.httpClient.get(encodedURI,{responseType: 'blob'}).flatMap((data: Blob) => {
       return Observable.from(this.file.writeFile(this.file.externalRootDirectory + "/Download", file.name,
         data, {replace: true}))
     }).subscribe(response => {
