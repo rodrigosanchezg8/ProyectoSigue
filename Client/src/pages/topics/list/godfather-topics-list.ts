@@ -84,7 +84,7 @@ export class GodfatherTopicsListPage {
       let requestParams = {
         'subject': subject,
         'user_issuing_id': this.sessionUser.id,
-        'user_receiver_id': this.sessionUser.id === 1 ? this.godfather.id : this.sessionUser.id
+        'user_receiver_id': this.sessionUser.id === 1 ? this.godfather.id : 1
       };
 
       this.loaderCtrl.present();
