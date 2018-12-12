@@ -157,10 +157,10 @@ export class GodfatherTopicDetailPage {
   // TODO Notify the other user when a file is sent
   subscribeSocketMessages() {
     this.messagesSubscription = this.getMessages().subscribe((socketMessagesData: any) => {
-      if(socketMessagesData.data.thread && socketMessagesData.data.thread.id === this.thread.id) {
+
         switch (socketMessagesData.event) {
           case 'App\\Events\\ThreadHistoryRequested':
-            if (this.thread.messages.length == 0) {
+            if (this.thread.messages.length == 0 && this.thread.id === socketMessagesData.data.thread.id) {
               this.loader.present();
               for (let message of socketMessagesData.data.thread.messages) {
                 let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
@@ -171,15 +171,18 @@ export class GodfatherTopicDetailPage {
             setTimeout(() => this.content.scrollToBottom(), 300);
             break;
           case 'App\\Events\\NewThreadMessage':
-            this.loader.present();
-            let newMessage = new Message().deserialize(socketMessagesData.data.message).setClass(this.sessionUser.id);
-            this.thread.messages.push(newMessage);
-            this.loader.dismiss();
-            setTimeout(() => this.content.scrollToBottom(), 300);
+            if(socketMessagesData.data.message &&
+              (socketMessagesData.data.message.user_id_replier === this.sessionUser.id ||
+                socketMessagesData.data.message.user_id_receiver === this.sessionUser.id )){
+              let newMessage = new Message().deserialize(socketMessagesData.data.message).setClass(this.sessionUser.id);
+              this.thread.messages.push(newMessage);
+              setTimeout(() => this.content.scrollToBottom(), 300);
+            }
           case 'App\\Events\\NewFile':
             break;
         }
-      }
+
+      //}
       this.providerNotificationDelete();
     },
       () => {

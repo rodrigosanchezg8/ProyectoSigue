@@ -118,7 +118,7 @@ export class NewGodsonPage {
 
     getImage() {
         const options: CameraOptions = {
-          quality: 80,
+          quality: 60,
           destinationType: this.camera.DestinationType.DATA_URL,
           encodingType: this.camera.EncodingType.JPEG,
           sourceType: 0,

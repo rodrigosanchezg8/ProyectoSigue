@@ -84,11 +84,8 @@ export class GodfatherTopicsListPage {
       let requestParams = {
         'subject': subject,
         'user_issuing_id': this.sessionUser.id,
-        'user_receiver_id': this.sessionUser.id === 1 ? this.godfather.id : 1
+        'user_receiver_id': this.sessionUser.id === 1 ? this.godfather.id : this.sessionUser.id
       };
-
-      console.log(this);
-      console.log(requestParams);
 
       this.loaderCtrl.present();
       this.threadProvider.storeUserThead(requestParams).then((observable: any) => {

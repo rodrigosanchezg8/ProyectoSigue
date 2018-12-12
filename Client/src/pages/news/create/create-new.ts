@@ -1,9 +1,9 @@
 import {
-    AlertController,
-    IonicPage,
-    NavController,
-    NavParams,
-    Events
+  AlertController,
+  IonicPage,
+  NavController,
+  NavParams,
+  Events, Platform
 } from 'ionic-angular';
 import { CameraOptions, Camera } from '@ionic-native/camera';
 import { Component } from '@angular/core';
@@ -11,6 +11,7 @@ import { Loader } from "../../../traits/Loader";
 import { NativeStorage } from "@ionic-native/native-storage";
 import { New } from "../../../models/new";
 import { NewProvider } from '../../../providers/new/new';
+import {Godfather} from "../../../models/godfather";
 
 @IonicPage()
 @Component({
@@ -22,6 +23,7 @@ export class CreateNewPage {
     new: New;
     imageURI: any;
     imageData: any;
+    sessionUser: Godfather;
 
     constructor(
       private camera: Camera,
@@ -32,20 +34,27 @@ export class CreateNewPage {
       public navCtrl: NavController,
       public navParams: NavParams,
       private nativeStorage: NativeStorage,
+      private platform: Platform
     ) {
         this.new = navParams.get('new');
-    }
 
-    ionViewDidLoad() {
-      console.log("create-new.ts");
+      this.platform.ready().then((ready) => {
+
+        if (this.sessionUser === undefined) {
+          this.nativeStorage.getItem("session").then(res => {
+            this.sessionUser = res.user;
+          }).catch(e => console.log(e));
+        }
+
+      });
+
     }
 
     updateNew(id: Number) {
-      let self = this;
       let newData = {
         "title": this.new.title,
         "description": this.new.description,
-        "created_by": this.nativeStorage.getItem("session")["__zone_symbol__value"].user.id,
+        "created_by": this.sessionUser.id,
         "image": (this.imageURI !== "") ? this.imageData : null,
       };
       this.loader.present();
@@ -65,7 +74,7 @@ export class CreateNewPage {
       let messages = "";
       for (let i = 0; i < response["messages"].length; i++) {
         messages += response["messages"][i] + "<br>";
-        if (response["messages"].length > 1 && response["status"] == "error") messages += "<br>";
+        if (response["messages"].length > 1) messages += "<br>";
       }
       let alert = this.alertCtrl.create({
         title: response["header"],
@@ -81,7 +90,7 @@ export class CreateNewPage {
 
     getImage() {
         const options: CameraOptions = {
-          quality: 100,
+          quality: 60,
           destinationType: this.camera.DestinationType.DATA_URL,
           encodingType: this.camera.EncodingType.JPEG,
           sourceType: 0,

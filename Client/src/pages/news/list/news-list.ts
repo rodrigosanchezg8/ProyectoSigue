@@ -53,15 +53,16 @@ export class NewsListPage {
     ) {
       this.createForm();
       this.newsDetailPage = NewsDetailPage;
-      this.platform.ready().then((ready) => {
 
-        if (this.sessionUser === undefined) {
-          this.nativeStorage.getItem("session").then(res => {
-            this.sessionUser = res.user;
-          }).catch(e => console.log(e));
-        }
+    this.platform.ready().then((ready) => {
 
-      });
+      if (this.sessionUser === undefined) {
+        this.nativeStorage.getItem("session").then(res => {
+          this.sessionUser = res.user;
+        }).catch(e => console.log(e));
+      }
+
+    });
 
     this.events.subscribe('new:reload-list', () => {
         this.fillNews();
@@ -124,7 +125,7 @@ export class NewsListPage {
 
   getImage() {
     const options: CameraOptions = {
-      quality: 100,
+      quality: 60,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       sourceType: 0,
