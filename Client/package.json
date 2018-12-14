@@ -43,11 +43,12 @@
     "autoprefixer": "^9.1.5",
     "com-badrit-base64": "^0.2.0",
     "cordova-android": "7.0.0",
-    "cordova-browser": "5.0.4",
+    "cordova-android-support-gradle-release": "^2.0.1",
+    "cordova-browser": "^5.0.4",
     "cordova-ios": "~4.5.4",
-    "cordova-plugin-advanced-http": "^2.0.1",
+    "cordova-plugin-advanced-http": "^2.0.2",
     "cordova-plugin-background-mode": "^0.7.2",
-    "cordova-plugin-badge": "^0.8.7",
+    "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-file": "^6.0.1",
@@ -55,7 +56,7 @@
     "cordova-plugin-filechooser": "^1.0.1",
     "cordova-plugin-filepath": "^1.4.2",
     "cordova-plugin-firebase": "^2.0.5",
-    "cordova-plugin-ionic-keyboard": "^2.1.2",
+    "cordova-plugin-ionic-keyboard": "^2.1.3",
     "cordova-plugin-ionic-webview": "^1.2.1",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-nativestorage": "^2.3.2",
@@ -77,7 +78,7 @@
     "zone.js": "0.8.18"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "^3.2.0",
+    "@ionic/app-scripts": "3.2.1",
     "typescript": "2.4.2"
   },
   "description": "An Ionic project",
@@ -99,12 +100,15 @@
       "cordova-plugin-camera": {},
       "cordova-plugin-local-notification": {},
       "cordova-plugin-background-mode": {},
-      "cordova-plugin-firebase": {}
+      "cordova-plugin-firebase": {},
+      "cordova-android-support-gradle-release": {
+        "ANDROID_SUPPORT_VERSION": "27.+"
+      }
     },
     "platforms": [
       "ios",
-      "browser",
-      "android"
+      "android",
+      "browser"
     ]
   }
 }

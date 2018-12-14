@@ -155,7 +155,7 @@ const firebase = {
     BackgroundMode,
     Firebase,
     FcmProvider,
-    NotificationProvider
+    NotificationProvider,
   ]
 })
 export class AppModule {}

@@ -84,12 +84,21 @@ export class GodfatherTopicDetailPage {
 
   }
 
+  isJson(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
   ngOnInit() {
     this.message = new Message();
   }
 
   ionViewDidEnter() {
-    //this.socket.on('connect', () => { alert('connected')});
+    this.socket.on('connect', () => {});
     this.subscribePopoverEvents();
 
     this.requestHistoryEvent();
@@ -144,12 +153,12 @@ export class GodfatherTopicDetailPage {
   }
 
   requestHistoryEvent() {
-    //this.loader.present();
+    this.loader.present();
     this.threadProvider.getThreadMessages(this.thread.id, 0).then((observable: any) => {
       observable.subscribe((response) => {
         console.log(response);
       }, (error) => {
-        alert('No se pudieron obtener los mensajes de este tema, contacte al equipo de desarrollo')
+        alert('No se pudieron obtener los mensajes de este tema, contacte al equipo de desarrollo');
       });
     });
   }
@@ -161,12 +170,10 @@ export class GodfatherTopicDetailPage {
         switch (socketMessagesData.event) {
           case 'App\\Events\\ThreadHistoryRequested':
             if (this.thread.messages.length == 0 && this.thread.id === socketMessagesData.data.thread.id) {
-              this.loader.present();
               for (let message of socketMessagesData.data.thread.messages) {
                 let newMessage = new Message().deserialize(message).setClass(this.sessionUser.id);
                 this.thread.messages.push(newMessage);
               }
-              this.loader.dismiss();
             }
             setTimeout(() => this.content.scrollToBottom(), 300);
             break;
@@ -182,8 +189,8 @@ export class GodfatherTopicDetailPage {
             break;
         }
 
-      //}
-      this.providerNotificationDelete();
+        this.loader.dismiss();
+        this.providerNotificationDelete();
     },
       () => {
         this.loader.dismiss();

@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams, AlertController} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, AlertController, Platform} from 'ionic-angular';
 import {RegisterPage} from "../home-admin/godfathers/register/register";
 import {AdminTabsPage} from "../home-admin/tabs/admin-tabs";
 import {UserProvider} from "../../providers/user/user";
@@ -25,7 +25,8 @@ export class LoginPage {
               private userProvider: UserProvider,
               private nativeStorage: NativeStorage,
               private loader: Loader,
-              private fcmProvider: FcmProvider) {
+              private fcmProvider: FcmProvider,
+              private platform: Platform) {
   }
 
   ionViewDidLoad() {
@@ -71,11 +72,13 @@ export class LoginPage {
 
       this.loader.dismiss();
 
-      this.fcmProvider.getToken().then(fcmRes => {
-        this.userProvider.updateFCMToken(loginRes.user.id, fcmRes).then((observable: any) => {
+      if(this.platform.is('android')) {
+        this.fcmProvider.getToken().then(fcmRes => {
+          this.userProvider.updateFCMToken(loginRes.user.id, fcmRes).then((observable: any) => {
             observable.subscribe(updateRes => console.log(updateRes))
           });
-      });
+        });
+      }
 
       loginRes.user.role_description === 'Administrador' ?
         this.navCtrl.setRoot(AdminTabsPage) :

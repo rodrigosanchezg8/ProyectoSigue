@@ -93,7 +93,7 @@ export class GodfatherTopicsListPage {
 
           this.threads.splice(0, 0, new Thread().deserialize(data.thread));
 
-          let pushParams = {thread: data.thread, subject: subject, godfather: godfather};
+          let pushParams = { thread: data.thread };
           this.navCtrl.push(GodfatherTopicDetailPage, pushParams);
 
           this.loaderCtrl.dismiss();
@@ -115,64 +115,62 @@ export class GodfatherTopicsListPage {
     });
   }
 
-  constructThreadsObserver() {
-    this.threadsObserver = {
-      next: (response: Thread[]) => {
-
-        console.log(response);
-
-        for (let thread of response) {
-
-          let pushed, updated;
-
-          if (!this.threadInList(thread.id)) {
-            this.threads.push(new Thread().deserialize(thread));
-            pushed = true;
-          }
-
-          updated = this.updateThreads(thread);
-
-          if (pushed || updated)
-            this.sortThreads();
-        }
-
-      },
-      error: (data) => {
-        console.log(data);
-      },
-      complete: () => {
-      }
-    }
-  }
-
   subscribeThreadsObserver() {
-    this.threadsSubscription = TimerObservable.create(0, 10000).subscribe(() => {
+    this.threadsSubscription = TimerObservable.create(0, 5000).subscribe(() => {
       this.threadProvider.getAllUserThreads(this.godfather.id).then((observable: any) => {
         observable.subscribe(this.threadsObserver);
       });
     });
   }
 
-  threadInList(id: number): boolean {
-    return (this.threads === undefined || this.threads.length === 0) ? false : this.threads.find((thread) => {
-      return thread.id === id
-    }) !== undefined;
+  constructThreadsObserver() {
+    this.threadsObserver = {
+      next: (response: Thread[]) => {
+
+        for (let thread of response) {
+
+          let pushed, updated;
+
+          let existingThread = this.threadInList(thread.id);
+          if (!existingThread) {
+            this.threads.push(new Thread().deserialize(thread));
+            pushed = true;
+          } else {
+            this.updateThread(thread, existingThread);
+            updated = true;
+          }
+
+          if (pushed || updated)
+            this.sortThreads();
+
+        }
+
+      },
+      error: (data) => {
+        console.log(data);
+      },
+      complete: () => {}
+    }
   }
 
-  updateThreads(thread: Thread): boolean {
-    let existingThread = this.threads.find((mThread) => {
-      return mThread.id === thread.id
+  threadInList(id: number) {
+    return (this.threads === undefined || this.threads.length === 0) ? false : this.threads.find((thread) => {
+      return thread.id === id
     });
-    if (existingThread !== undefined) {
+  }
+
+  updateThread(thread: Thread, existingThread: Thread) {
 
       if (existingThread.updated_at !== thread.updated_at)
         existingThread.updated_at = thread.updated_at;
+
       if (existingThread.last_message !== thread.last_message)
         existingThread.last_message = thread.last_message;
 
-      return true;
-    }
-    return false;
+      if(!existingThread.notification && thread.notification){
+        existingThread.notification = thread.notification;
+      }
+
   }
 
   sortThreads() {

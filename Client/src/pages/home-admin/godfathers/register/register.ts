@@ -55,7 +55,7 @@ export class RegisterPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RegisterPage');
-    this.assets['children'] = this.godfatherProvider.singletonService.API + "storage/assets/children.png";
+    this.imageURI = this.godfatherProvider.singletonService.API + "storage/assets/children.png";
   }
 
   createForm() {
