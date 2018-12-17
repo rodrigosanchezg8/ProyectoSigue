@@ -4,6 +4,7 @@ export class Godfather {
   first_name: string;
   last_name: string;
   full_name: string;
+  phone: string;
   password: string;
   email: string;
   interests: string;
@@ -16,7 +17,3 @@ export class Godfather {
   }
 
 }
-
-
-
-
