@@ -47,11 +47,15 @@ export class NewGodsonPage {
     }
 
     ionViewDidLoad() {
+        console.log('godson', this.godson);
         this.godfatherProvider.getGodfathers()
         .then((observable: any) => {
             observable.subscribe(
                 (success) => {
                     this.godfathers = success;
+                    if(this.isEditMode) {
+                        this.selectedGodfather = this.godfathers.find((item)=>item.id === this.godson.godfather_id);
+                    }
                 },
                 (error) => {
                     console.log(error);
@@ -86,7 +90,7 @@ export class NewGodsonPage {
             orphan_house_id: 0,
             profile_image: this.imgData ? this.imgData : '',
             status: 1,
-            godfather_id: this.selectedGodfather
+            godfather_id: this.selectedGodfather.id
         });
     }
 
@@ -97,7 +101,8 @@ export class NewGodsonPage {
             last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
-            profile_image: this.imgData ? this.imgData : '',
+            profile_image: this.imgData ? this.imgData : this.godson.profile_image,
+            godfather_id: this.selectedGodfather ? this.selectedGodfather.id : this.godson.godfather_id,
             status: 1
         });
     }

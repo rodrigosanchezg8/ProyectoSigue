@@ -35,12 +35,12 @@
   
       <ion-item>
         <ion-label floating>Padrino</ion-label>
-        <ion-select [(ngModel)]="selectedGodfather">
-          <ion-option *ngFor="let godfather of godfathers" 
-                      [value]="godfather.id">
-                      {{godfather.first_name}} {{godfather.last_name}}
-          </ion-option>
-        </ion-select>
+        <ionic-selectable item-content [items]="godfathers" 
+                          itemValueField="id" 
+                          itemTextField="first_name"
+                          [canSearch] = "true"
+                          [(ngModel)]="selectedGodfather">
+        </ionic-selectable>
       </ion-item>
 
       <ion-grid margin-top>

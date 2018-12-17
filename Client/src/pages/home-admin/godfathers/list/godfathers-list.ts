@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams, PopoverController} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, PopoverController, ViewController, App} from 'ionic-angular';
 import {GodfathersPopoverPage} from "./godfathers-popover/godfathers-popover";
 import {GodfathersDetailPage} from "../detail/godfathers-detail";
 import {GodfatherProvider} from "../../../../providers/godfather/godfather";
@@ -22,7 +22,10 @@ export class GodfathersPage {
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
               public popoverCtrl: PopoverController,
-              private godfatherProvider: GodfatherProvider) {}
+              private godfatherProvider: GodfatherProvider,
+              public viewCtrl: ViewController,
+              public appCtrl: App
+              ) {}
 
   ionViewDidEnter(){
     console.log('ionViewDidEnter GodfathersPage');

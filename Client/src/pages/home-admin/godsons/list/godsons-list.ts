@@ -59,6 +59,7 @@ export class GodsonsPage {
         res.subscribe( (data:any ) => {
           this.godsons = data;
           this.godsonsList = this.godsons.map((godson) => godson);
+          console.log(this.godsons);
         });
       });
     }
