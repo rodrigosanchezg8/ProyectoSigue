@@ -1,3 +1,5 @@
+import {AlertController} from 'ionic-angular';
+import {CallNumber} from '@ionic-native/call-number';
 import {Component} from '@angular/core';
 import {IonicPage, NavController, NavParams, PopoverController} from 'ionic-angular';
 import {GodfathersPopoverPage} from "./godfathers-popover/godfathers-popover";
@@ -19,9 +21,11 @@ export class GodfathersPage {
   godfathersDetailPage = GodfathersDetailPage;
   godfatherTopicsListPage = GodfatherTopicsListPage;
 
-  constructor(public navCtrl: NavController,
+  constructor(public caller: CallNumber,
+              public navCtrl: NavController,
               public navParams: NavParams,
               public popoverCtrl: PopoverController,
+              private alertCtrl: AlertController,
               private godfatherProvider: GodfatherProvider) {}
 
   ionViewDidEnter(){
@@ -44,6 +48,20 @@ export class GodfathersPage {
     popover.present({
       ev: event
     });
+  }
+
+  makePhoneCall(godfather){
+    if (godfather.phone != undefined) {
+      this.caller.callNumber("+52" + godfather.phone, true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
+    } else {
+      let alert = this.alertCtrl.create({
+        title: 'El padrino no tiene numero de telefono',
+        subTitle: 'Edite el padrino para agregar uno'
+      });
+      alert.present();
+    }
   }
 
 }

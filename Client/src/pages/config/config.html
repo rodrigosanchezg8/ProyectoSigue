@@ -1,16 +1,31 @@
 <ion-header>
 
   <ion-navbar>
-    <div *ngIf="sessionUser !== undefined">
-      <ion-title>{{sessionUser.first_name + " " + sessionUser.last_name}} (Opciones)</ion-title>
-    </div>
+    <ion-title>Opciones</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content padding>
   <ion-list>
+    <ion-list-header>
+      <div *ngIf="sessionUser !== undefined">
+        <ion-grid>
+          <div *ngIf="sessionUser.role_description == 'Padrino'">
+            <ion-row justify-content-center align-items-center>
+              <ion-avatar>
+                <img src="{{ sessionUser.profile_image }}">
+              </ion-avatar>
+            </ion-row>
+          </div>
+          <ion-row justify-content-center align-items-center style="height: 100%">
+            {{sessionUser.first_name + " " + sessionUser.last_name}}
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-list-header>
     <button ion-item (click)="closeSession()">
+      <ion-icon name="power"></ion-icon>
       Cerrar sesion
     </button>
   </ion-list>
