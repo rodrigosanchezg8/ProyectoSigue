@@ -7,36 +7,36 @@
 <ion-header>
 
     <ion-navbar>
-      <ion-title>Nuevo Ahijado</ion-title>
+      <ion-title>{{ isEditMode ? 'Editar ahijado' : 'Nuevo ahijado' }}</ion-title>
     </ion-navbar>
-  
+
   </ion-header>
-  
-  
+
+
   <ion-content padding>
-  
-    <ion-img src="" width="300" height="300" text-center class="center transparent"></ion-img>
-  
+
+    <img *ngIf="isEditMode" src="{{godson.profile_image}}" text-center class="profile center transparent">
+
     <ion-list>
       <ion-item>
         <ion-label floating>Nombre/s</ion-label>
         <ion-input type="text" name="first_name" [(ngModel)]="godson.first_name"></ion-input>
       </ion-item>
-  
+
       <ion-item>
         <ion-label floating>Apellidos</ion-label>
         <ion-input type="text" name="last_name" [(ngModel)]="godson.last_name"></ion-input>
       </ion-item>
-  
+
       <ion-item>
         <ion-label floating>Edad</ion-label>
         <ion-input type="email" name="email" [(ngModel)]="godson.age"></ion-input>
       </ion-item>
-  
+
       <ion-item>
         <ion-label floating>Padrino</ion-label>
         <ion-select [(ngModel)]="selectedGodfather">
-          <ion-option *ngFor="let godfather of godfathers" 
+          <ion-option *ngFor="let godfather of godfathers"
                       [value]="godfather.id">
                       {{godfather.first_name}} {{godfather.last_name}}
           </ion-option>
@@ -52,12 +52,11 @@
           <img src="{{imgURI}}" alt="Ionic File" class="preview-sign-up-profile-image"/>
         </ion-row>
       </ion-grid>
-  
+
     </ion-list>
-  
+
     <div padding text-center="true">
-      <button ion-button (click)="sendRequest()">Registrar</button>
+      <button ion-button (click)="sendRequest()">Guardar</button>
     </div>
-  
+
   </ion-content>
-  

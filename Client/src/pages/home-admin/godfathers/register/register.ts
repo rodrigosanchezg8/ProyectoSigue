@@ -53,11 +53,6 @@ export class RegisterPage {
     this.createForm();
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RegisterPage');
-    this.imageURI = this.godfatherProvider.singletonService.API + "storage/assets/children.png";
-  }
-
   createForm() {
     this.form = this.formBuilderCtrl.group({
       profile_image: null
@@ -91,6 +86,7 @@ export class RegisterPage {
 
   sendProfileImage(res: any) {
     if (this.imageURI !== undefined) {
+      console.log(this.imageURI);
       this.loaderCtrl.present();
       console.log(res);
       this.godfatherProvider.uploadProfileImage(this.form.value, res.data.id).then((observable: any) => {
@@ -101,6 +97,8 @@ export class RegisterPage {
       }).catch(e => {
         this.loaderCtrl.dismiss();
       });
+    } else {
+      console.log("IS UNDEFINED");
     }
   }
 

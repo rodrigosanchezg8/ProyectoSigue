@@ -84,7 +84,7 @@ export class NewGodsonPage {
             last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
-            profile_image: this.imgData ? this.imgData : '',
+            profile_image: this.imgData ? this.imgData : null,
             status: 1,
             godfather_id: this.selectedGodfather
         });
@@ -97,8 +97,8 @@ export class NewGodsonPage {
             last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
-            profile_image: this.imgData ? this.imgData : '',
-            status: 1
+            profile_image: this.imgData ? this.imgData : null,
+            status: 1,
         });
     }
 

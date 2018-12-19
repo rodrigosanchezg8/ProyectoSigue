@@ -14,7 +14,7 @@
 
 <ion-content padding>
 
-  <ion-img src="{{ isEditMode ? godfather.profile_image : assets?.children }}" width="300" height="300" text-center class="center transparent"></ion-img>
+  <img *ngIf="isEditMode" src="{{ godfather.profile_image }}" text-center class="profile center transparent">
 
   <ion-list>
     <ion-item>
