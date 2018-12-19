@@ -5,6 +5,7 @@ import { MyApp } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { NativeStorage } from '@ionic-native/native-storage';
+import { CallNumber } from '@ionic-native/call-number';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -136,6 +137,7 @@ const firebase = {
     StatusBar,
     SplashScreen,
     NativeStorage,
+    CallNumber,
     File,
     Camera,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
