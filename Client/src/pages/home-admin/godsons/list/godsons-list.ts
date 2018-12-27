@@ -73,8 +73,13 @@ export class GodsonsPage {
   }
 
   search() {
+    if(this.searchValue) {
+      console.log(this.searchValue);
       this.godsonsList = this.godsons.filter(
         (godson) => godson.full_name.toUpperCase().indexOf(this.searchValue.toUpperCase()) !== -1);
+    } else {
+      this.loadGodsons();
+    }
   }
 
 }

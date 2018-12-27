@@ -11,4 +11,5 @@ export class Godson {
     status: number;
     updated_at: string;
     godfather_id: number;
+    godfathers: any;
 }

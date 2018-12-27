@@ -14,7 +14,9 @@ import {Godfather} from "../../../../models/godfather";
 export class GodfathersPage {
 
   godfathers: Godfather[] = [];
+  godfatherList: any; 
   listDisplayMessage: string;
+  searchValue: string;
 
   godfathersDetailPage = GodfathersDetailPage;
   godfatherTopicsListPage = GodfatherTopicsListPage;
@@ -37,6 +39,7 @@ export class GodfathersPage {
     this.godfatherProvider.getGodfathers().then((observable: any) => {
       observable.subscribe((data: Godfather[]) => {
         this.godfathers = data;
+        this.godfatherList = data;
         this.listDisplayMessage = this.godfathers.length === 0 ? "Aún no has agregado padrinos." : "";
       });
     });
@@ -47,6 +50,16 @@ export class GodfathersPage {
     popover.present({
       ev: event
     });
+  }
+
+  search() {
+    if(this.searchValue) {
+      console.log(this.searchValue);
+      this.godfatherList = this.godfathers.filter(
+        (godfather) => godfather.full_name.toUpperCase().indexOf(this.searchValue.toUpperCase()) !== -1);
+    } else {
+      this.fillGodfathers();
+    }
   }
 
 }
