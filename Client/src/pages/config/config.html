@@ -12,14 +12,14 @@
       <div *ngIf="sessionUser !== undefined">
         <ion-grid>
           <div *ngIf="sessionUser.role_description == 'Padrino'">
-            <ion-row justify-content-center align-items-center>
-              <ion-avatar>
+            <ion-row class="profile-image-row">
+              <ion-col>
                 <img src="{{ sessionUser.profile_image }}">
-              </ion-avatar>
+              </ion-col>
             </ion-row>
           </div>
           <ion-row justify-content-center align-items-center style="height: 100%">
-            {{sessionUser.first_name + " " + sessionUser.last_name}}
+            <h1>{{sessionUser.first_name + " " + sessionUser.last_name}}</h1>
           </ion-row>
         </ion-grid>
       </div>

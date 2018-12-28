@@ -21,12 +21,12 @@ export class GodfathersPage {
   godfathersDetailPage = GodfathersDetailPage;
   godfatherTopicsListPage = GodfatherTopicsListPage;
 
-  constructor(public caller: CallNumber,
+  constructor(private alertCtrl: AlertController,
+              private godfatherProvider: GodfatherProvider,
+              public caller: CallNumber,
               public navCtrl: NavController,
               public navParams: NavParams,
-              public popoverCtrl: PopoverController,
-              private alertCtrl: AlertController,
-              private godfatherProvider: GodfatherProvider) {}
+              public popoverCtrl: PopoverController) {}
 
   ionViewDidEnter(){
     console.log('ionViewDidEnter GodfathersPage');

@@ -24,6 +24,9 @@
         <ion-row>
           <ion-icon name="mail"></ion-icon> {{ godfather.email }}
         </ion-row>
+        <ion-row *ngIf="godfather.phone != null">
+          <ion-icon name="call"></ion-icon> {{ godfather.phone }}
+        </ion-row>
         <ion-row>
           <ion-icon name="time"></ion-icon> {{ godfather.interests }}
         </ion-row>

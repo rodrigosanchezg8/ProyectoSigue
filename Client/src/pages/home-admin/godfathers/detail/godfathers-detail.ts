@@ -26,13 +26,13 @@ export class GodfathersDetailPage {
   godfather: Godfather;
 
   constructor(
-    public navCtrl: NavController, 
-    public navParams: NavParams, 
+    public navCtrl: NavController,
+    public navParams: NavParams,
     public actionSheetCtrl: ActionSheetController,
-    public popoverCtrl: PopoverController, 
-    private events: Events, 
+    public popoverCtrl: PopoverController,
+    private events: Events,
     private godfatherProvider: GodfatherProvider,
-    private alertCtrl: AlertController, 
+    private alertCtrl: AlertController,
     private loaderCtrl: Loader,
     public viewCtrl: ViewController,
     public appCtrl: App) {
