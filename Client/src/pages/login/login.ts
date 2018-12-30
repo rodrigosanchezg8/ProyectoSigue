@@ -1,12 +1,13 @@
-import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams, AlertController, Platform} from 'ionic-angular';
-import {RegisterPage} from "../home-admin/godfathers/register/register";
 import {AdminTabsPage} from "../home-admin/tabs/admin-tabs";
-import {UserProvider} from "../../providers/user/user";
-import {NativeStorage} from '@ionic-native/native-storage';
-import {GodfatherTabsPage} from "../home-godfather/tabs/godfather-tabs";
-import {Loader} from "../../traits/Loader";
+import {Component} from '@angular/core';
 import {FcmProvider} from "../../providers/fcm/fcm";
+import {GodfatherTabsPage} from "../home-godfather/tabs/godfather-tabs";
+import {IonicPage, NavController, NavParams, AlertController, Platform} from 'ionic-angular';
+import {Loader} from "../../traits/Loader";
+import {NativeStorage} from '@ionic-native/native-storage';
+import {RegisterPage} from "../home-admin/godfathers/register/register";
+import {ResetPasswordPage} from "../reset-password/reset-password";
+import {UserProvider} from "../../providers/user/user";
 
 @IonicPage()
 @Component({
@@ -18,6 +19,7 @@ export class LoginPage {
   assets: string[] = [];
   password: string = "";
   email: string = "";
+  resetPasswordPage = ResetPasswordPage;
 
   constructor(public navCtrl: NavController,
               public navParams: NavParams,
@@ -37,7 +39,8 @@ export class LoginPage {
     this.loader.present();
     this.userProvider.validateUser(this.email, this.password).then((observable: any) => {
       observable.subscribe((res) => {
-        this.handleLoginResponse(res);
+         this.loader.dismiss();
+         this.handleLoginResponse(res);
       });
     }, (error) => {
       alert(error.toString());
@@ -50,6 +53,7 @@ export class LoginPage {
     this.loader.present();
     this.userProvider.validateUser("coordinacion@proyectosigue.com.mx", "123456").then((observable: any) => {
       observable.subscribe((res) => {
+        this.loader.dismiss();
         this.handleLoginResponse(res);
       });
     }, (error) => {
@@ -63,14 +67,9 @@ export class LoginPage {
 
   handleLoginResponse(loginRes) {
     if (loginRes["status"] == "Error") {
-      this.loader.dismiss();
       this.presentResponse(loginRes);
-    }
-    else {
-
+    } else {
       this.nativeStorage.setItem("session", loginRes);
-
-      this.loader.dismiss();
 
       if(this.platform.is('android')) {
         this.fcmProvider.getToken().then(fcmRes => {

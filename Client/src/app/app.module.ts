@@ -10,6 +10,7 @@ import { CallNumber } from '@ionic-native/call-number';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LoginPage } from "../pages/login/login";
+import { ResetPasswordPage } from "../pages/reset-password/reset-password";
 import { RegisterPage } from "../pages/home-admin/godfathers/register/register";
 import { HomeAdminPage } from '../pages/home-admin/home-admin'
 import { ConfigPage } from '../pages/config/config';
@@ -73,6 +74,7 @@ const firebase = {
     MyApp,
     AdminTabsPage,
     LoginPage,
+    ResetPasswordPage,
     RegisterPage,
     HomeAdminPage,
     ConfigPage,
@@ -111,6 +113,7 @@ const firebase = {
     MyApp,
     AdminTabsPage,
     LoginPage,
+    ResetPasswordPage,
     RegisterPage,
     HomeAdminPage,
     ConfigPage,

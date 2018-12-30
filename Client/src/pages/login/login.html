@@ -12,7 +12,6 @@
 
 </ion-header>
 
-
 <ion-content padding>
   <ion-list>
 
@@ -34,6 +33,10 @@
 
   <div padding text-center>
     <button ion-button (click)="adminDebugSignIn()">Entrar como admin</button>
+  </div>
+
+  <div padding text-center>
+    <button ion-button [navPush]="resetPasswordPage">Olvidé mi contraseña</button>
   </div>
 
 </ion-content>
