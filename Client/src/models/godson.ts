@@ -10,4 +10,6 @@ export class Godson {
     profile_image: string;
     status: number;
     updated_at: string;
+    godfather_id: number;
+    godfathers: any;
 }

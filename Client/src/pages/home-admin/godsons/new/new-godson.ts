@@ -4,7 +4,8 @@ import {
     IonicPage,
     NavController,
     NavParams,
-    Events
+    Events,
+    ToastController
 } from 'ionic-angular';
 import { GodsonProvider } from '../../../../providers/godson/godson';
 import { Godson } from '../../../../models/godson';
@@ -34,7 +35,8 @@ export class NewGodsonPage {
         public navCtrl: NavController,
         public events: Events,
         private camera: Camera,
-        private loaderCtrl: Loader
+        private loaderCtrl: Loader,
+        private toastCtrl: ToastController
     ) {
         this.godson = navParams.get('godson');
 
@@ -47,11 +49,15 @@ export class NewGodsonPage {
     }
 
     ionViewDidLoad() {
+        console.log('godson', this.godson);
         this.godfatherProvider.getGodfathers()
         .then((observable: any) => {
             observable.subscribe(
                 (success) => {
                     this.godfathers = success;
+                    if(this.isEditMode) {
+                        this.selectedGodfather = this.godfathers.find((item)=>item.id === this.godson.godfathers[0].id);
+                    }
                 },
                 (error) => {
                     console.log(error);
@@ -65,16 +71,25 @@ export class NewGodsonPage {
 
     sendRequest() {
 
-        this.loaderCtrl.present('Espere un momento...');
-
-        if (this.isEditMode) {
-            this.editGodson()
-            .then((res: any) => this.responseHandler(res))
-            .catch((error) => console.log(error));
+        if(this.selectedGodfather || this.godson.godfather_id) {
+            this.loaderCtrl.present('Espere un momento...');
+            if (this.isEditMode) {
+                this.editGodson()
+                .then((res: any) => this.responseHandler(res))
+                .catch((error) => console.log(error));
+            } else {
+                this.addNewGodson()
+                .then((res: any) => this.responseHandler(res))
+                .catch((error) => console.log(error));
+            }
         } else {
-            this.addNewGodson()
-            .then((res: any) => this.responseHandler(res))
-            .catch((error) => console.log(error));
+            let toast = this.toastCtrl.create({
+                message: 'Debe seleccionar un padrino',
+                duration: 3000,
+                position: 'middle'
+              });
+
+            toast.present();
         }
     }
 
@@ -86,7 +101,7 @@ export class NewGodsonPage {
             orphan_house_id: 0,
             profile_image: this.imgData ? this.imgData : null,
             status: 1,
-            godfather_id: this.selectedGodfather
+            godfather_id: this.selectedGodfather.id
         });
     }
 
@@ -97,8 +112,9 @@ export class NewGodsonPage {
             last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
-            profile_image: this.imgData ? this.imgData : null,
-            status: 1,
+            profile_image: this.imgData ? this.imgData : this.godson.profile_image,
+            godfather_id: this.selectedGodfather ? this.selectedGodfather.id : this.godson.godfather_id,
+            status: 1
         });
     }
 

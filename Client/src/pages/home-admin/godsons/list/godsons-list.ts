@@ -59,6 +59,7 @@ export class GodsonsPage {
         res.subscribe( (data:any ) => {
           this.godsons = data;
           this.godsonsList = this.godsons.map((godson) => godson);
+          console.log(this.godsons);
         });
       });
     }
@@ -72,8 +73,13 @@ export class GodsonsPage {
   }
 
   search() {
+    if(this.searchValue) {
+      console.log(this.searchValue);
       this.godsonsList = this.godsons.filter(
         (godson) => godson.full_name.toUpperCase().indexOf(this.searchValue.toUpperCase()) !== -1);
+    } else {
+      this.loadGodsons();
+    }
   }
 
 }

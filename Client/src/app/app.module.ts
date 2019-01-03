@@ -56,6 +56,7 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { Firebase } from '@ionic-native/firebase';
 import {FcmProvider} from "../providers/fcm/fcm";
 import {NotificationProvider} from "../providers/notification/notification";
+import {IonicSelectableModule} from 'ionic-selectable';
 
 const config: SocketIoConfig = { url: "https://proyecto-sigue-server-socket.herokuapp.com", options: {} };
 
@@ -105,6 +106,7 @@ const firebase = {
     TruncateModule,
     AngularFireModule.initializeApp(firebase),
     AngularFirestoreModule,
+    IonicSelectableModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

@@ -1,7 +1,7 @@
 import {AlertController} from 'ionic-angular';
 import {CallNumber} from '@ionic-native/call-number';
 import {Component} from '@angular/core';
-import {IonicPage, NavController, NavParams, PopoverController} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, PopoverController, ViewController, App} from 'ionic-angular';
 import {GodfathersPopoverPage} from "./godfathers-popover/godfathers-popover";
 import {GodfathersDetailPage} from "../detail/godfathers-detail";
 import {GodfatherProvider} from "../../../../providers/godfather/godfather";
@@ -16,7 +16,9 @@ import {Godfather} from "../../../../models/godfather";
 export class GodfathersPage {
 
   godfathers: Godfather[] = [];
+  godfatherList: any;
   listDisplayMessage: string;
+  searchValue: string;
 
   godfathersDetailPage = GodfathersDetailPage;
   godfatherTopicsListPage = GodfatherTopicsListPage;
@@ -26,7 +28,10 @@ export class GodfathersPage {
               public navParams: NavParams,
               public popoverCtrl: PopoverController,
               private alertCtrl: AlertController,
-              private godfatherProvider: GodfatherProvider) {}
+              private godfatherProvider: GodfatherProvider,
+              public viewCtrl: ViewController,
+              public appCtrl: App
+              ) {}
 
   ionViewDidEnter(){
     console.log('ionViewDidEnter GodfathersPage');
@@ -38,6 +43,7 @@ export class GodfathersPage {
     this.godfatherProvider.getGodfathers().then((observable: any) => {
       observable.subscribe((data: Godfather[]) => {
         this.godfathers = data;
+        this.godfatherList = data;
         this.listDisplayMessage = this.godfathers.length === 0 ? "Aún no has agregado padrinos." : "";
       });
     });
@@ -50,17 +56,27 @@ export class GodfathersPage {
     });
   }
 
-  makePhoneCall(godfather){
+  makePhoneCall(godfather) {
     if (godfather.phone != undefined) {
       this.caller.callNumber("+52" + godfather.phone, true)
-      .then(res => console.log('Launched dialer!', res))
-      .catch(err => console.log('Error launching dialer', err));
+        .then(res => console.log('Launched dialer!', res))
+        .catch(err => console.log('Error launching dialer', err));
     } else {
       let alert = this.alertCtrl.create({
         title: 'El padrino no tiene numero de telefono',
         subTitle: 'Edite el padrino para agregar uno'
       });
       alert.present();
+    }
+  }
+
+  search() {
+    if(this.searchValue) {
+      console.log(this.searchValue);
+      this.godfatherList = this.godfathers.filter(
+        (godfather) => godfather.full_name.toUpperCase().indexOf(this.searchValue.toUpperCase()) !== -1);
+    } else {
+      this.fillGodfathers();
     }
   }
 

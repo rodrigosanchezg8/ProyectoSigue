@@ -103,11 +103,10 @@ export class GodfathersDetailPage {
   }
 
   viewGodsons() {
-    this.viewCtrl.dismiss().then(() => {
-      this.appCtrl.getRootNav().push(GodsonsPage, {
-        godfatherId: this.godfather.id
-      });
+    this.navCtrl.push(GodsonsPage, {
+      godfatherId: this.godfather.id
     });
+    
   }
 
 }
