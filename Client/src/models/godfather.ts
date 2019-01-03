@@ -6,6 +6,7 @@ export class Godfather {
   full_name: string;
   phone: string;
   password: string;
+  password_confirmation:string;
   email: string;
   interests: string;
   profile_image: string;

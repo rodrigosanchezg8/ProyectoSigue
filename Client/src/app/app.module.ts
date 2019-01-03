@@ -57,6 +57,7 @@ import { Firebase } from '@ionic-native/firebase';
 import {FcmProvider} from "../providers/fcm/fcm";
 import {NotificationProvider} from "../providers/notification/notification";
 import {IonicSelectableModule} from 'ionic-selectable';
+import {ResetPasswordPage} from "../pages/reset-password/reset-password";
 
 const config: SocketIoConfig = { url: "https://proyecto-sigue-server-socket.herokuapp.com", options: {} };
 
@@ -95,7 +96,8 @@ const firebase = {
     LastPipe,
     TopicsDetailPopoverPage,
     NewsListPage,
-    NewsListPopoverPage
+    NewsListPopoverPage,
+    ResetPasswordPage
   ],
   imports: [
     BrowserModule,
@@ -133,7 +135,8 @@ const firebase = {
     GodfatherTabsPage,
     TopicsDetailPopoverPage,
     NewsListPage,
-    NewsListPopoverPage
+    NewsListPopoverPage,
+    ResetPasswordPage
   ],
   providers: [
     StatusBar,

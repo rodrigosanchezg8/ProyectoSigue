@@ -21,4 +21,10 @@ export class UserProvider {
     return this.singletonService.put(url, tokenData, true);
   }
 
+  sendResetPasswordLink(email) {
+    let forgotPasswordData = { "email": email};
+    let url = this.BASE_URL = "api/password/forgot";
+    return this.singletonService.post(url, forgotPasswordData, false);
+  }
+
 }
