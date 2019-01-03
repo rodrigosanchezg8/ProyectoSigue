@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="header">
     <ion-title>{{ godfather.full_name }}</ion-title>
     <ion-buttons end>
       <button ion-button icon-only (click)="presentPopover($event)">
@@ -29,9 +29,6 @@
         </ion-row>
         <ion-row>
           <ion-icon name="time"></ion-icon> {{ godfather.interests }}
-        </ion-row>
-        <ion-row>
-          <button ion-button (click)="viewGodsons()">Ver Ahijados</button>
         </ion-row>
       </ion-grid>
     </ion-row>

@@ -58,6 +58,7 @@ import {FcmProvider} from "../providers/fcm/fcm";
 import {NotificationProvider} from "../providers/notification/notification";
 import {IonicSelectableModule} from 'ionic-selectable';
 import {ResetPasswordPage} from "../pages/reset-password/reset-password";
+import {GodsonDetailPopoverPage} from "../pages/home-admin/godsons/detail/popover/godson-detail-popover";
 
 const config: SocketIoConfig = { url: "https://proyecto-sigue-server-socket.herokuapp.com", options: {} };
 
@@ -97,11 +98,12 @@ const firebase = {
     TopicsDetailPopoverPage,
     NewsListPage,
     NewsListPopoverPage,
-    ResetPasswordPage
+    ResetPasswordPage,
+    GodsonDetailPopoverPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, {tabsHideOnSubPages: false}),
     SocketIoModule.forRoot(config),
     HttpClientModule,
     FormsModule,
@@ -136,7 +138,8 @@ const firebase = {
     TopicsDetailPopoverPage,
     NewsListPage,
     NewsListPopoverPage,
-    ResetPasswordPage
+    ResetPasswordPage,
+    GodsonDetailPopoverPage
   ],
   providers: [
     StatusBar,

@@ -49,7 +49,6 @@ export class NewGodsonPage {
     }
 
     ionViewDidLoad() {
-        console.log('godson', this.godson);
         this.godfatherProvider.getGodfathers()
         .then((observable: any) => {
             observable.subscribe(

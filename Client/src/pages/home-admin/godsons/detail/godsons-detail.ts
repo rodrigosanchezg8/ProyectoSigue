@@ -5,17 +5,10 @@ import {
   NavController,
   NavParams,
   ViewController,
-  App
+  App, PopoverController
 } from 'ionic-angular';
-import { NewGodsonPage } from '../new/new-godson';
 import { GodsonProvider } from '../../../../providers/godson/godson';
-
-/**
- * Generated class for the GodsonsDetailPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import {GodsonDetailPopoverPage} from "./popover/godson-detail-popover";
 
 @IonicPage()
 @Component({
@@ -32,56 +25,17 @@ export class GodsonsDetailPage {
     public appCtrl: App,
     public navCtrl: NavController,
     public navParams: NavParams,
-    public viewCtrl: ViewController
+    public viewCtrl: ViewController,
+    private popoverCtrl: PopoverController
   ) {
     this.godson = this.navParams.data;
   }
 
-  ionViewDidLoad() {
-    console.log(this.godson);
-  }
-
-  presentActionSheet() {
-    const actionSheet = this.actionSheetCtrl.create({
-      title: 'Acción',
-      buttons: [
-        {
-          text: 'Editar',
-          handler: () => {
-            this.viewCtrl.dismiss().then(() => {
-              this.appCtrl.getRootNav().push(NewGodsonPage, {
-                godson: this.godson
-              });
-            });
-          }
-        },
-        {
-          text: 'Eliminar',
-          role: 'destructive',
-          handler: () => {
-            this.godsonProvider.deleteGodson(this.godson.id)
-            .then((observable:any) => {
-              observable.subscribe(
-                (successResponse) => {
-                  this.navCtrl.pop();
-                },
-                (errorResponse) => {
-                  console.log(errorResponse);
-                }
-              );
-            });
-          }
-        },
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
+  presentPopover(event) {
+    let popover = this.popoverCtrl.create(GodsonDetailPopoverPage, {  godson: this.godson });
+    popover.present({
+      ev: event,
     });
-    actionSheet.present();
   }
 
 }

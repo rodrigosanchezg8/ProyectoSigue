@@ -1,6 +1,6 @@
 <ion-header>
 
-    <ion-navbar>
+    <ion-navbar color="header">
       <ion-title>{{ isEditMode ? 'Editar ahijado' : 'Nuevo ahijado' }}</ion-title>
     </ion-navbar>
 
@@ -50,7 +50,7 @@
     </ion-list>
 
     <div padding text-center="true">
-      <button ion-button (click)="sendRequest()">Guardar</button>
+      <button color="dark-blue" ion-button round outline (click)="sendRequest()">Guardar</button>
     </div>
 
   </ion-content>

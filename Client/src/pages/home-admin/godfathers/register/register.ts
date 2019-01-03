@@ -86,9 +86,7 @@ export class RegisterPage {
 
   sendProfileImage(res: any) {
     if (this.imageURI !== undefined) {
-      console.log(this.imageURI);
       this.loaderCtrl.present();
-      console.log(res);
       this.godfatherProvider.uploadProfileImage(this.form.value, res.data.id).then((observable: any) => {
         observable.subscribe((profileImgRes: any) => {
           this.loaderCtrl.dismiss();
@@ -97,8 +95,6 @@ export class RegisterPage {
       }).catch(e => {
         this.loaderCtrl.dismiss();
       });
-    } else {
-      console.log("IS UNDEFINED");
     }
   }
 

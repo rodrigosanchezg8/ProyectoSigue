@@ -1,7 +1,12 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="header">
     <ion-title>{{ godson.full_name }}</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentPopover($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -26,5 +31,4 @@
       </ion-grid>
     </ion-row>
   </ion-grid>
-  <button ion-button block (click)="presentActionSheet()">Acciones</button>
 </ion-content>

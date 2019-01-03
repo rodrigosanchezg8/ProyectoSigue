@@ -14,7 +14,6 @@ import {GodfathersDetailPopoverPage} from "./popover/godfathers-detail-popover";
 import {GodfatherProvider} from "../../../../providers/godfather/godfather";
 import {Godfather} from "../../../../models/godfather";
 import {Loader} from "../../../../traits/Loader";
-import { GodsonsPage } from '../../godsons/list/godsons-list';
 
 @IonicPage()
 @Component({
@@ -26,13 +25,13 @@ export class GodfathersDetailPage {
   godfather: Godfather;
 
   constructor(
-    public navCtrl: NavController, 
-    public navParams: NavParams, 
+    public navCtrl: NavController,
+    public navParams: NavParams,
     public actionSheetCtrl: ActionSheetController,
-    public popoverCtrl: PopoverController, 
-    private events: Events, 
+    public popoverCtrl: PopoverController,
+    private events: Events,
     private godfatherProvider: GodfatherProvider,
-    private alertCtrl: AlertController, 
+    private alertCtrl: AlertController,
     private loaderCtrl: Loader,
     public viewCtrl: ViewController,
     public appCtrl: App) {
@@ -67,7 +66,6 @@ export class GodfathersDetailPage {
     this.events.subscribe('godfather:updated', (id) => {
       this.godfatherProvider.getGodfather(id).then((observable: any) => {
         observable.subscribe(res => {
-          console.log(res);
           this.godfather = res.godfather;
         });
       })
@@ -85,12 +83,10 @@ export class GodfathersDetailPage {
             this.loaderCtrl.present();
             this.godfatherProvider.deleteGodfather(this.godfather.id).then((observable:any) => {
               observable.subscribe(response => {
-                console.log(response);
                 this.loaderCtrl.dismiss();
                 this.navCtrl.pop();
-              }, error => {
+              }, () => {
                 this.loaderCtrl.dismiss();
-                console.log(error);
               })
             })
           }
@@ -100,13 +96,6 @@ export class GodfathersDetailPage {
         }
       ]
     }).present();
-  }
-
-  viewGodsons() {
-    this.navCtrl.push(GodsonsPage, {
-      godfatherId: this.godfather.id
-    });
-    
   }
 
 }

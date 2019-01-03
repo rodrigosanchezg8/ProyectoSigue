@@ -46,15 +46,12 @@ export class NewsDetailPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad NewsDetailPage');
-
     if (this.sessionUser === undefined) {
         this.nativeStorage.getItem("session").then(res => {
           this.sessionUser = res.user !== undefined ? res.user : null;
           console.log(this.sessionUser);
       }).catch(e => console.log(e));
     }
-
   }
 
   presentActionSheet() {
@@ -65,7 +62,7 @@ export class NewsDetailPage {
           text: 'Editar',
           handler: () => {
             this.viewCtrl.dismiss().then(() => {
-              this.appCtrl.getRootNav().push(CreateNewPage, {
+              this.appCtrl.getActiveNav().push(CreateNewPage, {
                 new: this.new
               });
             });

@@ -70,8 +70,6 @@ export class NewsListPage {
   }
 
   ionViewWillEnter() {
-    console.log('ionViewWillEnter NewsListPage');
-    let self = this;
     this.platform.ready().then(() => {
       if (this.sessionUser === undefined) {
           this.nativeStorage.getItem("session").then(

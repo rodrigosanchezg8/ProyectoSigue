@@ -19,16 +19,11 @@ export class GodsonsPopoverPage {
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public appCtrl: App
-  ) {
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad GodsonsPopoverPage');
-  }
+  ) {}
 
   pushCreateGodson() {
     this.viewCtrl.dismiss().then(() => {
-      this.appCtrl.getRootNav().push(NewGodsonPage);
+      this.appCtrl.getActiveNav().push(NewGodsonPage);
     });
   }
 

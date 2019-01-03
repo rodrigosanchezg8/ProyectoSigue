@@ -15,11 +15,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class HomeUserPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad HomeUserPage');
-  }
+  constructor(public navCtrl: NavController, public navParams: NavParams) {}
 
 }

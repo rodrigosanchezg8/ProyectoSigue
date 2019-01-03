@@ -4,9 +4,10 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
+<script src="create-new.module.ts"></script>
 <ion-header>
 
-    <ion-navbar>
+    <ion-navbar color="header">
       <ion-title>Editar Noticia</ion-title>
     </ion-navbar>
 
@@ -41,7 +42,7 @@
     </ion-list>
 
     <div padding text-center="true">
-      <button ion-button (click)="updateNew(new.id)">Guardar noticia</button>
+      <button color="dark-blue" ion-button round outline (click)="updateNew(new.id)">Guardar</button>
     </div>
 
   </ion-content>

@@ -1,10 +1,11 @@
-import {AlertController} from 'ionic-angular';
+import {AlertController, NavController} from 'ionic-angular';
 import {CallNumber} from '@ionic-native/call-number';
 import {Component} from '@angular/core';
 import {IonicPage, NavParams, Events, ViewController, App} from 'ionic-angular';
 import {GodfatherTopicsListPage} from "../../../../topics/list/godfather-topics-list";
 import {Godfather} from "../../../../../models/godfather";
 import {RegisterPage} from "../../register/register";
+import {GodsonsPage} from "../../../godsons/list/godsons-list";
 
 @IonicPage()
 @Component({
@@ -12,8 +13,9 @@ import {RegisterPage} from "../../register/register";
     <ion-list>
       <ion-list-header>Navegar</ion-list-header>
       <button ion-item (click)="pushPage(godfatherTopicsListPage)">Ver temas</button>
-      <button ion-item (click)="pushPage(godfatherRegisterPage)">Editar</button>
+      <button ion-item (click)="viewGodsons()">Ver ahijados</button>
       <button ion-item (click)="callGodfather()">Llamar</button>
+      <button ion-item (click)="pushPage(godfatherRegisterPage)">Editar</button>
       <button ion-item (click)="eventDeleteGodfather()">Eliminar</button>
     </ion-list>
   `
@@ -23,6 +25,7 @@ export class GodfathersDetailPopoverPage {
   godfather: Godfather;
   godfatherTopicsListPage = GodfatherTopicsListPage;
   godfatherRegisterPage = RegisterPage;
+  godsonsPage = GodsonsPage;
 
   constructor(private alertCtrl: AlertController,
               private events: Events,
@@ -31,14 +34,6 @@ export class GodfathersDetailPopoverPage {
               public caller: CallNumber,
               public navParams: NavParams) {
     this.godfather = this.navParams.get('godfather');
-  }
-
-  pushPage(page: any){
-    this.viewCtrl.dismiss().then(() => {
-      this.appCtrl.getRootNav().push(page, {
-        godfather: this.godfather
-      });
-    });
   }
 
   eventDeleteGodfather(){
@@ -59,6 +54,23 @@ export class GodfathersDetailPopoverPage {
       });
       alert.present();
     }
+  }
+
+  pushPage(page: any){
+    this.viewCtrl.dismiss().then(() => {
+      this.appCtrl.getActiveNav().push(page, {
+        godfather: this.godfather
+      });
+    });
+  }
+
+  viewGodsons() {
+    this.viewCtrl.dismiss().then(() => {
+      this.appCtrl.getActiveNav().push(GodsonsPage, {
+        godfatherId: this.godfather.id
+      });
+    });
+
   }
 
 }

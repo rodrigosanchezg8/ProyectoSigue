@@ -36,7 +36,7 @@ export class NewsListPopoverPage {
 
   pushLogin() {
     this.viewCtrl.dismiss().then(() => {
-      this.appCtrl.getRootNav().push(LoginPage);
+      this.appCtrl.getActiveNav().push(LoginPage);
     });
   }
 
@@ -44,7 +44,7 @@ export class NewsListPopoverPage {
     this.viewCtrl.dismiss().then(() => {
       this.nativeStorage.remove("session");
       this.sessionUser = undefined;
-      this.appCtrl.getRootNav().push(NewsListPage);
+      this.appCtrl.getActiveNav().push(NewsListPage);
     }).catch(e => console.log(e));
   }
 

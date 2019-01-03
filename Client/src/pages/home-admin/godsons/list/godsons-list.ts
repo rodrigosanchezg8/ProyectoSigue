@@ -27,7 +27,7 @@ export class GodsonsPage {
   godfatherId: string;
 
   constructor(
-    public http: HttpClient, 
+    public http: HttpClient,
     private godsonProvider: GodsonProvider,
     private godfatherProvider: GodfatherProvider,
     public popoverCtrl: PopoverController,
@@ -41,13 +41,12 @@ export class GodsonsPage {
   }
 
   ionViewWillEnter() {
-    console.log('ionViewWillEnter');
     this.godfatherId = this.navParams.get('godfatherId');
     this.loadGodsons(this.godfatherId);
   }
 
   private loadGodsons(godfatherId: string = undefined){
-    if (this.godfatherId) { 
+    if (this.godfatherId) {
       this.godfatherProvider.getGodsonsByGodfatherId(godfatherId).then((res: any) => {
         res.subscribe( (data:any ) => {
           this.godsons = data.data;
@@ -59,7 +58,6 @@ export class GodsonsPage {
         res.subscribe( (data:any ) => {
           this.godsons = data;
           this.godsonsList = this.godsons.map((godson) => godson);
-          console.log(this.godsons);
         });
       });
     }
@@ -74,7 +72,6 @@ export class GodsonsPage {
 
   search() {
     if(this.searchValue) {
-      console.log(this.searchValue);
       this.godsonsList = this.godsons.filter(
         (godson) => godson.full_name.toUpperCase().indexOf(this.searchValue.toUpperCase()) !== -1);
     } else {

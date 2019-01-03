@@ -34,7 +34,6 @@ export class GodfathersPage {
               ) {}
 
   ionViewDidEnter(){
-    console.log('ionViewDidEnter GodfathersPage');
     this.fillGodfathers();
   }
 
@@ -72,7 +71,6 @@ export class GodfathersPage {
 
   search() {
     if(this.searchValue) {
-      console.log(this.searchValue);
       this.godfatherList = this.godfathers.filter(
         (godfather) => godfather.full_name.toUpperCase().indexOf(this.searchValue.toUpperCase()) !== -1);
     } else {

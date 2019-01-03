@@ -19,10 +19,6 @@ export class TopicsDetailPopoverPage {
 
   constructor(public navCtrl: NavController, private events: Events, private viewCtrl: ViewController) {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad TopicsDetailPopoverPage');
-  }
-
   listSharedFiles(){
     this.viewCtrl.dismiss().then(() => {
       this.events.publish('thread-files:list');

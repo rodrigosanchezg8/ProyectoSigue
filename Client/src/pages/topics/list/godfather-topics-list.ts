@@ -62,17 +62,14 @@ export class GodfatherTopicsListPage {
   }
 
   ionViewDidEnter() {
-    console.log('ionViewDidEnter GodfatherTopicsList');
     this.subscribeCreateEvent();
     this.subscribeDeleteAllEvent();
     if (this.threadsObserver !== undefined) {
       this.subscribeThreadsObserver();
-      console.log('subscribed');
     }
   }
 
   ionViewDidLeave() {
-    console.log('ionViewDidLeave GodfatherTopicDetailPage');
     this.threadsSubscription.unsubscribe();
     this.events.unsubscribe('threads:delete-all');
     this.events.unsubscribe('threads:create');

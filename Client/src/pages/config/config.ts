@@ -31,7 +31,6 @@ export class ConfigPage {
   }
 
   ionViewWillEnter() {
-    console.log('ionViewWillEnter ConfigPage');
     let self = this;
     this.platform.ready().then(() => {
       this.nativeStorage.getItem("session").then(
@@ -45,15 +44,10 @@ export class ConfigPage {
     });
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ConfigPage');
-  }
-
   closeSession() {
       this.nativeStorage.remove("session").then(() => {
-        this.appCtrl.getRootNav().setRoot(NewsListPage)
+        this.appCtrl.getActiveNav().setRoot(NewsListPage)
       }).catch((error) => {
-        console.log('Error removing session item');
         console.log(error);
       });
   }

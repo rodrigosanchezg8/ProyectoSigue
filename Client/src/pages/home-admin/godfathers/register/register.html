@@ -6,7 +6,7 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="header">
     <ion-title>{{ isEditMode ? 'Editar padrino' : 'Nuevo padrino' }}</ion-title>
   </ion-navbar>
 
@@ -64,8 +64,8 @@
 
   </ion-list>
 
-</ion-content>
+  <div padding text-center="true">
+    <button color="dark-blue" ion-button round outline (click)="sendRequest()">Guardar</button>
+  </div>
 
-<ion-footer no-shadow no-margin no-padding no-border no-lines>
-  <button ion-button full (click)="sendRequest()">Guardar</button>
-</ion-footer>
+</ion-content>
