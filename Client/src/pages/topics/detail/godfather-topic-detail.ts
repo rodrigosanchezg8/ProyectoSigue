@@ -160,7 +160,7 @@ export class GodfatherTopicDetailPage {
       }, (error) => {
         alert('No se pudieron obtener los mensajes de este tema, contacte al equipo de desarrollo');
       });
-    });
+    }, () => this.loader.dismiss() );
   }
 
   // TODO Notify the other user when a file is sent
@@ -298,10 +298,12 @@ export class GodfatherTopicDetailPage {
 
   openMenu() {
     this.menuCtrl.open('right').then((opened) => {
+      this.loader.present('Cargando archivos...');
       this.threadProvider.getThreadFiles(this.thread.id).then((observable: any) => {
         observable.subscribe((data: any) => {
           this.files = data;
-        });
+          this.loader.dismiss();
+        }, () => this.loader.dismiss() );
       })
     });
   }

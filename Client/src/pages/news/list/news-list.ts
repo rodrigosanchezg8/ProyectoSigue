@@ -1,18 +1,14 @@
-import { AdminTabsPage } from "../../home-admin/tabs/admin-tabs";
 import { AlertController, Events, IonicPage, NavController, NavParams, Platform, PopoverController, ToastController } from 'ionic-angular';
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Godfather } from "../../../models/godfather";
-import { GodfatherProvider } from "../../../providers/godfather/godfather";
-import { GodfatherTabsPage } from "../../home-godfather/tabs/godfather-tabs";
 import { Loader } from "../../../traits/Loader";
 import { NativeStorage } from "@ionic-native/native-storage";
 import { New } from "../../../models/new";
 import { NewProvider } from "../../../providers/new/new";
 import { NewsDetailPage } from "../detail/news-detail";
 import { NewsListPopoverPage } from "./news-list-popover/news-list-popover";
-import { BackgroundMode } from "@ionic-native/background-mode";
 
 @IonicPage()
 @Component({
@@ -48,8 +44,7 @@ export class NewsListPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public platform: Platform,
-    public popoverCtrl: PopoverController
-
+    public popoverCtrl: PopoverController,
     ) {
       this.createForm();
       this.newsDetailPage = NewsDetailPage;
@@ -88,10 +83,12 @@ export class NewsListPage {
   }
 
   fillNews(){
+    this.loader.present('Obteniendo noticias...');
     this.newsProvider.getNews().then((observable: any) => {
       observable.subscribe((data: New[]) => {
         this.news = data;
-      });
+        this.loader.dismiss();
+      }, () => this.loader.dismiss());
     }).catch(e => console.log(e));
   }
 
