@@ -111,7 +111,7 @@ export class NewGodsonPage {
             last_name: this.godson.last_name,
             age: this.godson.age,
             orphan_house_id: 0,
-            profile_image: this.imgData ? this.imgData : this.godson.profile_image,
+            profile_image: this.imgData ? this.imgData : null,
             godfather_id: this.selectedGodfather ? this.selectedGodfather.id : this.godson.godfather_id,
             status: 1
         });

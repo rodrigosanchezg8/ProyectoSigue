@@ -46,7 +46,7 @@ export class ConfigPage {
 
   closeSession() {
       this.nativeStorage.remove("session").then(() => {
-        this.appCtrl.getActiveNav().setRoot(NewsListPage)
+        this.appCtrl.getRootNav().setRoot(NewsListPage)
       }).catch((error) => {
         console.log(error);
       });

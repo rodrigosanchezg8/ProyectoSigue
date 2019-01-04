@@ -103,7 +103,7 @@ const firebase = {
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp, {tabsHideOnSubPages: false}),
+    IonicModule.forRoot(MyApp),
     SocketIoModule.forRoot(config),
     HttpClientModule,
     FormsModule,
