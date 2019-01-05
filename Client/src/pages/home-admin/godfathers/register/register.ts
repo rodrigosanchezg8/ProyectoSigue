@@ -42,6 +42,7 @@ export class RegisterPage {
     if (this.godfather) {
       this.isEditMode = true;
       this.godfather.password = null;
+      this.godfather.password_confirmation = null;
     }
     else {
       this.godfather = new Godfather();
