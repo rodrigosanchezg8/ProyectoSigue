@@ -1,7 +1,7 @@
 import {
   ActionSheetController,
   AlertController,
-  App,
+  App, Events,
   IonicPage,
   NavController,
   NavParams,
@@ -40,7 +40,8 @@ export class NewsDetailPage {
     public appCtrl: App,
     public navCtrl: NavController,
     public navParams: NavParams,
-    public viewCtrl: ViewController
+    public viewCtrl: ViewController,
+    public events: Events,
   ) {
     this.new = this.navParams.data;
   }
@@ -85,6 +86,7 @@ export class NewsDetailPage {
                       observable.subscribe(
                         (successResponse) => {
                           this.loaderCtrl.dismiss();
+                          this.events.publish('new:reload-list');
                           this.navCtrl.pop();
                         },
                         (errorResponse) => {
