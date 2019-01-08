@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {
-  AlertController, App, Content,
+  AlertController, Content,
   Events,
   IonicPage,
   MenuController,
@@ -29,7 +29,6 @@ import {HttpClient} from "@angular/common/http";
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/from';
 import {NotificationProvider} from "../../../providers/notification/notification";
-import {Route} from "@angular/compiler/src/core";
 
 @IonicPage()
 @Component({
@@ -98,11 +97,13 @@ export class GodfatherTopicDetailPage {
   }
 
   ionViewDidEnter() {
+    this.loader.dismiss();
+
     this.socket.on('connect', () => {});
     this.subscribePopoverEvents();
 
-    this.requestHistoryEvent();
-    this.subscribeSocketMessages();
+    this.requestHistoryEvent().then(() => this.subscribeSocketMessages());
+
   }
 
   ionViewDidLeave() {
@@ -152,15 +153,16 @@ export class GodfatherTopicDetailPage {
     });
   }
 
-  requestHistoryEvent() {
-    this.loader.present();
-    this.threadProvider.getThreadMessages(this.thread.id, 0).then((observable: any) => {
-      observable.subscribe((response) => {
-        console.log(response);
-      }, (error) => {
+  async requestHistoryEvent() {
+    await this.loader.present("Cargando mensajes...", true);
+    return await this.threadProvider.getThreadMessages(this.thread.id, 0).then(async (observable: any) => {
+      return await observable.subscribe( async response => {
+        return response;
+      }, async () => {
         alert('No se pudieron obtener los mensajes de este tema, contacte al equipo de desarrollo');
+        return await this.loader.dismiss()
       });
-    }, () => this.loader.dismiss() );
+    }, async () => await this.loader.dismiss() );
   }
 
   // TODO Notify the other user when a file is sent
@@ -296,36 +298,38 @@ export class GodfatherTopicDetailPage {
       });
   }
 
-  openMenu() {
-    this.menuCtrl.open('right').then((opened) => {
-      this.loader.present('Cargando archivos...');
-      this.threadProvider.getThreadFiles(this.thread.id).then((observable: any) => {
-        observable.subscribe((data: any) => {
-          this.files = data;
-          this.loader.dismiss();
-        }, () => this.loader.dismiss() );
-      })
-    });
-  }
-
   toggleMenu() {
     this.menuCtrl.toggle('right');
   }
 
+  openMenu() {
+    this.menuCtrl.open('right').then((opened) => {
+      this.loadFiles();
+    });
+  }
+
+  menuOpened() {
+    this.loader.present('Cargando archivos...');
+    this.loadFiles();
+  }
+
+  loadFiles(){
+    this.threadProvider.getThreadFiles(this.thread.id).then((observable: any) => {
+      observable.subscribe((data: any) => {
+        this.files = data;
+        this.loader.dismiss();
+      }, () => this.loader.dismiss() );
+    })
+  }
+
   providerNotificationDelete() {
-
     if(this.active) {
-
       this.notificationProvider.deleteNotification(this.thread.id, this.sessionUser.id).then((observable: any) => {
-        observable.subscribe(res => {
+        observable.subscribe(() => {
           this.thread.notification = null;
         });
-      }).catch((error) => {
-        console.log(error);
-      });
+      }).catch((error) => console.log(error));
     }
-
-
   }
 
 }

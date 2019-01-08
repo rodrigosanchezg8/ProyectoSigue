@@ -12,9 +12,11 @@ export class Loader {
     this.displaying = false;
   }
 
-  present(msg: string = "Espere por favor..."){
+  present(msg: string = "Espere por favor...", dismiss: boolean = false){
     this.loader = this.loadingCtrl.create({
-      content: msg
+      showBackdrop: dismiss,
+      enableBackdropDismiss: dismiss,
+      content: msg,
     });
     this.loader.present();
     this.displaying = true;

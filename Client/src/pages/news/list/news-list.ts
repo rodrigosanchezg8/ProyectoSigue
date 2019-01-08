@@ -1,4 +1,5 @@
-import { AlertController, Events, IonicPage, NavController, NavParams, Platform, PopoverController, ToastController } from 'ionic-angular';
+import { AlertController, Events, IonicPage, NavController, NavParams, Platform, PopoverController }
+from 'ionic-angular';
 import { Camera, CameraOptions } from "@ionic-native/camera";
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
@@ -38,7 +39,6 @@ export class NewsListPage {
     private loader: Loader,
     private nativeStorage: NativeStorage,
     private newsProvider: NewProvider,
-    private toastCtrl: ToastController,
     public alertCtrl: AlertController,
     public events: Events,
     public navCtrl: NavController,
