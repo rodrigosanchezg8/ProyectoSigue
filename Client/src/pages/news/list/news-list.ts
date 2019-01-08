@@ -53,8 +53,14 @@ export class NewsListPage {
 
       if (this.sessionUser === undefined) {
         this.nativeStorage.getItem("session").then(res => {
-          this.sessionUser = res.user;
+          this.sessionUser = res.user !== undefined ? res.user : null;
+          this.fillNews();
+        }, error => {
+          this.fillNews();
         }).catch(e => console.log(e));
+      }
+      else {
+        this.fillNews();
       }
 
     });
@@ -62,34 +68,19 @@ export class NewsListPage {
     this.events.subscribe('new:reload-list', () => {
         this.fillNews();
       });
-  }
 
-  ionViewWillEnter() {
-    this.platform.ready().then(() => {
-      if (this.sessionUser === undefined) {
-          this.nativeStorage.getItem("session").then(
-            (res) => {
-              this.sessionUser = res.user !== undefined ? res.user : null;
-              this.fillNews();
-            },
-            (error) => {
-              this.fillNews();
-            }
-          ).catch(e => console.log(e));
-      } else {
-        this.fillNews();
-      }
-    });
   }
 
   fillNews(){
     this.loader.present('Obteniendo noticias...');
     this.newsProvider.getNews().then((observable: any) => {
-      observable.subscribe((data: New[]) => {
-        this.news = data;
-        this.loader.dismiss();
-      }, () => this.loader.dismiss());
-    }).catch(e => console.log(e));
+
+          observable.subscribe((data: New[]) => {
+            this.news = data;
+            this.loader.dismiss();
+          }, () => this.loader.dismiss());
+
+    }).catch(e => this.loader.dismiss());
   }
 
   createForm() {

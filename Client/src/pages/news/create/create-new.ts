@@ -60,8 +60,8 @@ export class CreateNewPage {
       this.loader.present();
       this.newProvider.updateNew(id, newData).then((observable: any) => {
         observable.subscribe((newResp: any) => {
-          this.presentResponse(newResp);
           this.loader.dismiss();
+          this.presentResponse(newResp);
           this.events.publish('new:reload-list');
           this.navCtrl.pop();
         });
