@@ -9,7 +9,7 @@
 <ion-content padding>
 
   <ion-grid>
-    <ion-row class="profile-image-row">
+    <ion-row style="margin: 0 auto">
       <ion-col>
         <img src="{{ new.image }}">
       </ion-col>
@@ -22,7 +22,8 @@
       </ion-grid>
       <ion-grid>
         <ion-row>
-          <ion-icon name="person"></ion-icon> {{ new.created_at }}
+          <ion-icon name="person"></ion-icon>
+          {{ new.created_at }}
         </ion-row>
       </ion-grid>
     </ion-row>

@@ -1,8 +1,9 @@
-import { App, IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
-import { Component } from '@angular/core';
-import { Godfather } from "../../models/godfather";
-import { NativeStorage } from "@ionic-native/native-storage";
-import { NewsListPage } from '../news/list/news-list';
+import {App, IonicPage, NavController, NavParams, Platform, ViewController} from 'ionic-angular';
+import {Component} from '@angular/core';
+import {Godfather} from "../../models/godfather";
+import {NativeStorage} from "@ionic-native/native-storage";
+import {NewsListPage} from '../news/list/news-list';
+import {UserProvider} from "../../providers/user/user";
 
 /**
  * Generated class for the HomeAdminPage page.
@@ -21,13 +22,14 @@ export class ConfigPage {
   sessionUser: Godfather;
 
   constructor(
-              private nativeStorage: NativeStorage,
-              public appCtrl: App,
-              public navCtrl: NavController,
-              public navParams: NavParams,
-              public platform: Platform,
-              public viewCtrl: ViewController
-            ) {
+    private nativeStorage: NativeStorage,
+    public appCtrl: App,
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public platform: Platform,
+    public viewCtrl: ViewController,
+    public userProvider: UserProvider
+  ) {
   }
 
   ionViewWillEnter() {
@@ -45,11 +47,14 @@ export class ConfigPage {
   }
 
   closeSession() {
+    this.userProvider.updateFCMToken(this.sessionUser.id, null).then((observable: any) => {
+      observable.subscribe(updateRes => console.log(updateRes))
       this.nativeStorage.remove("session").then(() => {
         this.appCtrl.getRootNav().setRoot(NewsListPage)
       }).catch((error) => {
         console.log(error);
       });
+    });
   }
 
 }
